@@ -1,1 +1,4 @@
 a : int;
+hex : bool;
+arr : array int;
+tautology : array bool;
