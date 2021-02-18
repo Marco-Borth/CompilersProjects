@@ -1,4 +1,8 @@
 a : int;
-hex : bool;
+x , y , z : int;
+isHere : bool;
+i, j, k : bool;
+lever : byte;
 arr : array int;
 tautology : array bool;
+masterboard : array byte;

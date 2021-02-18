@@ -82,7 +82,7 @@ project)
 %token	<transToken>     EQUALS
 %token	<transToken>     FALSE
 %token	<transToken>     READ
-%token	<transToken>   HAVOC
+%token	<transToken>     HAVOC
 %token	<transIDToken>   ID
 %token	<transToken>     IF
 %token	<transToken>     INT
@@ -142,10 +142,58 @@ decl 		: varDecl SEMICOLON
 		  */
 		  // std::cout << "Var decl matched"
                   }
+  | funcDecl scope
+    {
+    }
+  | caseDecl
+    {
+    }
+  | iterDecl
+    {
+    }
 
-varDecl 	: id COLON type
-		  {
-		  }
+funcDecl  : id RPAREN params LPAREN VOID
+      {
+      }
+    | id type
+      {
+      }
+
+scope : LCURLY globals RCURLY
+      {
+      }
+
+params : conditional
+      {
+      }
+    | /* epsilon */
+      {
+      }
+
+iterDecl : WHILE LPAREN conditional RPAREN scope
+      {
+      }
+
+caseDecl  : IF LPAREN conditional RPAREN caseDecl scope
+      {
+      }
+    | ELSE IF LPAREN conditional RPAREN caseDecl scope
+      {
+      }
+    | ELSE scope
+      {
+      }
+
+conditional : TRUE
+      {
+      }
+
+varDecl 	: id COMMA varDecl
+      {
+      }
+    | id COLON type
+  		{
+  		}
 
 type 		: INT
 	  	  {
@@ -157,6 +205,12 @@ type 		: INT
         {
       }
 		| ARRAY BOOL
+	  	  {
+		  }
+    | BYTE
+        {
+      }
+		| ARRAY BYTE
 	  	  {
 		  }
 		/* TODO: add the rest of the types */

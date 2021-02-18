@@ -40,21 +40,21 @@ STRELT ([\\][nt"\\])|([^\\\n"])
 	this->yylval = lval;
 %}
 
-int    		       { return makeBareToken(TokenKind::INT); }
+int    		    { return makeBareToken(TokenKind::INT); }
 bool 		      { return makeBareToken(TokenKind::BOOL); }
 byte 		      { return makeBareToken(TokenKind::BYTE); }
 array		      { return makeBareToken(TokenKind::ARRAY); }
-string		      { return makeBareToken(TokenKind::STRING); }
+string		    { return makeBareToken(TokenKind::STRING); }
 void 		      { return makeBareToken(TokenKind::VOID); }
 if  		      { return makeBareToken(TokenKind::IF); }
 else		      { return makeBareToken(TokenKind::ELSE); }
 while		      { return makeBareToken(TokenKind::WHILE); }
 return		    { return makeBareToken(TokenKind::RETURN); }
 false  		    { return makeBareToken(TokenKind::FALSE); }
-true 		    { return makeBareToken(TokenKind::TRUE); }
-read		    { return makeBareToken(TokenKind::READ);}
-"write"	  	    { return makeBareToken(TokenKind::WRITE); }
-"havoc"	 	   { return makeBareToken(TokenKind::HAVOC); }
+true 		      { return makeBareToken(TokenKind::TRUE); }
+read		      { return makeBareToken(TokenKind::READ);}
+"write"	  	  { return makeBareToken(TokenKind::WRITE); }
+"havoc"	 	    { return makeBareToken(TokenKind::HAVOC); }
 "["		        { return makeBareToken(TokenKind::LBRACE); }
 "]"		        { return makeBareToken(TokenKind::RBRACE); }
 "{"		        { return makeBareToken(TokenKind::LCURLY); }
