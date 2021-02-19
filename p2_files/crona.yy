@@ -121,103 +121,46 @@ project)
    grammar and make sure that all of the productions of the
    given nonterminals are complete
 */
-program 	: globals
-		  {
-		  }
+program : globals { }
 
-globals 	: globals decl
-	  	  {
-	  	  }
-		| /* epsilon */
-		  {
-		  }
+globals : globals decl 	{ }
+        | /* epsilon */ 	{ }
 
-decl 		: varDecl SEMICOLON
-		  {
-                  /*
-                  For this project, you don't need to put in any actions
-                  here, but you might find it helpful to print something
-                  when a rule is matched while debugging (so you know
-                  which productions are being matched
-		  */
-		  // std::cout << "Var decl matched"
-                  }
-  | funcDecl scope
-    {
-    }
-  | caseDecl
-    {
-    }
-  | iterDecl
-    {
-    }
+decl : varDecl SEMICOLON	{
+				  /*
+				  For this project, you don't need to put in any actions
+				  here, but you might find it helpful to print something
+				  when a rule is matched while debugging (so you know
+				  which productions are being matched
+				  */
+				  std::cout << "Var decl matched"<<std::endl; 
+				}
+     | caseDecl 		{ }
+     | iterDecl 		{ }
 
-funcDecl  : id RPAREN params LPAREN VOID
-      {
-      }
-    | id type
-      {
-      }
+scope : LCURLY globals RCURLY { }
 
-scope : LCURLY globals RCURLY
-      {
-      }
+iterDecl : WHILE LPAREN conditional RPAREN scope { }
 
-params : conditional
-      {
-      }
-    | /* epsilon */
-      {
-      }
+caseDecl : IF LPAREN conditional RPAREN caseDecl scope	{ }
+         | ELSE IF LPAREN conditional RPAREN caseDecl scope	{ }
+         | ELSE scope						{ }
 
-iterDecl : WHILE LPAREN conditional RPAREN scope
-      {
-      }
+conditional : TRUE	{ }
 
-caseDecl  : IF LPAREN conditional RPAREN caseDecl scope
-      {
-      }
-    | ELSE IF LPAREN conditional RPAREN caseDecl scope
-      {
-      }
-    | ELSE scope
-      {
-      }
+varDecl : id COMMA varDecl	{ }
+        | id COLON type	{ }
 
-conditional : TRUE
-      {
-      }
+type : INT		{ }
+     | ARRAY INT	{ }
+     | BOOL		{ }
+     | ARRAY BOOL	{ }
+     | BYTE		{ }
+     | ARRAY BYTE	{ }
+     | STRING		{ }
+     /* TODO: add the rest of the types */
 
-varDecl 	: id COMMA varDecl
-      {
-      }
-    | id COLON type
-  		{
-  		}
-
-type 		: INT
-	  	  {
-		  }
-		| ARRAY INT
-	  	  {
-		  }
-    | BOOL
-        {
-      }
-		| ARRAY BOOL
-	  	  {
-		  }
-    | BYTE
-        {
-      }
-		| ARRAY BYTE
-	  	  {
-		  }
-		/* TODO: add the rest of the types */
-
-id		: ID
-		  {
-		  }
+id : ID { }
 
  /* TODO: add productions for the entire grammar of the language */
 

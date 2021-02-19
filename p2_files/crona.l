@@ -4,7 +4,7 @@
 
 /* Get our custom yyFlexScanner subclass */
 #include "scanner.hpp"
-#pragma clang diagnostic ignored "-Wdeprecated-register"
+//#pragma clang diagnostic ignored "-Wdeprecated-register"
 #undef YY_DECL
 #define YY_DECL int crona::Scanner::yylex(crona::Parser::semantic_type * const lval)
 

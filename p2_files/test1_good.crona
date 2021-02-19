@@ -1,4 +1,5 @@
 a : int;
+imastring : string;
 x , y , z : int;
 isHere : bool;
 i, j, k : bool;
