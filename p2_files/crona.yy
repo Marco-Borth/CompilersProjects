@@ -155,57 +155,18 @@ formalDecl  : id COLON type { }
 fnBody  : LCURLY stmtList RCURLY { }
 
 stmtList : stmtList stmt { }
-         | /* epsilon */
+         | /* epsilon */ { }
 
 stmt  : varDecl SEMICOLON { }
-      | assignExp SEMICOLON { }
       | lval DASHDASH SEMICOLON { }
       | lval CROSSCROSS SEMICOLON { }
       | READ lval SEMICOLON { }
-      | WRITE exp SEMICOLON { }
-      | IF LPAREN exp RPAREN LCURLY stmtList RCURLY { }
-      | IF LPAREN exp RPAREN LCURLY stmtList RCURLY ELSE LCURLY stmtList RCURLY { }
-      | WHILE LPAREN exp RPAREN LCURLY stmtList RCURLY { }
-      | RETURN exp SEMICOLON { }
       | RETURN SEMICOLON { }
       | fncall SEMICOLON { }
 
-assignExp : lval ASSIGN exp { }
-
 fncall          :  id LPAREN RPAREN   // fn call with no args { }
-                | id LPAREN actualsList RPAREN  // with args { }
 
-actualsList     : exp { }
-                | actualsList COMMA exp { }
-
-exp             : assignExp { }
-                | exp DASH exp { }
-                | exp CROSS exp { }
-                | exp STAR exp { }
-                | exp SLASH exp { }
-                | exp AND exp { }
-                | exp OR exp { }
-                | exp EQUALS exp { }
-                | exp NOTEQUALS exp { }
-                | exp GREATER exp { }
-                | exp GREATEREQ exp { }
-                | exp LESS exp { }
-                | exp LESSEQ exp { }
-                | NOT exp { }
-                | DASH term { }
-                | term { }
-
-term            : lval { }
-                | INTLITERAL { }
-                | STRLITERAL { }
-                | TRUE { }
-                | FALSE { }
-		            | HAVOC { }
-                | LPAREN exp RPAREN { }
-                | fncall { }
-
-lval            : id { }
-                | id LBRACE exp RBRACE { }
+lval  : id { }
 
 id : ID { }
 
