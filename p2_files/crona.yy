@@ -126,27 +126,8 @@ program : globals { }
 globals : globals decl 	{ }
         | /* epsilon */ 	{ }
 
-decl : varDecl SEMICOLON	{
-				  /*
-				  For this project, you don't need to put in any actions
-				  here, but you might find it helpful to print something
-				  when a rule is matched while debugging (so you know
-				  which productions are being matched
-				  */
-				  std::cout << "Var decl matched"<<std::endl; 
-				}
-     | caseDecl 		{ }
-     | iterDecl 		{ }
-
-scope : LCURLY globals RCURLY { }
-
-iterDecl : WHILE LPAREN conditional RPAREN scope { }
-
-caseDecl : IF LPAREN conditional RPAREN caseDecl scope	{ }
-         | ELSE IF LPAREN conditional RPAREN caseDecl scope	{ }
-         | ELSE scope						{ }
-
-conditional : TRUE	{ }
+decl : varDecl SEMICOLON	{ std::cout << "Var decl matched"<<std::endl; }
+     | fnDecl { }
 
 varDecl : id COMMA varDecl	{ }
         | id COLON type	{ }
@@ -158,7 +139,73 @@ type : INT		{ }
      | BYTE		{ }
      | ARRAY BYTE	{ }
      | STRING		{ }
+     | VOID { }
      /* TODO: add the rest of the types */
+
+fnDecl : id COLON type formals fnBody { }
+
+formals : LPAREN RPAREN { }
+        | LPAREN formalsList RPAREN { }
+
+formalsList : formalDecl { }
+            | formalDecl COMMA formalsList { }
+
+formalDecl  : id COLON type { }
+
+fnBody  : LCURLY stmtList RCURLY { }
+
+stmtList : stmtList stmt { }
+         | /* epsilon */
+
+stmt  : varDecl SEMICOLON { }
+      | assignExp SEMICOLON { }
+      | lval DASHDASH SEMICOLON { }
+      | lval CROSSCROSS SEMICOLON { }
+      | READ lval SEMICOLON { }
+      | WRITE exp SEMICOLON { }
+      | IF LPAREN exp RPAREN LCURLY stmtList RCURLY { }
+      | IF LPAREN exp RPAREN LCURLY stmtList RCURLY ELSE LCURLY stmtList RCURLY { }
+      | WHILE LPAREN exp RPAREN LCURLY stmtList RCURLY { }
+      | RETURN exp SEMICOLON { }
+      | RETURN SEMICOLON { }
+      | fncall SEMICOLON { }
+
+assignExp : lval ASSIGN exp { }
+
+fncall          :  id LPAREN RPAREN   // fn call with no args { }
+                | id LPAREN actualsList RPAREN  // with args { }
+
+actualsList     : exp { }
+                | actualsList COMMA exp { }
+
+exp             : assignExp { }
+                | exp DASH exp { }
+                | exp CROSS exp { }
+                | exp STAR exp { }
+                | exp SLASH exp { }
+                | exp AND exp { }
+                | exp OR exp { }
+                | exp EQUALS exp { }
+                | exp NOTEQUALS exp { }
+                | exp GREATER exp { }
+                | exp GREATEREQ exp { }
+                | exp LESS exp { }
+                | exp LESSEQ exp { }
+                | NOT exp { }
+                | DASH term { }
+                | term { }
+
+term            : lval { }
+                | INTLITERAL { }
+                | STRLITERAL { }
+                | TRUE { }
+                | FALSE { }
+		            | HAVOC { }
+                | LPAREN exp RPAREN { }
+                | fncall { }
+
+lval            : id { }
+                | id LBRACE exp RBRACE { }
 
 id : ID { }
 

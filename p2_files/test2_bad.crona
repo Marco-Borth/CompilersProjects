@@ -1,2 +1,5 @@
 a a : int;
+
+
 void methodMan() {}
+if ( true ) { wow : bool; }
