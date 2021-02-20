@@ -18,6 +18,8 @@
 %code requires{
 	#include <list>
 	#include "tokens.hpp"
+  using namespace std;
+
 	namespace crona {
 		class Scanner;
 	}
@@ -126,20 +128,20 @@ program : globals { }
 globals : globals decl 	{ }
         | /* epsilon */ 	{ }
 
-decl : varDecl SEMICOLON	{ std::cout << "Var decl matched"<<std::endl; }
-     | fnDecl { }
+decl : varDecl{ cout << "Var decl matched" << endl; }
+     | fnDecl { cout << "Fn decl matched" << endl; }
 
 varDecl : id COMMA varDecl	{ }
-        | id COLON type	{ }
+        | id COLON type	SEMICOLON { }
 
-type : INT		{ }
-     | ARRAY INT	{ }
-     | BOOL		{ }
-     | ARRAY BOOL	{ }
-     | BYTE		{ }
-     | ARRAY BYTE	{ }
-     | STRING		{ }
-     | VOID { }
+type : INT		{ cout << "INT "; }
+     | INT ARRAY LBRACE INTLITERAL RBRACE   { cout << "INT ARRAY "; }
+     | BOOL		{ cout << "BOOL "; }
+     | BOOL ARRAY LBRACE INTLITERAL RBRACE 	{ cout << "BOOL ARRAY "; }
+     | BYTE		{ cout << "BYTE "; }
+     | BYTE ARRAY LBRACE INTLITERAL RBRACE 	{ cout << "BYTE ARRAY "; }
+     | STRING		{ cout << "STRING "; }
+     | VOID { cout << "VOID "; }
      /* TODO: add the rest of the types */
 
 fnDecl : id COLON type formals fnBody { }
@@ -147,8 +149,8 @@ fnDecl : id COLON type formals fnBody { }
 formals : LPAREN RPAREN { }
         | LPAREN formalsList RPAREN { }
 
-formalsList : formalDecl { }
-            | formalDecl COMMA formalsList { }
+formalsList : formalDecl { cout << "Formal Decl matched -> "; }
+            | formalDecl COMMA formalsList { cout << "Formal Decl matched -> "; }
 
 formalDecl  : id COLON type { }
 
@@ -157,18 +159,18 @@ fnBody  : LCURLY stmtList RCURLY { }
 stmtList : stmtList stmt { }
          | /* epsilon */ { }
 
-stmt  : varDecl SEMICOLON { }
-      | lval DASHDASH SEMICOLON { }
-      | lval CROSSCROSS SEMICOLON { }
-      | READ lval SEMICOLON { }
-      | RETURN SEMICOLON { }
-      | fncall SEMICOLON { }
+stmt  : varDecl { cout << "Var decl matched in Fn, "; }
+      | lval DASHDASH SEMICOLON { cout << "increment matched in Fn, "; }
+      | lval CROSSCROSS SEMICOLON { cout << "decrement matched in Fn, "; }
+      | READ lval SEMICOLON { cout << "READ matched in Fn, "; }
+      | RETURN SEMICOLON { cout << "RETURN matched in Fn, "; }
+      | fncall SEMICOLON { cout << "fn call matched in Fn, "; }
 
-fncall          :  id LPAREN RPAREN   // fn call with no args { }
+fncall          :  id LPAREN RPAREN   // fn call with no args {  }
 
 lval  : id { }
 
-id : ID { }
+id : ID { cout << " ... "; }
 
  /* TODO: add productions for the entire grammar of the language */
 
@@ -181,6 +183,6 @@ void crona::Parser::error(const std::string& err_message){
       this error function prints a verbose message to
       stdout, but only prints "syntax error" to stderr
    */
-	std::cout << err_message << std::endl;
-	std::cerr << "syntax error" << std::endl;
+	cout << err_message << std::endl;
+	cerr << "syntax error" << std::endl;
 }
