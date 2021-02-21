@@ -152,7 +152,7 @@ formals : LPAREN RPAREN { }
 formalsList : formalDecl { cout << "Formal Decl matched -> "; }
             | formalDecl COMMA formalsList { cout << "Formal Decl matched -> "; }
 
-<<<<<<< HEAD
+
 varDecl : id COMMA varDecl	{ }
         | id COLON type	{ }
 
