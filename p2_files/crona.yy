@@ -158,7 +158,34 @@ type : INT		{ }
      | BYTE		{ }
      | ARRAY BYTE	{ }
      | STRING		{ }
-     /* TODO: add the rest of the types */
+     
+     /* TODO: The productions for exp, term and the rest in crona.grammar are
+     ambiguous. We need to add precedence and associativity. */
+exp : assignExp	 { }
+    | exp DASH exp	 { }
+    | exp CROSS exp	 { }
+    | exp STAR exp	 { }
+    | exp SLASH exp	 { }
+    | exp AND exp	 { }
+    | exp OR exp	 { }
+    | exp EQUALS exp	 { }
+    | exp NOTEQUALS exp { }
+    | exp GREATER exp	 { }
+    | exp GREATEREQ exp { }
+    | exp LESS exp	 { }
+    | exp LESSEQ exp	 { }
+    | NOT exp		 { }
+    | DASH term	 { }
+    | term		 { }
+
+term : val			{ }
+     | INTLITERAL		{ }
+     | STRLITERAL		{ }
+     | TRUE			{ }
+     | FALSE			{ }
+     | HAVOC			{ }
+     | LPAREN exp RPAREN	{ }
+     | fncall			{ }
 
 id : ID { }
 
