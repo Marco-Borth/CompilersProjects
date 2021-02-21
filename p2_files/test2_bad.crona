@@ -1,2 +1,6 @@
 a a : int;
+
 void methodMan() {}
+if ( true ) { wow : bool; }
+wuTang : void () { methodMan : Bool; }
+bigTest : void () { hanky++; panky--; read holabolu; oneCondition(); return results; }

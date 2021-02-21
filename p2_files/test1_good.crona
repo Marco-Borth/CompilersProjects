@@ -1,9 +1,16 @@
 a : int;
-imastring : string;
 x , y , z : int;
 isHere : bool;
 i, j, k : bool;
 lever : byte;
-arr : array int;
-tautology : array bool;
-masterboard : array byte;
+arr : int array [50];
+tautology : bool array [5];
+masterboard : byte array [2048];
+imastring : string;
+doesThisWork : void;
+
+meaningless : void () {}
+oneCondition : int ( control : bool ) {}
+tenReasons101010 : byte ( one : bool , two : string, ten : int array [8] ) {}
+methodMan : string () { alpha : string; }
+bigTest : void () { hanky++; panky--; read holabolu; oneCondition(); return; }
