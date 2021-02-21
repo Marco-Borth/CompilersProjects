@@ -128,20 +128,20 @@ program : globals { }
 globals : globals decl 	{ }
         | /* epsilon */ 	{ }
 
-decl : varDecl{ cout << "Var decl matched" << endl; }
+decl : varDecl { cout << "Var decl matched" << endl; }
      | fnDecl { cout << "Fn decl matched" << endl; }
 
 varDecl : id COMMA varDecl	{ }
         | id COLON type	SEMICOLON { }
 
-type : INT		{ cout << "INT "; }
+type : INT		                              { cout << "INT "; }
      | INT ARRAY LBRACE INTLITERAL RBRACE   { cout << "INT ARRAY "; }
-     | BOOL		{ cout << "BOOL "; }
+     | BOOL		                              { cout << "BOOL "; }
      | BOOL ARRAY LBRACE INTLITERAL RBRACE 	{ cout << "BOOL ARRAY "; }
-     | BYTE		{ cout << "BYTE "; }
+     | BYTE		                              { cout << "BYTE "; }
      | BYTE ARRAY LBRACE INTLITERAL RBRACE 	{ cout << "BYTE ARRAY "; }
-     | STRING		{ cout << "STRING "; }
-     | VOID { cout << "VOID "; }
+     | STRING		                            { cout << "STRING "; }
+     | VOID                                 { cout << "VOID "; }
      /* TODO: add the rest of the types */
 
 fnDecl : id COLON type formals fnBody { }
@@ -152,45 +152,8 @@ formals : LPAREN RPAREN { }
 formalsList : formalDecl { cout << "Formal Decl matched -> "; }
             | formalDecl COMMA formalsList { cout << "Formal Decl matched -> "; }
 
-
-varDecl : id COMMA varDecl	{ }
-        | id COLON type	{ }
-
-type : INT		{ }
-     | ARRAY INT	{ }
-     | BOOL		{ }
-     | ARRAY BOOL	{ }
-     | BYTE		{ }
-     | ARRAY BYTE	{ }
-     | STRING		{ }
-     
      /* TODO: The productions for exp, term and the rest in crona.grammar are
      ambiguous. We need to add precedence and associativity. */
-exp : assignExp	 { }
-    | exp DASH exp	 { }
-    | exp CROSS exp	 { }
-    | exp STAR exp	 { }
-    | exp SLASH exp	 { }
-    | exp AND exp	 { }
-    | exp OR exp	 { }
-    | exp EQUALS exp	 { }
-    | exp NOTEQUALS exp { }
-    | exp GREATER exp	 { }
-    | exp GREATEREQ exp { }
-    | exp LESS exp	 { }
-    | exp LESSEQ exp	 { }
-    | NOT exp		 { }
-    | DASH term	 { }
-    | term		 { }
-
-term : val			{ }
-     | INTLITERAL		{ }
-     | STRLITERAL		{ }
-     | TRUE			{ }
-     | FALSE			{ }
-     | HAVOC			{ }
-     | LPAREN exp RPAREN	{ }
-     | fncall			{ }
 
 formalDecl  : id COLON type { }
 
@@ -200,16 +163,44 @@ stmtList : stmtList stmt { }
          | /* epsilon */ { }
 
 stmt  : varDecl { cout << "Var decl matched in Fn, "; }
+      | assignExp SEMICOLON { }
       | lval DASHDASH SEMICOLON { cout << "increment matched in Fn, "; }
       | lval CROSSCROSS SEMICOLON { cout << "decrement matched in Fn, "; }
       | READ lval SEMICOLON { cout << "READ matched in Fn, "; }
+      | WRITE exp SEMICOLON { }
+      | IF LPAREN exp RPAREN LCURLY stmtList RCURLY { }
+      | IF LPAREN exp RPAREN LCURLY stmtList RCURLY ELSE LCURLY stmtList RCURLY { }
+      | WHILE LPAREN exp RPAREN LCURLY stmtList RCURLY { }
+      | RETURN exp SEMICOLON { }
       | RETURN SEMICOLON { cout << "RETURN matched in Fn, "; }
       | fncall SEMICOLON { cout << "fn call matched in Fn, "; }
 
-fncall          :  id LPAREN RPAREN   // fn call with no args {  }
+assignExp : lval ASSIGN exp { }
 
-lval  : id { }
+fncall  :  id LPAREN RPAREN   // fn call with no args {  }
+        | id LPAREN actualsList RPAREN  // with args { }
 
+actualsList     : exp { }
+                | actualsList COMMA exp { }
+
+exp  						: assignExp	 					{ }
+								| base								{ }
+base 		        : DASH term	 					{ }
+								| term		 						{ }
+								| NOT LPAREN exp RPAREN		{ }
+
+
+term : lval			{ }
+     | INTLITERAL		{ }
+     | STRLITERAL		{ }
+     | TRUE			{ }
+     | FALSE			{ }
+     | HAVOC			{ }
+     | LPAREN exp RPAREN	{ }
+     | fncall			{ }
+
+lval : id { }
+     | id LBRACE exp RBRACE { }
 
 id : ID { cout << " ... "; }
 
