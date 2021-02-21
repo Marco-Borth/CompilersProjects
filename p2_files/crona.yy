@@ -175,7 +175,6 @@ stmt  : varDecl { cout << "Var decl matched in Fn, "; }
       | RETURN SEMICOLON { cout << "RETURN matched in Fn, "; }
       | fncall SEMICOLON { cout << "fn call matched in Fn, "; }
 
-assignExp : lval ASSIGN exp { }
 
 fncall  :  id LPAREN RPAREN   // fn call with no args {  }
         | id LPAREN actualsList RPAREN  // with args { }
@@ -183,12 +182,30 @@ fncall  :  id LPAREN RPAREN   // fn call with no args {  }
 actualsList     : exp { }
                 | actualsList COMMA exp { }
 
-exp  						: assignExp	 					{ }
-								| base								{ }
-base 		        : DASH term	 					{ }
-								| term		 						{ }
-								| NOT LPAREN exp RPAREN		{ }
+exp  		: assignExp	 					{ }
+				| union								{ }
+union		: union OR inter 			{ }
+				| inter								{ }
+inter	: inter AND rel					{ }
+				| rel 								{ }
+rel			:	rel EQUALS arith	 	{ }
+	    	| rel NOTEQUALS arith { }
+	    	| rel GREATEREQ arith { }
+	    	| rel LESSEQ arith	 	{ }
+	    	| rel GREATER arith	 	{ }
+	    	| rel LESS arith	 		{ }
+				| arith 							{ }
+arith 	: arith CROSS multdiv	{ }
+    		| arith DASH multdiv	{ }
+				| multdiv 						{ }
+multdiv : multdiv STAR base 	{ }
+	    	| multdiv SLASH base	{ }
+				| base 								{ }
+base 		: DASH term	 					{ }
+	    	| term		 						{ }
+				| NOT LPAREN exp RPAREN	{ }
 
+assignExp : lval ASSIGN exp { }
 
 term : lval			{ }
      | INTLITERAL		{ }
