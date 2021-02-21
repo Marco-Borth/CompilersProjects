@@ -163,7 +163,7 @@ stmtList : stmtList stmt { }
          | /* epsilon */ { }
 
 stmt  : varDecl { cout << "Var decl matched in Fn, "; }
-      | assignExp SEMICOLON
+      | assignExp SEMICOLON { }
       | lval DASHDASH SEMICOLON { cout << "increment matched in Fn, "; }
       | lval CROSSCROSS SEMICOLON { cout << "decrement matched in Fn, "; }
       | READ lval SEMICOLON { cout << "READ matched in Fn, "; }
@@ -183,9 +183,12 @@ fncall  :  id LPAREN RPAREN   // fn call with no args {  }
 actualsList     : exp { }
                 | actualsList COMMA exp { }
 
-exp : NOT exp		 { }
-    | DASH term	 { }
-    | term		 { }
+exp  						: assignExp	 					{ }
+								| base								{ }
+base 		        : DASH term	 					{ }
+								| term		 						{ }
+								| NOT LPAREN exp RPAREN		{ }
+
 
 term : lval			{ }
      | INTLITERAL		{ }
