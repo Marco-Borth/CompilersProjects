@@ -150,12 +150,12 @@ formals : LPAREN RPAREN { }
         | LPAREN formalsList RPAREN { }
 
 formalsList : formalDecl { cout << "Formal Decl matched -> "; }
-            | formalDecl COMMA formalsList { cout << "Formal Decl matched -> "; }
+            | formalDecl COMMA formalsList { }
 
      /* TODO: The productions for exp, term and the rest in crona.grammar are
      ambiguous. We need to add precedence and associativity. */
 
-formalDecl  : id COLON type { }
+formalDecl  : id COLON type { cout << "Formal Decl matched -> "; }
 
 fnBody  : LCURLY stmtList RCURLY { }
 
@@ -167,8 +167,8 @@ stmt  : varDecl { cout << "Var decl matched in Fn, "; }
       | lval DASHDASH SEMICOLON { cout << "increment matched in Fn, "; }
       | lval CROSSCROSS SEMICOLON { cout << "decrement matched in Fn, "; }
       | READ lval SEMICOLON { cout << "READ matched in Fn, "; }
-      | WRITE exp SEMICOLON { }
-      | IF LPAREN exp RPAREN LCURLY stmtList RCURLY { }
+      | WRITE exp SEMICOLON { cout << "WRITE matched in Fn, "; }
+      | IF LPAREN exp RPAREN LCURLY stmtList RCURLY { cout << "If statement matched, "; }
       | IF LPAREN exp RPAREN LCURLY stmtList RCURLY ELSE LCURLY stmtList RCURLY { }
       | WHILE LPAREN exp RPAREN LCURLY stmtList RCURLY { }
       | RETURN exp SEMICOLON { }
@@ -205,7 +205,7 @@ base 		: DASH term	 					{ }
 	    	| term		 						{ }
 				| NOT LPAREN exp RPAREN	{ }
 
-assignExp : lval ASSIGN exp { }
+assignExp : lval ASSIGN exp { cout << "Assign Exp matched, "; }
 
 term : lval			{ }
      | INTLITERAL		{ }

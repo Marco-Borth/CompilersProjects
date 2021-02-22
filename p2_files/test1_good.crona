@@ -14,3 +14,9 @@ oneCondition : int ( control : bool ) {}
 tenReasons101010 : byte ( one : bool , two : string, ten : int array [8] ) {}
 methodMan : string () { alpha : string; }
 bigTest : void () { hanky++; panky--; read holabolu; oneCondition(); return; }
+whatsThis : bool () { abat : bool; abat = true; }
+hopeThisWorks : void () { if (true) { write 4 + 5; } }
+
+if (true) {}
+if (true && false) {}
+if (false) {} else {}
