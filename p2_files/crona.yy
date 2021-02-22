@@ -125,23 +125,23 @@ project)
 */
 program : globals { }
 
-globals : globals decl 	{ }
+globals : globals decl 		{ }
         | /* epsilon */ 	{ }
 
-decl : varDecl { cout << "Var decl matched" << endl; }
-     | fnDecl { cout << "Fn decl matched" << endl; }
+decl : varDecl { /*cout << "Var decl matched" << endl;*/ }
+		 | fnDecl  { /*cout << "Fn decl matched" << endl;*/ }
 
-varDecl : id COMMA varDecl	{ }
+varDecl : id COMMA varDecl				{ }
         | id COLON type	SEMICOLON { }
 
-type : INT		                              { cout << "INT "; }
-     | INT ARRAY LBRACE INTLITERAL RBRACE   { cout << "INT ARRAY "; }
-     | BOOL		                              { cout << "BOOL "; }
-     | BOOL ARRAY LBRACE INTLITERAL RBRACE 	{ cout << "BOOL ARRAY "; }
-     | BYTE		                              { cout << "BYTE "; }
-     | BYTE ARRAY LBRACE INTLITERAL RBRACE 	{ cout << "BYTE ARRAY "; }
-     | STRING		                            { cout << "STRING "; }
-     | VOID                                 { cout << "VOID "; }
+type  : INT		                              	{ /*cout << "INT ";*/ }
+			| INT ARRAY LBRACE INTLITERAL RBRACE   	{ /*cout << "INT ARRAY ";*/ }
+	 		| BOOL		                              { /*cout << "BOOL ";*/ }
+	 		| BOOL ARRAY LBRACE INTLITERAL RBRACE 	{ /*cout << "BOOL ARRAY ";*/ }
+	 		| BYTE		                              { /*cout << "BYTE ";*/ }
+	 		| BYTE ARRAY LBRACE INTLITERAL RBRACE 	{ /*cout << "BYTE ARRAY ";*/ }
+	 		| STRING		                            { /*cout << "STRING ";*/ }
+	 		| VOID                                 	{ /*cout << "VOID ";*/ }
      /* TODO: add the rest of the types */
 
 fnDecl : id COLON type formals fnBody { }
@@ -149,38 +149,45 @@ fnDecl : id COLON type formals fnBody { }
 formals : LPAREN RPAREN { }
         | LPAREN formalsList RPAREN { }
 
-formalsList : formalDecl { cout << "Formal Decl matched -> "; }
+formalsList : formalDecl { }
             | formalDecl COMMA formalsList { }
 
      /* TODO: The productions for exp, term and the rest in crona.grammar are
      ambiguous. We need to add precedence and associativity. */
 
-formalDecl  : id COLON type { cout << "Formal Decl matched -> "; }
+formalDecl  : id COLON type { /*cout << "Formal Decl matched -> ";*/ }
 
 fnBody  : LCURLY stmtList RCURLY { }
 
 stmtList : stmtList stmt { }
          | /* epsilon */ { }
 
-stmt  : varDecl { cout << "Var decl matched in Fn, "; }
-      | assignExp SEMICOLON { }
-      | lval DASHDASH SEMICOLON { cout << "increment matched in Fn, "; }
-      | lval CROSSCROSS SEMICOLON { cout << "decrement matched in Fn, "; }
-      | READ lval SEMICOLON { cout << "READ matched in Fn, "; }
-      | WRITE exp SEMICOLON { cout << "WRITE matched in Fn, "; }
-      | IF LPAREN exp RPAREN LCURLY stmtList RCURLY { cout << "If statement matched, "; }
-      | IF LPAREN exp RPAREN LCURLY stmtList RCURLY ELSE LCURLY stmtList RCURLY { }
-      | WHILE LPAREN exp RPAREN LCURLY stmtList RCURLY { }
-      | RETURN exp SEMICOLON { }
-      | RETURN SEMICOLON { cout << "RETURN matched in Fn, "; }
-      | fncall SEMICOLON { cout << "fn call matched in Fn, "; }
+stmt  : varDecl { /*cout << "Var decl matched in Fn, ";*/ }
+	    | assignExp SEMICOLON { }
+			| lval DASHDASH SEMICOLON { /*cout << "increment matched in Fn, ";*/ }
+			| lval CROSSCROSS SEMICOLON { /*cout << "decrement matched in Fn, ";*/ }
+			| READ lval SEMICOLON { /*cout << "READ matched in Fn, ";*/ }
+			| WRITE exp SEMICOLON { /*cout << "WRITE matched in Fn, ";*/ }
+			| case { /*cout << "If stmt matched, ";*/ }
+	    | case swch {  }
+			| WHILE LPAREN exp RPAREN LCURLY stmtList RCURLY { /*cout << "While loop matched, ";*/ }
+			| RETURN exp SEMICOLON { /*cout << "RETURN matched in Fn, ";*/ }
+			| RETURN SEMICOLON { /*cout << "RETURN matched in Fn, ";*/ }
+			| fncall SEMICOLON { /*cout << "fn call matched in Fn, ";*/ }
 
+defal : ELSE LCURLY stmtList RCURLY { /*cout << "Else stmt matched, ";*/ }
+
+swch : ELSE case swch { /*cout << "If Else stmt matched, ";*/ }
+		 | ELSE case 			{ /*cout << "If Else stmt matched, ";*/ }
+		 | defal 					{ }
+
+case : IF LPAREN exp RPAREN LCURLY stmtList RCURLY { }
 
 fncall  :  id LPAREN RPAREN   // fn call with no args {  }
-        | id LPAREN actualsList RPAREN  // with args { }
+        | id LPAREN actualsList RPAREN  // with args {  }
 
-actualsList     : exp { }
-                | actualsList COMMA exp { }
+actualsList : exp 									{ /*cout << "acutals matched, ";*/ }
+						| actualsList COMMA exp { /*cout << "acutals matched, ";*/ }
 
 exp  		: assignExp	 					{ }
 				| union								{ }
@@ -205,21 +212,21 @@ base 		: DASH term	 					{ }
 	    	| term		 						{ }
 				| NOT LPAREN exp RPAREN	{ }
 
-assignExp : lval ASSIGN exp { cout << "Assign Exp matched, "; }
+assignExp : lval ASSIGN exp { /*cout << "Assign Exp matched, ";*/ }
 
-term : lval			{ }
-     | INTLITERAL		{ }
-     | STRLITERAL		{ }
-     | TRUE			{ }
-     | FALSE			{ }
-     | HAVOC			{ }
+term : lval								{ }
+     | INTLITERAL					{ }
+     | STRLITERAL					{ }
+     | TRUE								{ }
+     | FALSE							{ }
+     | HAVOC							{ }
      | LPAREN exp RPAREN	{ }
-     | fncall			{ }
+     | fncall							{ }
 
 lval : id { }
      | id LBRACE exp RBRACE { }
 
-id : ID { cout << " ... "; }
+id : ID { /*cout << " ... ";*/ }
 
  /* TODO: add productions for the entire grammar of the language */
 
