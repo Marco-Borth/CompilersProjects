@@ -16,7 +16,8 @@ methodMan : string () { alpha : string; }
 bigTest : void () { hanky++; panky--; read holabolu; oneCondition(); return; }
 whatsThis : bool () { abat : bool; abat = true; }
 hopeThisWorks : void () { if (true) { write 4 + 5; } }
-
-if (true) {}
-if (true && false) {}
-if (false) {} else {}
+thisIsFoolProof : int () { if (false) { return 7 - 9; } else { return 6 * 2; } }
+repeatAfterMe : string () { while (argo < 100) { laslo = (laslo * 5 / (2 + argo)); argo++; } }
+zyx : string () { worldClass("first", true, false); }
+ragingCase : bool () { if (false) { return (true && false); } else if ("monkeys" == "bananas"){ return (true || false); } else { } }
+ruckus : bool () { if (false) { return (true && false); } else if ("monkeys" == "bananas"){ return (true || false); } else if (major) { } }
