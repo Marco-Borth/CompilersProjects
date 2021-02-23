@@ -131,7 +131,8 @@ globals : globals decl 		{ }
 decl : varDecl { /*cout << "Var decl matched" << endl;*/ }
 		 | fnDecl  { /*cout << "Fn decl matched" << endl;*/ }
 
-varDecl : id COMMA varDecl				{ }
+varDecl : id COMMA varDecl				{ } /*Marco's homebrew multiple variable assignments
+																			to one types in one go.*/
         | id COLON type	SEMICOLON { }
 
 type  : INT		                              	{ /*cout << "INT ";*/ }
@@ -151,9 +152,6 @@ formals : LPAREN RPAREN { }
 
 formalsList : formalDecl { }
             | formalDecl COMMA formalsList { }
-
-     /* TODO: The productions for exp, term and the rest in crona.grammar are
-     ambiguous. We need to add precedence and associativity. */
 
 formalDecl  : id COLON type { /*cout << "Formal Decl matched -> ";*/ }
 
@@ -183,11 +181,12 @@ swch : ELSE case swch { /*cout << "If Else stmt matched, ";*/ }
 
 case : IF LPAREN exp RPAREN LCURLY stmtList RCURLY { }
 
-fncall  :  id LPAREN RPAREN   // fn call with no args {  }
-        | id LPAREN actualsList RPAREN  // with args {  }
+fncall  : id LPAREN RPAREN   {  } // fn call with no args
+        | id LPAREN actualsList RPAREN {  } // with args 
 
 actualsList : exp 									{ /*cout << "acutals matched, ";*/ }
 						| actualsList COMMA exp { /*cout << "acutals matched, ";*/ }
+/*Precedence and Associativity Assigned for expressions.*/
 
 exp  		: assignExp	 					{ }
 				| union								{ }
