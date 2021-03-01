@@ -1,0 +1,7 @@
+raceToTheFunct : int ( ) {if (3+3) {return 34;}}
+hopeThisWorks : void () { if (true) { write 4 + 5; } }
+thisIsFoolProof : int () { if (false) { return 7 - 9; } else { return 6 * 2; } }
+threeScenarios : bool () { if ( a < 5) {} if (a > 5) {} if (a == 5) {} }
+threeMoreScenarios : string () { if ( a <= 60) {} if (a >= 60) {} if (a != 60) {} }
+alternativeScenarios : int () { if ( havac ) {} if (! (a >= 60)) {} }
+someOthers : int () { if ( "freebird" ) { return -50; } }
