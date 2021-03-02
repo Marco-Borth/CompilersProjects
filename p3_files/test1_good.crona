@@ -1,0 +1,5 @@
+a : int;
+isHere : bool;
+lever : byte;
+imastring : string;
+doesThisWork : void;

@@ -1,0 +1,14 @@
+a a : int;
+
+void methodMan() {}
+if ( true ) { wow : bool; }
+wuTang : void () { methodMan : Bool; }
+bigTest : void () { hanky++; panky--; read holabolu; oneCondition(); return results; }
+meloveFuncts2 : bool array [43] (e : int, qbert : int array [4]) {read test}
+meloveFuncts3 : bool array [hey_im_not_an_intlit!] (e : int, qbert : int array [4]) {read test; return 1-4/2;}
+if (true) {}
+if (true && false) {}
+if (false) {} else {}
+
+x , y , z : int;
+i, j, k : bool;
