@@ -1,26 +1,5 @@
 a : int;
 isHere : bool;
 lever : byte;
-arr : int array [50];
-tautology : bool array [5];
-masterboard : byte array [2048];
 imastring : string;
 doesThisWork : void;
-
-meaningless : void () {}
-oneCondition : int ( control : bool ) {}
-tenReasons101010 : byte ( one : bool , two : string, ten : int array [8] ) {}
-methodMan : string () { alpha : string; }
-bigTest : void () { hanky++; panky--; read holabolu; oneCondition(); return; }
-whatsThis : bool () { abat : bool; abat = true; }
-meloveFuncts : bool array [43] (e : int, qbert : int array [3]) { }
-meloveFuncts2 : bool array [43] (e : int, qbert : int array [4]) {read test; return 1-4/2;}
-raceToTheFunct : int ( ) {if (3+3) {return 34;}}
-hopeThisWorks : void () { if (true) { write 4 + 5; } }
-thisIsFoolProof : int () { if (false) { return 7 - 9; } else { return 6 * 2; } }
-repeatAfterMe : string () { while (argo < 100) { laslo = (laslo * 5 / (2 + argo)); argo++; } }
-zyx : string () { worldClass("first", true, false); }
-threeScenarios : bool () { if ( a < 5) {} if (a > 5) {} if (a == 5) {} }
-threeMoreScenarios : string () { if ( a <= 60) {} if (a >= 60) {} if (a != 60) {} }
-alternativeScenarios : int () { if ( havac ) {} if (! (a >= 60)) {} }
-someOthers : int () { if ( "freebird" ) { return -50; } }
