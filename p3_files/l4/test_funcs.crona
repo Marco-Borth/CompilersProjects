@@ -1,4 +1,3 @@
-meaningless : void () {}
 oneCondition : int ( control : bool ) {}
 tenReasons101010 : byte ( one : bool , two : string, ten : int array [8] ) {}
 methodMan : string () { alpha : string; }
