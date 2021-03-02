@@ -86,4 +86,8 @@ namespace crona{
 		out << "string";
 	}
 
+	void VoidTypeNode::unparse(std::ostream& out, int indent){
+		out << "void";
+	}
+
 } // End namespace crona
