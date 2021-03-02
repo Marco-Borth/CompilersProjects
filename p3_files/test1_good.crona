@@ -3,3 +3,7 @@ isHere : bool;
 lever : byte;
 imastring : string;
 doesThisWork : void;
+
+arr : int array [50];
+tautology : bool array [5];
+masterboard : byte array [2048];
