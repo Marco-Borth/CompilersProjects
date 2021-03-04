@@ -53,6 +53,11 @@
    crona::IDToken*                       transIDToken;
    crona::ProgramNode*                   transProgram;
    std::list<crona::DeclNode *> *        transDeclList;
+	 std::list<crona::FormalDeclNode*>*		 transFormalDeclList;
+	 crona::FormalDeclNode*								 transFormalDecl;
+	 std::list<crona::StmtNode*>*					 transStmtList;
+	 crona::StmtNode*											 transStmt;
+	 crona::FnDeclNode *									 transFnDecl;
    crona::DeclNode *                     transDecl;
    crona::VarDeclNode *                  transVarDecl;
    crona::TypeNode *                     transType;
@@ -124,12 +129,19 @@
 *  the names defined in the %union directive above
 */
 /*    (attribute type)    (nonterminal)    */
-%type <transProgram>    program
-%type <transDeclList>   globals
-%type <transDecl>       decl
-%type <transVarDecl>    varDecl
-%type <transType>       type
-%type <transID>         id
+%type <transProgram>    				program
+%type <transDeclList>   				globals
+%type <transDecl>       				decl
+%type <transFnDecl>							fnDecl
+%type <transFormalDecl>					formalDecl
+%type <transFormalDeclList>			formals
+%type <transFormalDeclList>			formalsList
+%type <transStmtList>						stmtList
+%type <transStmt>								stmt
+%type <transStmtList>						fnBody
+%type <transVarDecl>    				varDecl
+%type <transType>       				type
+%type <transID>         				id
 
 
 %right ASSIGN
@@ -150,17 +162,16 @@ program 	: globals {
 globals 	: globals decl {
 	  	  $$ = $1;
 	  	  DeclNode * declNode = $2;
-		  $$->push_back(declNode);
+		  	$$->push_back(declNode);
 	  	  }
-		| /* epsilon */
-		  { $$ = new std::list<DeclNode * >(); }
+		| /* epsilon */ {$$ = new std::list<DeclNode * >(); }
 
 decl 		: varDecl SEMICOLON {
 		  //TODO: Make sure to fill out this rule
 		  // (as well as any other empty rule!)
 		  // with the appropriate SDD to create an AST
 		  }
-		| fnDecl { /* SDD rules can go on the same line if you want */ }
+		| fnDecl { $$ = $1;}
 ;
 varDecl 	: id COLON type {
 		  size_t line = $1->line();
@@ -179,16 +190,21 @@ type 		: INT {
 		| STRING { }
 		| VOID { }
 
-fnDecl 		: id COLON type formals fnBody { }
+fnDecl 		: id COLON type formals fnBody { $$ = new FnDeclNode($1->line(), $1->col(), $3, $1, $4, $5);}
 
 formals 	: LPAREN RPAREN { }
 		| LPAREN formalsList RPAREN { }
 
 
-formalsList	: formalDecl { }
-		| formalDecl COMMA formalsList { }
+formalsList	: formalDecl {std::list<FormalDeclNode*>* temp = new std::list<FormalDeclNode*>();
+													temp->push_front($1);
+													$$ = temp;
+												}
+					| formalDecl COMMA formalsList {$3->push_front($1);
+																					$$ = $3;
+																	}
 
-formalDecl 	: id COLON type { }
+formalDecl 	: id COLON type {$$ = new FormalDeclNode($1->line(), $1->col(), $3, $1);}
 
 fnBody		: LCURLY stmtList RCURLY { }
 

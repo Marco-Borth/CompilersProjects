@@ -54,9 +54,35 @@ namespace crona{
 		out << " : ";
 		this->myType->unparse(out, 0);
 		out << " (";
-		this->myFormals->unparse(out, 0);
+		if (myFormals != nullptr)
+		{
+			for (auto formal : *myFormals){
+			/* The auto keyword tells the compiler
+				 to (try to) figure out what the
+				 type of a variable should be from
+				 context. here, since we're iterating
+				 over a list of DeclNode *s, it's
+				 pretty clear that global is of
+				 type DeclNode *.
+			*/
+				formal->unparse(out, indent);
+			}
+		}
 		out << ") {";
-		this->myStmts->unparse(out, 0);
+		if (myStmts != nullptr)
+		{
+			for (auto stmt : *myStmts){
+				/* The auto keyword tells the compiler
+					 to (try to) figure out what the
+					 type of a variable should be from
+					 context. here, since we're iterating
+					 over a list of DeclNode *s, it's
+					 pretty clear that global is of
+					 type DeclNode *.
+				*/
+				stmt->unparse(out, indent);
+			}
+		}
 		out << "}\n";
 	}
 
@@ -65,7 +91,12 @@ namespace crona{
 		this->myExp->unparse(out, 0);
 		out << ";";
 	}
-
+	void IndexNode::unparse(std::ostream& out, int indent){
+		m_id_node->unparse(out, indent);
+		out <<'[';
+		m_exp_node->unparse(out, indent);
+		out <<']';
+	}
 	void IDNode::unparse(std::ostream& out, int indent){
 		out << this->myStrVal;
 	}
