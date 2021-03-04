@@ -60,10 +60,82 @@ namespace crona{
 		out << "}\n";
 	}
 
+	void AssignStmtNode::unparse(std::ostream& out, int indent){
+		doIndent(out, indent);
+		this->myId->unparse(out, 0);
+		out << " = ";
+		this->myExp->unparse(out, 0);
+		out << "; ";
+	}
+
+	void PostIncStmtNode::unparse(std::ostream& out, int indent){
+		doIndent(out, indent);
+		this->myId->unparse(out, 0);
+		out << "++; ";
+	}
+
+	void PostDecStmtNode::unparse(std::ostream& out, int indent){
+		doIndent(out, indent);
+		this->myId->unparse(out, 0);
+		out << "--; ";
+	}
+
+	void ReadStmtNode::unparse(std::ostream& out, int indent){
+		doIndent(out, indent);
+		out << "read ";
+		this->myId->unparse(out, 0);
+		out << "; ";
+	}
+
+	void WriteStmtNode::unparse(std::ostream& out, int indent){
+		doIndent(out, indent);
+		out << "write ";
+		this->myExp->unparse(out, 0);
+		out << "; ";
+	}
+
+	void IfStmtNode::unparse(std::ostream& out, int indent){
+		doIndent(out, indent);
+		out << "if (";
+		this->myExp->unparse(out, 0);
+		out << ") {";
+		this->myStmt->unparse(out, 0);
+		out << "} ";
+	}
+
+	void IfElseStmtNode::unparse(std::ostream& out, int indent){
+		doIndent(out, indent);
+		out << "if (";
+		this->myExp->unparse(out, 0);
+		out << ") {";
+		this->myIfStmt->unparse(out, 0);
+		out << "} else {";
+		this->myElseStmt->unparse(out, 0);
+		out << "} ";
+	}
+
+	void WhileStmtNode::unparse(std::ostream& out, int indent){
+		doIndent(out, indent);
+		out << "while (";
+		this->myExp->unparse(out, 0);
+		out << ") {";
+		this->myStmt->unparse(out, 0);
+		out << "} ";
+	}
+
 	void ReturnStmtNode::unparse(std::ostream& out, int indent){
+		doIndent(out, indent);
 		out << "return ";
 		this->myExp->unparse(out, 0);
-		out << ";";
+		out << "; ";
+	}
+
+	void CallStmtNode::unparse(std::ostream& out, int indent){
+		doIndent(out, indent);
+		this->myId->unparse(out, 0);
+		out << " (";
+		this->myExp->unparse(out, 0);
+		out << "); ";
 	}
 
 	void IDNode::unparse(std::ostream& out, int indent){

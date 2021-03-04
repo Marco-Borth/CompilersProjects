@@ -17,6 +17,7 @@ namespace crona{
 class DeclListNode;
 class DeclNode;
 class StmtNode;
+class StmtListNode;
 class TypeNode;
 class IDNode;
 
@@ -162,6 +163,7 @@ private:
 	IDNode * myId;
 };
 
+// Possible StmtListNode needed.
 class FnDeclNode : public DeclNode{
 public:
 	FnDeclNode(size_t l, size_t c, TypeNode * type, IDNode * id, FormalDeclNode * formals, StmtNode * stmts)
@@ -215,21 +217,130 @@ public:
 	void unparse(std::ostream& out, int indent);
 };
 
-class AssignStmtNode : public StmtNode {
+/*
+class StmtListNode : public StmtNode  {
 	public:
-		AssignStmtNode(size_t lineIn, size_t colIn)
-		: StmtNode(lineIn, colIn) {
+		StmtListNode(size_t lineIn, size_t colIn, StmtNode * stmt, StmtListNode * stmtList)
+		: StmtNode(lineIn, colIn), myStmt(stmt), myStmtList(stmtList) {
 		}
 		void unparse(std::ostream& out, int indent);
+	private:
+		IDNode * myStmt;
+		ExpNode * myStmtList;
+};
+*/
+
+// lvalNode needs to replace IdNode.
+class AssignStmtNode : public StmtNode {
+	public:
+		AssignStmtNode(size_t lineIn, size_t colIn, IDNode * id, ExpNode * exp)
+		: StmtNode(lineIn, colIn), myId(id), myExp(exp) {
+		}
+		void unparse(std::ostream& out, int indent);
+	private:
+		IDNode * myId;
+		ExpNode * myExp;
+};
+
+// lvalNode needs to replace IdNode.
+class PostIncStmtNode : public StmtNode {
+	public:
+		PostIncStmtNode(size_t lineIn, size_t colIn, IDNode * id)
+		: StmtNode(lineIn, colIn), myId(id) {
+		}
+		void unparse(std::ostream& out, int indent);
+	private:
+		IDNode * myId;
+};
+
+// lvalNode needs to replace IdNode.
+class PostDecStmtNode : public StmtNode {
+	public:
+		PostDecStmtNode(size_t lineIn, size_t colIn, IDNode * id)
+		: StmtNode(lineIn, colIn), myId(id) {
+		}
+		void unparse(std::ostream& out, int indent);
+	private:
+		IDNode * myId;
+};
+
+// lvalNode needs to replace IdNode.
+class ReadStmtNode : public StmtNode {
+	public:
+		ReadStmtNode(size_t lineIn, size_t colIn, IDNode * id)
+		: StmtNode(lineIn, colIn), myId(id) {
+		}
+		void unparse(std::ostream& out, int indent);
+	private:
+		IDNode * myId;
+};
+
+class WriteStmtNode : public StmtNode {
+	public:
+		WriteStmtNode(size_t lineIn, size_t colIn, ExpNode * exp)
+		: StmtNode(lineIn, colIn), myExp(exp) {
+		}
+		void unparse(std::ostream& out, int indent);
+	private:
+		ExpNode * myExp;
+};
+
+// Possible StmtListNode needed.
+class IfStmtNode : public StmtNode {
+	public:
+		IfStmtNode(size_t lineIn, size_t colIn, ExpNode * exp, StmtNode * stmt)
+		: StmtNode(lineIn, colIn), myExp(exp), myStmt(stmt) {
+		}
+		void unparse(std::ostream& out, int indent);
+	private:
+		ExpNode * myExp;
+		StmtNode * myStmt;
+};
+
+// Possible StmtListNode needed.
+class IfElseStmtNode : public StmtNode {
+	public:
+		IfElseStmtNode(size_t lineIn, size_t colIn, ExpNode * exp, StmtNode * ifStmt, StmtNode * elseStmt)
+		: StmtNode(lineIn, colIn), myExp(exp), myIfStmt(ifStmt), myElseStmt(elseStmt) {
+		}
+		void unparse(std::ostream& out, int indent);
+	private:
+		ExpNode * myExp;
+		StmtNode * myIfStmt;
+		StmtNode * myElseStmt;
+};
+
+// Possible StmtListNode needed.
+class WhileStmtNode : public StmtNode {
+	public:
+		WhileStmtNode(size_t lineIn, size_t colIn, ExpNode * exp, StmtNode * stmt)
+		: StmtNode(lineIn, colIn), myExp(exp), myStmt(stmt) {
+		}
+		void unparse(std::ostream& out, int indent);
+	private:
+		ExpNode * myExp;
+		StmtNode * myStmt;
 };
 
 class ReturnStmtNode : public StmtNode {
 	public:
 		ReturnStmtNode(size_t lineIn, size_t colIn, ExpNode * exp)
-		: StmtNode(exp->line(), exp->col()), myExp(exp) {
+		: StmtNode(lineIn, colIn), myExp(exp) {
 		}
 		void unparse(std::ostream& out, int indent);
 	private:
+		ExpNode * myExp;
+};
+
+// Possible ActualsListNode needed.
+class CallStmtNode : public StmtNode {
+	public:
+		CallStmtNode(size_t lineIn, size_t colIn, IDNode * id, ExpNode * exp)
+		: StmtNode(lineIn, colIn), myId(id), myExp(exp) {
+		}
+		void unparse(std::ostream& out, int indent);
+	private:
+		IDNode * myId;
 		ExpNode * myExp;
 };
 
