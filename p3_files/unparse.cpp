@@ -61,21 +61,6 @@ namespace crona{
 				out << ", ";
 			}
 		}
-
-		/*
-		if (m_formal_list != nullptr && !m_formal_list->empty())
-		{
-			// while (!m_formal_list->empty())
-			// {
-			// 	(m_formal_list->front())->unparse(out, indent);
-			// 	m_formal_list->pop_front();
-			// }
-			for (auto formal : *m_formal_list){
-				formal->unparse(out, indent);
-			}
-		}
-		*/
-
 		out << ") {";
 		if (myStmtList != nullptr) {
 			out << "\n";
@@ -86,17 +71,8 @@ namespace crona{
 				out << "\n";
 			}
 		}
-		/*
-		if (m_stmt_list != nullptr && !m_stmt_list->empty())
-		{
-			for (auto stmt : *m_stmt_list){
-				stmt->unparse(out, indent);
-			}
-		}
-		*/
 		out << "}\n";
 	}
-
 
 	void FormalDeclNode::unparse(ostream& out, int indent){
 		this->myId->unparse(out, indent);
@@ -120,22 +96,19 @@ namespace crona{
 		out << "; ";
 	}
 
-	// lvalNode needs to replace IdNode.
 	void PostIncStmtNode::unparse(ostream& out, int indent){
-		this->myId->unparse(out, 0);
+		this->myLVal->unparse(out, 0);
 		out << "++; ";
 	}
 
-	// lvalNode needs to replace IdNode.
 	void PostDecStmtNode::unparse(ostream& out, int indent){
-		this->myId->unparse(out, 0);
+		this->myLVal->unparse(out, 0);
 		out << "--; ";
 	}
 
-	// lvalNode needs to replace IdNode.
 	void ReadStmtNode::unparse(ostream& out, int indent){
 		out << "read ";
-		this->myId->unparse(out, 0);
+		this->myLVal->unparse(out, 0);
 		out << "; ";
 	}
 
@@ -177,6 +150,7 @@ namespace crona{
 			}
 			indent--;
 		}
+		doIndent(out, indent);
 		out << "} else {";
 		if (myElseStmtList != nullptr) {
 			out << "\n";

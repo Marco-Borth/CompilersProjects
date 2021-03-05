@@ -249,9 +249,21 @@ stmtList 	: stmt {
 
 stmt		: varDecl SEMICOLON { $$ = $1; }
 		| assignExp SEMICOLON { /*$$ = $1;*/ }
-		| lval DASHDASH SEMICOLON { }
-		| lval CROSSCROSS SEMICOLON { }
-		| READ lval SEMICOLON { }
+		| lval DASHDASH SEMICOLON {
+			size_t line = $1->line();
+			size_t col = $1->col();
+			$$ = new PostDecStmtNode(line, col, $1);
+		}
+		| lval CROSSCROSS SEMICOLON {
+			size_t line = $1->line();
+			size_t col = $1->col();
+			$$ = new PostIncStmtNode(line, col, $1);
+		}
+		| READ lval SEMICOLON {
+			size_t line = $1->line();
+			size_t col = $1->col();
+			$$ = new ReadStmtNode(line, col, $2);
+		}
 		| WRITE exp SEMICOLON {
 			size_t line = $1->line();
 			size_t col = $1->col();

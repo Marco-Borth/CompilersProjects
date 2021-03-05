@@ -330,37 +330,34 @@ class AssignStmtNode : public StmtNode {
 		ExpNode * myExp;
 };
 
-// lvalNode needs to replace IdNode.
 class PostIncStmtNode : public StmtNode {
 	public:
-		PostIncStmtNode(size_t lineIn, size_t colIn, IDNode * id)
-		: StmtNode(lineIn, colIn), myId(id) {
+		PostIncStmtNode(size_t lineIn, size_t colIn, LValNode * lVal)
+		: StmtNode(lineIn, colIn), myLVal(lVal) {
 		}
 		void unparse(ostream& out, int indent);
 	private:
-		IDNode * myId;
+		LValNode * myLVal;
 };
 
-// lvalNode needs to replace IdNode.
 class PostDecStmtNode : public StmtNode {
 	public:
-		PostDecStmtNode(size_t lineIn, size_t colIn, IDNode * id)
-		: StmtNode(lineIn, colIn), myId(id) {
+		PostDecStmtNode(size_t lineIn, size_t colIn, LValNode * lVal)
+		: StmtNode(lineIn, colIn), myLVal(lVal) {
 		}
 		void unparse(ostream& out, int indent);
 	private:
-		IDNode * myId;
+		LValNode * myLVal;
 };
 
-// lvalNode needs to replace IdNode.
 class ReadStmtNode : public StmtNode {
 	public:
-		ReadStmtNode(size_t lineIn, size_t colIn, IDNode * id)
-		: StmtNode(lineIn, colIn), myId(id) {
+		ReadStmtNode(size_t lineIn, size_t colIn, LValNode * lVal)
+		: StmtNode(lineIn, colIn), myLVal(lVal) {
 		}
 		void unparse(ostream& out, int indent);
 	private:
-		IDNode * myId;
+		LValNode * myLVal;
 };
 
 class WriteStmtNode : public StmtNode {

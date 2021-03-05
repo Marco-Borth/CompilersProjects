@@ -21,3 +21,5 @@ iterate4Fun : string () { while (FALSE) { } }
 
 raceToTheFunct : int ( ) { if ("readySetGo") {return 34;} }
 thisIsFoolProof : int () { if (456) { write 45; } else { return 12; } }
+
+bigTest : void () { hanky++; panky--; read holabolu; }
