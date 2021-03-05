@@ -180,9 +180,17 @@ type 		: INT { $$ = new IntTypeNode($1->line(), $1->col()); }
 			$$ = new ArrayTypeNode($2->line(), $2->col(), intType, size);
 		}
 		| BOOL {  $$ = new BoolTypeNode($1->line(), $1->col()); }
-		| BOOL ARRAY LBRACE INTLITERAL RBRACE { }
+		| BOOL ARRAY LBRACE INTLITERAL RBRACE {
+			BoolTypeNode * intType = new BoolTypeNode($1->line(), $1->col());
+			IntLitNode * size = new IntLitNode($4);
+			$$ = new ArrayTypeNode($2->line(), $2->col(), intType, size);
+		}
 		| BYTE { $$ = new ByteTypeNode($1->line(), $1->col()); }
-		| BYTE ARRAY LBRACE INTLITERAL RBRACE { }
+		| BYTE ARRAY LBRACE INTLITERAL RBRACE {
+			ByteTypeNode * intType = new ByteTypeNode($1->line(), $1->col());
+			IntLitNode * size = new IntLitNode($4);
+			$$ = new ArrayTypeNode($2->line(), $2->col(), intType, size);
+		}
 		| STRING { $$ = new StringTypeNode($1->line(), $1->col()); }
 		| VOID { $$ = new VoidTypeNode($1->line(), $1->col()); }
 
