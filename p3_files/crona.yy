@@ -208,9 +208,9 @@ type 		: INT { $$ = new IntTypeNode($1->line(), $1->col()); }
 		| VOID { $$ = new VoidTypeNode($1->line(), $1->col()); }
 
 fnDecl 		: id COLON type formals fnBody {
-		size_t line = $1->line();
-		size_t col = $1->col();
-		$$ = new FnDeclNode(line, col, $3, $1, $4, $5);
+			size_t line = $1->line();
+			size_t col = $1->col();
+			$$ = new FnDeclNode(line, col, $3, $1, $4, $5);
 		}
 
 formals 	: LPAREN RPAREN {
@@ -222,19 +222,19 @@ formals 	: LPAREN RPAREN {
 		}
 
 formalDecl 	: id COLON type {
-		size_t line = $1->line();
-		size_t col = $1->col();
-		$$ = new FormalDeclNode(line, col, $3, $1);
+			size_t line = $1->line();
+			size_t col = $1->col();
+			$$ = new FormalDeclNode(line, col, $3, $1);
 		}
 
 formalsList	: formalDecl {
-		std::list<FormalDeclNode*>* temp = new std::list<FormalDeclNode*>();
-		temp->push_front($1);
-		$$ = temp;
+			std::list<FormalDeclNode*>* temp = new std::list<FormalDeclNode*>();
+			temp->push_front($1);
+			$$ = temp;
 	 	}
 		| formalDecl COMMA formalsList {
-    $3->push_front($1);
-		$$ = $3;
+    	$3->push_front($1);
+			$$ = $3;
 		}
 
 fnBody		: LCURLY stmtList RCURLY { $$ = $2; }
