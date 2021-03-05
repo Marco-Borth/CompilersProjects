@@ -96,6 +96,44 @@ protected:
 	ExpNode(size_t line, size_t col)
 	: ASTNode(line, col){
 	}
+public:
+	void unparse(std::ostream& out, int indent) override = 0; //Abstract unparse function.
+};
+
+class LValNode : public ExpNode
+{
+public:
+	LValNode (size_t line, size_t col) /*TODO */
+	: ExpNode(line, col){
+	}
+};
+/** An identifier. Note that IDNodes subclass
+ * ExpNode because they can be used as part of an expression.
+**/
+class IDNode : public LValNode{
+public:
+	IDNode(IDToken * token)
+	: LValNode(token->line(), token->col()), myStrVal(token->value()){
+		//myStrVal = token->value();
+	}
+	void unparse(std::ostream& out, int indent);
+private:
+	/** The name of the identifier **/
+	std::string myStrVal;
+};
+
+class IndexNode : public LValNode{
+public:
+	IndexNode(IDNode* i_id_node, ExpNode* i_exp_node)
+	: LValNode(i_id_node->line(),i_id_node->col()){
+		m_id_node = i_id_node;
+		m_exp_node = i_exp_node;
+	}
+	void unparse(std::ostream& out, int indent);
+private:
+	/** The name of the identifier **/
+	IDNode* m_id_node;
+	ExpNode* m_exp_node;
 };
 
 /**  \class TypeNode
@@ -112,32 +150,6 @@ public:
 	virtual void unparse(std::ostream& out, int indent) = 0;
 	//TODO: consider adding an isRef to use in unparse to
 	// indicate if this is a reference type
-};
-
-class FormalDeclNode : public DeclNode {
-protected:
-	FormalDeclNode(size_t lineIn, size_t colIn)
-	: DeclNode(lineIn, colIn){
-	}
-public:
-	virtual void unparse(std::ostream& out, int indent) = 0;
-	//TODO: consider adding an isRef to use in unparse to
-	// indicate if this is a reference type
-};
-
-/** An identifier. Note that IDNodes subclass
- * ExpNode because they can be used as part of an expression.
-**/
-class IDNode : public ExpNode{
-public:
-	IDNode(IDToken * token)
-	: ExpNode(token->line(), token->col()), myStrVal(token->value()){
-		myStrVal = token->value();
-	}
-	void unparse(std::ostream& out, int indent);
-private:
-	/** The name of the identifier **/
-	std::string myStrVal;
 };
 
 /** A variable declaration. Note that this class is intended to
@@ -157,24 +169,38 @@ public:
 	VarDeclNode(size_t l, size_t c, TypeNode * type, IDNode * id)
 	: DeclNode(type->line(), type->col()), myType(type), myId(id){
 	}
+	virtual void unparse(std::ostream& out, int indent);
+private:
+	TypeNode * myType;
+	IDNode * myId;
+};
+
+class FormalDeclNode : public VarDeclNode {
+public:
+	FormalDeclNode(size_t l, size_t c, TypeNode * type, IDNode * id)
+	: VarDeclNode(type->line(), type->col(), type, id){
+		myType = type;
+		myId	 = id;
+	}
 	void unparse(std::ostream& out, int indent);
 private:
 	TypeNode * myType;
 	IDNode * myId;
 };
 
+
 // Possible StmtListNode needed.
 class FnDeclNode : public DeclNode{
 public:
-	FnDeclNode(size_t l, size_t c, TypeNode * type, IDNode * id, FormalDeclNode * formals, StmtNode * stmts)
-	: DeclNode(type->line(), type->col()), myType(type), myId(id), myFormals(formals), myStmts(stmts) {
+	FnDeclNode(size_t l, size_t c, TypeNode * type, IDNode * id, std::list<FormalDeclNode*> * i_formal_list, std::list<StmtNode*> * i_stmt_list)
+	: DeclNode(type->line(), type->col()), myType(type), myId(id), m_formal_list(i_formal_list), m_stmt_list(i_stmt_list) {
 	}
 	void unparse(std::ostream& out, int indent);
 private:
 	TypeNode * myType;
 	IDNode * myId;
-	FormalDeclNode * myFormals;
-	StmtNode * myStmts;
+	std::list<FormalDeclNode*> * m_formal_list;
+	std::list<StmtNode*> * m_stmt_list;
 };
 
 class IntTypeNode : public TypeNode{
