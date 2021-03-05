@@ -127,17 +127,6 @@ public:
 	// indicate if this is a reference type
 };
 
-class FormalDeclNode : public DeclNode {
-protected:
-	FormalDeclNode(size_t lineIn, size_t colIn)
-	: DeclNode(lineIn, colIn){
-	}
-public:
-	virtual void unparse(std::ostream& out, int indent) = 0;
-	//TODO: consider adding an isRef to use in unparse to
-	// indicate if this is a reference type
-};
-
 /** An identifier. Note that IDNodes subclass
  * ExpNode because they can be used as part of an expression.
 **/
@@ -198,6 +187,17 @@ public:
 private:
 	TypeNode * myType;
 	IDNode * myId;
+};
+
+class FormalDeclNode : public VarDeclNode {
+protected:
+	FormalDeclNode(size_t lineIn, size_t colIn, TypeNode * type, IDNode * id)
+	: VarDeclNode(lineIn, colIn, type, id) {
+	}
+public:
+	virtual void unparse(std::ostream& out, int indent) = 0;
+	//TODO: consider adding an isRef to use in unparse to
+	// indicate if this is a reference type
 };
 
 // Stmt List needed with James Fix.
