@@ -40,7 +40,6 @@ namespace crona{
 	}
 
 	void VarDeclNode::unparse(std::ostream& out, int indent){
-		doIndent(out, indent);
 		this->myId->unparse(out, 0);
 		out << " : ";
 		this->myType->unparse(out, 0);
@@ -50,7 +49,6 @@ namespace crona{
 	// Stmt List needed with James Fix.
 	void FnDeclNode::unparse(std::ostream& out, int indent){
 		out << "\n";
-		doIndent(out, indent);
 		this->myId->unparse(out, indent);
 		out << " : ";
 		this->myType->unparse(out, indent);
@@ -80,8 +78,9 @@ namespace crona{
 		out << ") {";
 		if (m_stmt_list != nullptr) {
 			out << "\n";
+			indent++;
 			for (auto stmt : *m_stmt_list){
-				out << "	";
+				doIndent(out, indent);
 				stmt->unparse(out, indent);
 				out << "\n";
 			}
@@ -106,7 +105,6 @@ namespace crona{
 
 	// lvalNode needs to replace IdNode.
 	void AssignExpNode::unparse(std::ostream& out, int indent){
-		doIndent(out, indent);
 		this->myId->unparse(out, 0);
 		out << " = ";
 		this->myExp->unparse(out, 0);
@@ -115,7 +113,6 @@ namespace crona{
 
 	// lvalNode needs to replace IdNode.
 	void AssignStmtNode::unparse(std::ostream& out, int indent){
-		doIndent(out, indent);
 		this->myId->unparse(out, 0);
 		out << " = ";
 		this->myExp->unparse(out, 0);
@@ -124,28 +121,24 @@ namespace crona{
 
 	// lvalNode needs to replace IdNode.
 	void PostIncStmtNode::unparse(std::ostream& out, int indent){
-		doIndent(out, indent);
 		this->myId->unparse(out, 0);
 		out << "++; ";
 	}
 
 	// lvalNode needs to replace IdNode.
 	void PostDecStmtNode::unparse(std::ostream& out, int indent){
-		doIndent(out, indent);
 		this->myId->unparse(out, 0);
 		out << "--; ";
 	}
 
 	// lvalNode needs to replace IdNode.
 	void ReadStmtNode::unparse(std::ostream& out, int indent){
-		doIndent(out, indent);
 		out << "read ";
 		this->myId->unparse(out, 0);
 		out << "; ";
 	}
 
 	void WriteStmtNode::unparse(std::ostream& out, int indent){
-		doIndent(out, indent);
 		out << "write ";
 		this->myExp->unparse(out, 0);
 		out << "; ";
@@ -153,46 +146,72 @@ namespace crona{
 
 	// Stmt List needed with James Fix.
 	void IfStmtNode::unparse(std::ostream& out, int indent){
-		doIndent(out, indent);
 		out << "if ( ";
 		this->myExp->unparse(out, 0);
 		out << " ) {";
-		this->myStmtList->unparse(out, 0);
+		if (myStmtList != nullptr) {
+			out << "\n";
+			indent++;
+			for (auto stmt : *myStmtList){
+				doIndent(out, indent);
+				stmt->unparse(out, indent);
+				out << "\n";
+			}
+			indent--;
+		}
+		doIndent(out, indent);
 		out << "} ";
 	}
 
 	// Stmt List needed with James Fix.
 	void IfElseStmtNode::unparse(std::ostream& out, int indent){
-		doIndent(out, indent);
 		out << "if ( ";
 		this->myExp->unparse(out, 0);
 		out << " ) {";
-		this->myIfStmtList->unparse(out, 0);
+		if (myIfStmtList != nullptr) {
+			out << "\n";
+			indent++;
+			for (auto stmt : *myIfStmtList){
+				doIndent(out, indent);
+				stmt->unparse(out, indent);
+				out << "\n";
+			}
+			indent--;
+		}
 		out << "} else {";
-		this->myElseStmtList->unparse(out, 0);
+		if (myElseStmtList != nullptr) {
+			out << "\n";
+			indent++;
+			for (auto stmt : *myElseStmtList){
+				doIndent(out, indent);
+				stmt->unparse(out, indent);
+				out << "\n";
+			}
+			indent--;
+		}
+		doIndent(out, indent);
 		out << "} ";
 	}
 
-	// Stmt List needed with James Fix.
 	void WhileStmtNode::unparse(std::ostream& out, int indent){
-		doIndent(out, indent);
 		out << "while ( ";
 		this->myExp->unparse(out, 0);
 		out << " ) {";
 		if (myStmtList != nullptr) {
 			out << "\n";
+			indent++;
 			for (auto stmt : *myStmtList){
-				out << "	";
+				doIndent(out, indent);
 				stmt->unparse(out, indent);
 				out << "\n";
 			}
+			indent--;
 		}
-		//this->myStmtList->unparse(out, 0);
-		out << "} ";
+		doIndent(out, indent);
+		out << "}";
 	}
 
 	void ReturnStmtNode::unparse(std::ostream& out, int indent){
-		doIndent(out, indent);
 		out << "return";
 		if (this->myExp != nullptr) {
 			out << " ";
@@ -202,7 +221,6 @@ namespace crona{
 	}
 
 	void CallStmtNode::unparse(std::ostream& out, int indent){
-		doIndent(out, indent);
 		this->myId->unparse(out, 0);
 		out << " (";
 		this->myExp->unparse(out, 0);

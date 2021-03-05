@@ -391,36 +391,35 @@ class WriteStmtNode : public StmtNode {
 //std::list<StmtNode*> * stmtList
 class IfStmtNode : public StmtNode {
 	public:
-		IfStmtNode(size_t lineIn, size_t colIn, ExpNode * exp, StmtNode * stmtList)
+		IfStmtNode(size_t lineIn, size_t colIn, ExpNode * exp, list<StmtNode*> * stmtList)
 		: StmtNode(lineIn, colIn), myExp(exp), myStmtList(stmtList) {
 		}
-		void unparse(std::ostream& out, int indent);
+		void unparse(ostream& out, int indent);
 	private:
 		ExpNode * myExp;
-		StmtNode * myStmtList;
+		list<StmtNode*> * myStmtList;
 };
 
 // Stmt List needed with James Fix.
 //std::list<StmtNode*> * stmtList
 class IfElseStmtNode : public StmtNode {
 	public:
-		IfElseStmtNode(size_t lineIn, size_t colIn, ExpNode * exp, StmtNode * ifStmtList, StmtNode * elseStmtList)
+		IfElseStmtNode(size_t lineIn, size_t colIn, ExpNode * exp, list<StmtNode*> * ifStmtList, list<StmtNode*> * elseStmtList)
 		: StmtNode(lineIn, colIn), myExp(exp), myIfStmtList(ifStmtList), myElseStmtList(elseStmtList) {
 		}
-		void unparse(std::ostream& out, int indent);
+		void unparse(ostream& out, int indent);
 	private:
 		ExpNode * myExp;
-		StmtNode * myIfStmtList;
-		StmtNode * myElseStmtList;
+		list<StmtNode*> * myIfStmtList;
+		list<StmtNode*> * myElseStmtList;
 };
 
-// Stmt List needed with James Fix.
 class WhileStmtNode : public StmtNode {
 	public:
 		WhileStmtNode(size_t lineIn, size_t colIn, ExpNode * exp, list<StmtNode*> * stmtList)
 		: StmtNode(lineIn, colIn), myExp(exp), myStmtList(stmtList) {
 		}
-		void unparse(std::ostream& out, int indent);
+		void unparse(ostream& out, int indent);
 	private:
 		ExpNode * myExp;
 		list<StmtNode*> * myStmtList;
@@ -431,7 +430,7 @@ class ReturnStmtNode : public StmtNode {
 		ReturnStmtNode(size_t lineIn, size_t colIn, ExpNode * exp)
 		: StmtNode(lineIn, colIn), myExp(exp) {
 		}
-		void unparse(std::ostream& out, int indent);
+		void unparse(ostream& out, int indent);
 	private:
 		ExpNode * myExp;
 };
@@ -442,7 +441,7 @@ class CallStmtNode : public StmtNode {
 		CallStmtNode(size_t lineIn, size_t colIn, IDNode * id, ExpNode * exp)
 		: StmtNode(lineIn, colIn), myId(id), myExp(exp) {
 		}
-		void unparse(std::ostream& out, int indent);
+		void unparse(ostream& out, int indent);
 	private:
 		IDNode * myId;
 		ExpNode * myExp;

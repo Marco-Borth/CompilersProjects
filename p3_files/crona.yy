@@ -257,9 +257,17 @@ stmt		: varDecl SEMICOLON { $$ = $1; }
 			size_t line = $1->line();
 			size_t col = $1->col();
 			$$ = new WriteStmtNode(line, col, $2);
-		 }
-		| IF LPAREN exp RPAREN LCURLY stmtBody RCURLY { }
-		| IF LPAREN exp RPAREN LCURLY stmtBody RCURLY ELSE LCURLY stmtBody RCURLY { }
+		}
+		| IF LPAREN exp RPAREN LCURLY stmtBody RCURLY {
+			size_t line = $1->line();
+			size_t col = $1->col();
+			$$ = new IfStmtNode(line, col, $3, $6);
+		}
+		| IF LPAREN exp RPAREN LCURLY stmtBody RCURLY ELSE LCURLY stmtBody RCURLY {
+			size_t line = $1->line();
+			size_t col = $1->col();
+			$$ = new IfElseStmtNode(line, col, $3, $6, $10);
+		}
 		| WHILE LPAREN exp RPAREN LCURLY stmtBody RCURLY {
 			size_t line = $1->line();
 			size_t col = $1->col();

@@ -32,10 +32,24 @@ threeCondition : bool ( cond1 : bool, cond2 : int, cond3 : byte array[10], ) {
 
 iterationFunc : string ( ) {
 	while ( TRUE ) {
-	write "loop-de-loop"; 
-} 
+		write "loop-de-loop"; 
+	}
 }
 
 iterate4Fun : string ( ) {
-	while ( FALSE ) {} 
+	while ( FALSE ) {	}
+}
+
+raceToTheFunct : int ( ) {
+	if ( "readySetGo" ) {
+		return 34; 
+	} 
+}
+
+thisIsFoolProof : int ( ) {
+	if ( 456 ) {
+		write 45; 
+} else {
+		return 12; 
+	} 
 }
