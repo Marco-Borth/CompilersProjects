@@ -165,21 +165,6 @@ public:
 	// indicate if this is a reference type
 };
 
-/** An identifier. Note that IDNodes subclass
- * ExpNode because they can be used as part of an expression.
-**/
-class IDNode : public ExpNode{
-public:
-	IDNode(IDToken * token)
-	: ExpNode(token->line(), token->col()), myStrVal(token->value()){
-		myStrVal = token->value();
-	}
-	void unparse(std::ostream& out, int indent);
-private:
-	/** The name of the identifier **/
-	std::string myStrVal;
-};
-
 class IntLitNode : public ExpNode{
 public:
 	IntLitNode(IntLitToken * token)

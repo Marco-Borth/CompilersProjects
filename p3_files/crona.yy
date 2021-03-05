@@ -58,14 +58,9 @@
    std::list<crona::DeclNode *> *        transDeclList;
 	 std::list<crona::FormalDeclNode*>*		 transFormalDeclList;
 	 crona::FormalDeclNode*								 transFormalDecl;
-	 std::list<crona::StmtNode*>*					 transStmtList;
-	 crona::StmtNode*											 transStmt;
 	 crona::FnDeclNode *									 transFnDecl;
    crona::DeclNode *                     transDecl;
    crona::VarDeclNode *                  transVarDecl;
-	 std::list<crona::FormalDeclNode*>*		 transFormalDeclList;
-   crona::FormalDeclNode *               transFormalDecl;
-   crona::FnDeclNode *                   transFnDecl;
    crona::TypeNode *                     transType;
    crona::IDNode *                       transID;
 }
@@ -215,7 +210,7 @@ fnDecl 		: id COLON type formals fnBody {
 
 formals 	: LPAREN RPAREN { }
 		| LPAREN formalsList RPAREN {
-		//$$ = $2; 
+		//$$ = $2;
 		}
 
 formalDecl 	: id COLON type {
