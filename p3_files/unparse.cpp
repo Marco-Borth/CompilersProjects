@@ -50,42 +50,36 @@ namespace crona{
 
 	void FnDeclNode::unparse(std::ostream& out, int indent){
 		doIndent(out, indent);
-		this->myId->unparse(out, 0);
+		this->myId->unparse(out, indent);
 		out << " : ";
-		this->myType->unparse(out, 0);
+		this->myType->unparse(out, indent);
 		out << " (";
-		if (myFormals != nullptr)
+		if (m_formal_list != nullptr && !m_formal_list->empty())
 		{
-			for (auto formal : *myFormals){
-			/* The auto keyword tells the compiler
-				 to (try to) figure out what the
-				 type of a variable should be from
-				 context. here, since we're iterating
-				 over a list of DeclNode *s, it's
-				 pretty clear that global is of
-				 type DeclNode *.
-			*/
+			// while (!m_formal_list->empty())
+			// {
+			// 	(m_formal_list->front())->unparse(out, indent);
+			// 	m_formal_list->pop_front();
+			// }
+			for (auto formal : *m_formal_list){
 				formal->unparse(out, indent);
 			}
 		}
 		out << ") {";
-		if (myStmts != nullptr)
+		if (m_stmt_list != nullptr && !m_stmt_list->empty())
 		{
-			for (auto stmt : *myStmts){
-				/* The auto keyword tells the compiler
-					 to (try to) figure out what the
-					 type of a variable should be from
-					 context. here, since we're iterating
-					 over a list of DeclNode *s, it's
-					 pretty clear that global is of
-					 type DeclNode *.
-				*/
+			for (auto stmt : *m_stmt_list){
 				stmt->unparse(out, indent);
 			}
 		}
 		out << "}\n";
 	}
 
+	void FormalDeclNode::unparse(std::ostream& out, int indent){
+		this->myId->unparse(out, indent);
+		out<<':';
+		this->myType->unparse(out, indent);
+	}
 	void ReturnStmtNode::unparse(std::ostream& out, int indent){
 		out << "return ";
 		this->myExp->unparse(out, 0);

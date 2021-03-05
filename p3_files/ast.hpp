@@ -101,7 +101,6 @@ public:
 
 class LValNode : public ExpNode
 {
-private:
 public:
 	LValNode (size_t line, size_t col) /*TODO */
 	: ExpNode(line, col){
@@ -152,17 +151,6 @@ public:
 	// indicate if this is a reference type
 };
 
-class FormalDeclNode : public DeclNode {
-public:
-	FormalDeclNode(size_t l, size_t c, TypeNode * type, IDNode * id)
-	: DeclNode(type->line(), type->col()), myType(type), myId(id){
-	}
-	void unparse(std::ostream& out, int indent);
-private:
-	TypeNode * myType;
-	IDNode * myId;
-};
-
 /** A variable declaration. Note that this class is intended to
  * represent a global or local variable of any type (including a struct
  * type. Note that this is not intended to represent a declaration of
@@ -180,23 +168,37 @@ public:
 	VarDeclNode(size_t l, size_t c, TypeNode * type, IDNode * id)
 	: DeclNode(type->line(), type->col()), myType(type), myId(id){
 	}
+	virtual void unparse(std::ostream& out, int indent);
+private:
+	TypeNode * myType;
+	IDNode * myId;
+};
+
+class FormalDeclNode : public VarDeclNode {
+public:
+	FormalDeclNode(size_t l, size_t c, TypeNode * type, IDNode * id)
+	: VarDeclNode(type->line(), type->col(), type, id){
+		myType = type;
+		myId	 = id;
+	}
 	void unparse(std::ostream& out, int indent);
 private:
 	TypeNode * myType;
 	IDNode * myId;
 };
 
+
 class FnDeclNode : public DeclNode{
 public:
-	FnDeclNode(size_t l, size_t c, TypeNode * type, IDNode * id, std::list<FormalDeclNode*> * formals, std::list<StmtNode*> * stmts)
-	: DeclNode(type->line(), type->col()), myType(type), myId(id), myFormals(formals), myStmts(stmts) {
+	FnDeclNode(size_t l, size_t c, TypeNode * type, IDNode * id, std::list<FormalDeclNode*> * i_formal_list, std::list<StmtNode*> * i_stmt_list)
+	: DeclNode(type->line(), type->col()), myType(type), myId(id), m_formal_list(i_formal_list), m_stmt_list(i_stmt_list) {
 	}
 	void unparse(std::ostream& out, int indent);
 private:
 	TypeNode * myType;
 	IDNode * myId;
-	std::list<FormalDeclNode*> * myFormals;
-	std::list<StmtNode*> * myStmts;
+	std::list<FormalDeclNode*> * m_formal_list;
+	std::list<StmtNode*> * m_stmt_list;
 };
 
 class IntTypeNode : public TypeNode{
