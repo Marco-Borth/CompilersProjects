@@ -6,9 +6,56 @@ doesThisWork : void;
 arr : int array[50];
 tautology : bool array[5];
 masterboard : byte array[2048];
+
 noCondition : bool ( ) {}
+
 oneCondition : int ( control : bool, ) {}
+
 twoCondition : byte ( level : bool, switch : int, ) {}
+
 threeCondition : bool ( cond1 : bool, cond2 : int, cond3 : byte array[10], ) {}
-uno : int ( control : bool, ) {return 4; }
-dos : byte ( level : bool, switch : int, ) {return 56; return 70; }
+
+uno : int ( control : bool, ) {
+	return 4; 
+}
+
+dos : byte ( level : bool, switch : int, ) {
+	write "asdf"; 
+	return 70; 
+}
+
+threeCondition : bool ( cond1 : bool, cond2 : int, cond3 : byte array[10], ) {
+	useThisVar : byte array[256];
+
+	return; 
+}
+
+iterationFunc : string ( ) {
+	while ( TRUE ) {
+		write "loop-de-loop"; 
+	}
+}
+
+iterate4Fun : string ( ) {
+	while ( FALSE ) {	}
+}
+
+raceToTheFunct : int ( ) {
+	if ( "readySetGo" ) {
+		return 34; 
+	} 
+}
+
+thisIsFoolProof : int ( ) {
+	if ( 456 ) {
+		write 45; 
+	} else {
+		return 12; 
+	} 
+}
+
+bigTest : void ( ) {
+	hanky++; 
+	panky--; 
+	read holabolu; 
+}

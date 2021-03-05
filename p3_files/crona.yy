@@ -140,6 +140,7 @@
 %type <transFormalDecl>					formalDecl
 %type <transFormalDeclList>			formals
 %type <transFormalDeclList>			formalsList
+%type <transStmtList>						stmtBody
 %type <transStmtList>						stmtList
 %type <transStmt>								stmt
 %type <transStmtList>						fnBody
@@ -178,13 +179,12 @@ decl 		: varDecl SEMICOLON {
 		  // with the appropriate SDD to create an AST
 		  }
 		| fnDecl { $$ = $1; }
-;
+
 varDecl 	: id COLON type {
 		  	size_t line = $1->line();
 		  	size_t col = $1->col();
 		  	$$ = new VarDeclNode(line, col, $3, $1);
 		  }
-
 
 type 		: INT { $$ = new IntTypeNode($1->line(), $1->col()); }
 		| INT ARRAY LBRACE INTLITERAL RBRACE {
@@ -213,13 +213,8 @@ fnDecl 		: id COLON type formals fnBody {
 			$$ = new FnDeclNode(line, col, $3, $1, $4, $5);
 		}
 
-formals 	: LPAREN RPAREN {
-			std::list<FormalDeclNode*> * noFormals = nullptr;
-			$$ = noFormals;
-		}
-		| LPAREN formalsList RPAREN {
-			$$ = $2;
-		}
+formals 	: LPAREN RPAREN { $$ = nullptr; }
+		| LPAREN formalsList RPAREN { $$ = $2; }
 
 formalDecl 	: id COLON type {
 			size_t line = $1->line();
@@ -237,13 +232,12 @@ formalsList	: formalDecl {
 			$$ = $3;
 		}
 
-fnBody		: LCURLY stmtList RCURLY { $$ = $2; }
-					| LCURLY RCURLY {
-						std::list<StmtNode*> * noStmts = nullptr;
-						$$ = noStmts;
-					}
+fnBody		: LCURLY stmtBody RCURLY { $$ = $2; }
 
-stmtList 	: stmt /* epsilon */ {
+stmtBody : /* epsilon */ { $$ = nullptr; }
+				 | stmtList { $$ = $1; }
+
+stmtList 	: stmt {
 			std::list<StmtNode*>* temp = new std::list<StmtNode*>();
 			temp->push_front($1);
 			$$ = temp;
@@ -253,21 +247,53 @@ stmtList 	: stmt /* epsilon */ {
 			$$ = $2;
 		}
 
-stmt		: varDecl SEMICOLON { }
-		| assignExp SEMICOLON { }
-		| lval DASHDASH SEMICOLON { }
-		| lval CROSSCROSS SEMICOLON { }
-		| READ lval SEMICOLON { }
-		| WRITE exp SEMICOLON { }
-		| IF LPAREN exp RPAREN LCURLY stmtList RCURLY { }
-		| IF LPAREN exp RPAREN LCURLY stmtList RCURLY ELSE LCURLY stmtList RCURLY { }
-		| WHILE LPAREN exp RPAREN LCURLY stmtList RCURLY { }
+stmt		: varDecl SEMICOLON { $$ = $1; }
+		| assignExp SEMICOLON { /*$$ = $1;*/ }
+		| lval DASHDASH SEMICOLON {
+			size_t line = $1->line();
+			size_t col = $1->col();
+			$$ = new PostDecStmtNode(line, col, $1);
+		}
+		| lval CROSSCROSS SEMICOLON {
+			size_t line = $1->line();
+			size_t col = $1->col();
+			$$ = new PostIncStmtNode(line, col, $1);
+		}
+		| READ lval SEMICOLON {
+			size_t line = $1->line();
+			size_t col = $1->col();
+			$$ = new ReadStmtNode(line, col, $2);
+		}
+		| WRITE exp SEMICOLON {
+			size_t line = $1->line();
+			size_t col = $1->col();
+			$$ = new WriteStmtNode(line, col, $2);
+		}
+		| IF LPAREN exp RPAREN LCURLY stmtBody RCURLY {
+			size_t line = $1->line();
+			size_t col = $1->col();
+			$$ = new IfStmtNode(line, col, $3, $6);
+		}
+		| IF LPAREN exp RPAREN LCURLY stmtBody RCURLY ELSE LCURLY stmtBody RCURLY {
+			size_t line = $1->line();
+			size_t col = $1->col();
+			$$ = new IfElseStmtNode(line, col, $3, $6, $10);
+		}
+		| WHILE LPAREN exp RPAREN LCURLY stmtBody RCURLY {
+			size_t line = $1->line();
+			size_t col = $1->col();
+			$$ = new WhileStmtNode(line, col, $3, $6);
+		}
 		| RETURN exp SEMICOLON {
 			size_t line = $1->line();
 			size_t col = $1->col();
 			$$ = new ReturnStmtNode(line, col, $2);
 		}
-		| RETURN SEMICOLON { }
+		| RETURN SEMICOLON {
+			size_t line = $1->line();
+			size_t col = $1->col();
+			$$ = new ReturnStmtNode(line, col, nullptr);
+		}
 		| callExp SEMICOLON { }
 
 exp		: assignExp { }
@@ -285,7 +311,7 @@ exp		: assignExp { }
 		| exp LESSEQ exp { }
 		| NOT exp { }
 		| DASH term { }
-		| term { }
+		| term { $$ = $1; }
 
 assignExp	: lval ASSIGN exp { }
 
