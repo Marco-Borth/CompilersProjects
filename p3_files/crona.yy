@@ -50,8 +50,11 @@
 
 %union {
    crona::Token*                         transToken;
+   crona::IntLitToken*                   transIntToken;
    crona::IDToken*                       transIDToken;
    crona::ProgramNode*                   transProgram;
+	 std::list<crona::StmtNode*>*					 transStmtList;
+	 crona::StmtNode*											 transStmt;
    std::list<crona::DeclNode *> *        transDeclList;
 	 std::list<crona::FormalDeclNode*>*		 transFormalDeclList;
 	 crona::FormalDeclNode*								 transFormalDecl;
@@ -60,6 +63,9 @@
 	 crona::FnDeclNode *									 transFnDecl;
    crona::DeclNode *                     transDecl;
    crona::VarDeclNode *                  transVarDecl;
+	 std::list<crona::FormalDeclNode*>*		 transFormalDeclList;
+   crona::FormalDeclNode *               transFormalDecl;
+   crona::FnDeclNode *                   transFnDecl;
    crona::TypeNode *                     transType;
    crona::IDNode *                       transID;
 }
@@ -179,32 +185,54 @@ varDecl 	: id COLON type {
 		  $$ = new VarDeclNode(line, col, $3, $1);
 		  }
 
-type 		: INT {
-		  $$ = new IntTypeNode($1->line(), $1->col());
-		  }
-		| INT ARRAY LBRACE INTLITERAL RBRACE { }
-		| BOOL { }
-		| BOOL ARRAY LBRACE INTLITERAL RBRACE { }
-		| BYTE { }
-		| BYTE ARRAY LBRACE INTLITERAL RBRACE { }
-		| STRING { }
-		| VOID { }
 
-fnDecl 		: id COLON type formals fnBody { $$ = new FnDeclNode($1->line(), $1->col(), $3, $1, $4, $5);}
+type 		: INT { $$ = new IntTypeNode($1->line(), $1->col()); }
+		| INT ARRAY LBRACE INTLITERAL RBRACE {
+			IntTypeNode * intType = new IntTypeNode($1->line(), $1->col());
+			IntLitNode * size = new IntLitNode($4);
+			$$ = new ArrayTypeNode($2->line(), $2->col(), intType, size);
+		}
+		| BOOL {  $$ = new BoolTypeNode($1->line(), $1->col()); }
+		| BOOL ARRAY LBRACE INTLITERAL RBRACE {
+			BoolTypeNode * intType = new BoolTypeNode($1->line(), $1->col());
+			IntLitNode * size = new IntLitNode($4);
+			$$ = new ArrayTypeNode($2->line(), $2->col(), intType, size);
+		}
+		| BYTE { $$ = new ByteTypeNode($1->line(), $1->col()); }
+		| BYTE ARRAY LBRACE INTLITERAL RBRACE {
+			ByteTypeNode * intType = new ByteTypeNode($1->line(), $1->col());
+			IntLitNode * size = new IntLitNode($4);
+			$$ = new ArrayTypeNode($2->line(), $2->col(), intType, size);
+		}
+		| STRING { $$ = new StringTypeNode($1->line(), $1->col()); }
+		| VOID { $$ = new VoidTypeNode($1->line(), $1->col()); }
+
+fnDecl 		: id COLON type formals fnBody {
+		//size_t line = $1->line();
+		//size_t col = $1->col();
+		//$$ = new FnDeclNode(line, col, $3, $1, $4, $5);
+		}
 
 formals 	: LPAREN RPAREN { }
-		| LPAREN formalsList RPAREN { }
+		| LPAREN formalsList RPAREN {
+		//$$ = $2; 
+		}
 
+formalDecl 	: id COLON type {
+		//size_t line = $1->line();
+		//size_t col = $1->col();
+		//$$ = new FormalDeclNode(line, col, $3, $1);
+		}
 
-formalsList	: formalDecl {std::list<FormalDeclNode*>* temp = new std::list<FormalDeclNode*>();
-													temp->push_front($1);
-													$$ = temp;
-												}
-					| formalDecl COMMA formalsList {$3->push_front($1);
-																					$$ = $3;
-																	}
-
-formalDecl 	: id COLON type {$$ = new FormalDeclNode($1->line(), $1->col(), $3, $1);}
+formalsList	: formalDecl {
+		//std::list<FormalDeclNode*>* temp = new std::list<FormalDeclNode*>();
+		//temp->push_front($1);
+		//$$ = temp;
+	 	}
+		| formalDecl COMMA formalsList {
+    //$3->push_front($1);
+		//$$ = $3;
+		}
 
 fnBody		: LCURLY stmtList RCURLY { }
 
@@ -220,7 +248,7 @@ stmt		: varDecl SEMICOLON { }
 		| IF LPAREN exp RPAREN LCURLY stmtList RCURLY { }
 		| IF LPAREN exp RPAREN LCURLY stmtList RCURLY ELSE LCURLY stmtList RCURLY { }
 		| WHILE LPAREN exp RPAREN LCURLY stmtList RCURLY { }
-		| RETURN exp SEMICOLON { }
+		| RETURN exp SEMICOLON { }//$$ = new ReturnStmtNode(size_t lineIn, size_t colIn, ExpNode * exp); }
 		| RETURN SEMICOLON { }
 		| callExp SEMICOLON { }
 
