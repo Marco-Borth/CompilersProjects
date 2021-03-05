@@ -48,18 +48,29 @@ namespace crona{
 		out << ";\n";
 	}
 
+	// Stmt List needed with James Fix.
 	void FnDeclNode::unparse(std::ostream& out, int indent){
 		doIndent(out, indent);
 		this->myId->unparse(out, 0);
 		out << " : ";
 		this->myType->unparse(out, 0);
 		out << " (";
-		this->myFormals->unparse(out, 0);
+		this->myFormalList->unparse(out, 0);
 		out << ") {";
-		this->myStmts->unparse(out, 0);
+		this->myStmtList->unparse(out, 0);
 		out << "}\n";
 	}
 
+	// lvalNode needs to replace IdNode.
+	void AssignExpNode::unparse(std::ostream& out, int indent){
+		doIndent(out, indent);
+		this->myId->unparse(out, 0);
+		out << " = ";
+		this->myExp->unparse(out, 0);
+		out << "; ";
+	}
+
+	// lvalNode needs to replace IdNode.
 	void AssignStmtNode::unparse(std::ostream& out, int indent){
 		doIndent(out, indent);
 		this->myId->unparse(out, 0);
@@ -68,18 +79,21 @@ namespace crona{
 		out << "; ";
 	}
 
+	// lvalNode needs to replace IdNode.
 	void PostIncStmtNode::unparse(std::ostream& out, int indent){
 		doIndent(out, indent);
 		this->myId->unparse(out, 0);
 		out << "++; ";
 	}
 
+	// lvalNode needs to replace IdNode.
 	void PostDecStmtNode::unparse(std::ostream& out, int indent){
 		doIndent(out, indent);
 		this->myId->unparse(out, 0);
 		out << "--; ";
 	}
 
+	// lvalNode needs to replace IdNode.
 	void ReadStmtNode::unparse(std::ostream& out, int indent){
 		doIndent(out, indent);
 		out << "read ";
@@ -94,32 +108,35 @@ namespace crona{
 		out << "; ";
 	}
 
+	// Stmt List needed with James Fix.
 	void IfStmtNode::unparse(std::ostream& out, int indent){
 		doIndent(out, indent);
 		out << "if (";
 		this->myExp->unparse(out, 0);
 		out << ") {";
-		this->myStmt->unparse(out, 0);
+		this->myStmtList->unparse(out, 0);
 		out << "} ";
 	}
 
+	// Stmt List needed with James Fix.
 	void IfElseStmtNode::unparse(std::ostream& out, int indent){
 		doIndent(out, indent);
 		out << "if (";
 		this->myExp->unparse(out, 0);
 		out << ") {";
-		this->myIfStmt->unparse(out, 0);
+		this->myIfStmtList->unparse(out, 0);
 		out << "} else {";
-		this->myElseStmt->unparse(out, 0);
+		this->myElseStmtList->unparse(out, 0);
 		out << "} ";
 	}
 
+	// Stmt List needed with James Fix.
 	void WhileStmtNode::unparse(std::ostream& out, int indent){
 		doIndent(out, indent);
 		out << "while (";
 		this->myExp->unparse(out, 0);
 		out << ") {";
-		this->myStmt->unparse(out, 0);
+		this->myStmtList->unparse(out, 0);
 		out << "} ";
 	}
 
@@ -160,6 +177,12 @@ namespace crona{
 
 	void VoidTypeNode::unparse(std::ostream& out, int indent){
 		out << "void";
+	}
+
+	void ArrayTypeNode::unparse(std::ostream& out, int indent){
+		out << "array[";
+		this->myIntVal->unparse(out, 0);
+		out << "] ";
 	}
 
 } // End namespace crona
