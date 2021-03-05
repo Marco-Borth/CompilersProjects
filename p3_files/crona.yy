@@ -63,14 +63,9 @@
    crona::VarDeclNode *                  transVarDecl;
    crona::TypeNode *                     transType;
    crona::IDNode *                       transID;
-<<<<<<< HEAD
-	 crona::ExpNode *											 transExp;
-=======
 	 crona::ExpNode*											 transExp;
 	 crona::LValNode*											 transLVal;
 	 crona::StrToken*										 	 transStrToken;
-
->>>>>>> 314b3407c6df8af7e17d2d66a3b8b1889f01ec97
 }
 
 %define parse.assert
@@ -213,40 +208,49 @@ type 		: INT { $$ = new IntTypeNode($1->line(), $1->col()); }
 		| VOID { $$ = new VoidTypeNode($1->line(), $1->col()); }
 
 fnDecl 		: id COLON type formals fnBody {
-		//size_t line = $1->line();
-		//size_t col = $1->col();
-		//$$ = new FnDeclNode(line, col, $3, $1, $4, $5);
+		size_t line = $1->line();
+		size_t col = $1->col();
+		$$ = new FnDeclNode(line, col, $3, $1, $4, $5);
 		}
 
-formals 	: LPAREN RPAREN { }
+formals 	: LPAREN RPAREN {
+			std::list<FormalDeclNode*> * noFormals = nullptr;
+			$$ = noFormals;
+		}
 		| LPAREN formalsList RPAREN {
-			//$$ = $2;
+			$$ = $2;
 		}
 
 formalDecl 	: id COLON type {
-		//size_t line = $1->line();
-		//size_t col = $1->col();
-		//$$ = new FormalDeclNode(line, col, $3, $1);
+		size_t line = $1->line();
+		size_t col = $1->col();
+		$$ = new FormalDeclNode(line, col, $3, $1);
 		}
 
 formalsList	: formalDecl {
-		//std::list<FormalDeclNode*>* temp = new std::list<FormalDeclNode*>();
-		//temp->push_front($1);
-		//$$ = temp;
+		std::list<FormalDeclNode*>* temp = new std::list<FormalDeclNode*>();
+		temp->push_front($1);
+		$$ = temp;
 	 	}
 		| formalDecl COMMA formalsList {
-    //$3->push_front($1);
-		//$$ = $3;
+    $3->push_front($1);
+		$$ = $3;
 		}
 
-fnBody		: LCURLY stmtList RCURLY { }
+fnBody		: LCURLY stmtList RCURLY { $$ = $2; }
+					| LCURLY RCURLY {
+						std::list<StmtNode*> * noStmts = nullptr;
+						$$ = noStmts;
+					}
 
-stmtList 	: /* epsilon */ { }
-		| stmtList stmt {
-			//size_t line = $2->line();
-			//size_t col = $2->col();
-			//$$ = new StmtNode(line,col);
-			//$$ = $2;
+stmtList 	: stmt /* epsilon */ {
+			std::list<StmtNode*>* temp = new std::list<StmtNode*>();
+			temp->push_front($1);
+			$$ = temp;
+ 		}
+		| stmt stmtList {
+			$2->push_front($1);
+			$$ = $2;
 		}
 
 stmt		: varDecl SEMICOLON { }

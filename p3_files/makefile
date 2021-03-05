@@ -41,5 +41,6 @@ test: all
 	./cronac test1_good.crona -p
 	./cronac test2_bad.crona -p
 
-parse:
+parse: all
 	./cronac test1_good.crona -u parse.txt
+	./cronac test2_bad.crona -u parse.txt
