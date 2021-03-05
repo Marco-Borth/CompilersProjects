@@ -140,6 +140,7 @@
 %type <transFormalDecl>					formalDecl
 %type <transFormalDeclList>			formals
 %type <transFormalDeclList>			formalsList
+%type <transStmtList>						stmtBody
 %type <transStmtList>						stmtList
 %type <transStmt>								stmt
 %type <transStmtList>						fnBody
@@ -232,10 +233,12 @@ formalsList	: formalDecl {
 			$$ = $3;
 		}
 
-fnBody		: LCURLY stmtList RCURLY { $$ = $2; }
-					| LCURLY RCURLY { $$ = nullptr; }
+fnBody		: LCURLY stmtBody RCURLY { $$ = $2; }
 
-stmtList 	: stmt /* epsilon */ {
+stmtBody : /* epsilon */ { $$ = nullptr; }
+				 | stmtList { $$ = $1; }
+
+stmtList 	: stmt {
 			std::list<StmtNode*>* temp = new std::list<StmtNode*>();
 			temp->push_front($1);
 			$$ = temp;
@@ -255,14 +258,9 @@ stmt		: varDecl SEMICOLON { $$ = $1; }
 			size_t col = $1->col();
 			$$ = new WriteStmtNode(line, col, $2);
 		 }
-		| IF LPAREN exp RPAREN LCURLY stmtList RCURLY { }
-		| IF LPAREN exp RPAREN LCURLY stmtList RCURLY ELSE LCURLY stmtList RCURLY { }
-		| WHILE LPAREN exp RPAREN LCURLY RCURLY {
-			size_t line = $1->line();
-			size_t col = $1->col();
-			$$ = new WhileStmtNode(line, col, $3, nullptr);
-		}
-		| WHILE LPAREN exp RPAREN LCURLY stmtList RCURLY {
+		| IF LPAREN exp RPAREN LCURLY stmtBody RCURLY { }
+		| IF LPAREN exp RPAREN LCURLY stmtBody RCURLY ELSE LCURLY stmtBody RCURLY { }
+		| WHILE LPAREN exp RPAREN LCURLY stmtBody RCURLY {
 			size_t line = $1->line();
 			size_t col = $1->col();
 			$$ = new WhileStmtNode(line, col, $3, $6);
