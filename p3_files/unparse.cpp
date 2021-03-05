@@ -81,7 +81,7 @@ namespace crona{
 		out<<':';
 		this->myType->unparse(out, indent);
 	}
-  
+
 	void AssignStmtNode::unparse(std::ostream& out, int indent){
 		doIndent(out, indent);
 		this->myId->unparse(out, 0);
@@ -167,6 +167,18 @@ namespace crona{
 	}
 	void IDNode::unparse(std::ostream& out, int indent){
 		out << this->myStrVal;
+	}
+
+	void HavocNode::unparse(std::ostream& out, int indent){
+		out << "havoc";
+	}
+
+	void FalseNode::unparse(std::ostream& out, int indent){
+		out << "false";
+	}
+
+	void TrueNode::unparse(std::ostream& out, int indent){
+		out << "true";
 	}
 
 	void IntTypeNode::unparse(std::ostream& out, int indent){

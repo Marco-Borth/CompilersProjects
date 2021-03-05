@@ -107,6 +107,34 @@ public:
 	: ExpNode(line, col){
 	}
 };
+
+class HavocNode : public ExpNode
+{
+public:
+	HavocNode (size_t line, size_t col)
+	: ExpNode(line, col){
+	}
+	void unparse(std::ostream& out, int indent);
+};
+
+class FalseNode : public ExpNode
+{
+public:
+	FalseNode (size_t line, size_t col)
+	: ExpNode(line,col){
+	}
+	void unparse(std::ostream& out, int indent);
+};
+
+class TrueNode : public ExpNode
+{
+public:
+	TrueNode (size_t line, size_t col)
+	: ExpNode(line,col){
+	}
+	void unparse(std::ostream& out, int indent);
+};
+
 /** An identifier. Note that IDNodes subclass
  * ExpNode because they can be used as part of an expression.
 **/

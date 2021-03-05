@@ -62,6 +62,8 @@
    crona::VarDeclNode *                  transVarDecl;
    crona::TypeNode *                     transType;
    crona::IDNode *                       transID;
+	 crona::ExpNode*											 transExp;
+
 }
 
 %define parse.assert
@@ -142,7 +144,7 @@
 %type <transVarDecl>    				varDecl
 %type <transType>       				type
 %type <transID>         				id
-
+%type	<transExp>								term
 
 %right ASSIGN
 %left OR
@@ -252,9 +254,9 @@ actualsList	: exp { }
 term 		: lval { }
 		| INTLITERAL { }
 		| STRLITERAL { }
-		| TRUE { }
-		| FALSE { }
-		| HAVOC { }
+		| TRUE { $$ = new TrueNode($1->line(), $1->col());}
+		| FALSE { $$ = new FalseNode($1->line(), $1->col());}
+		| HAVOC { $$ = new HavocNode($1->line(), $1->col());}
 		| LPAREN exp RPAREN { }
 		| callExp { }
 
