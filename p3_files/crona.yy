@@ -63,6 +63,10 @@
    crona::VarDeclNode *                  transVarDecl;
    crona::TypeNode *                     transType;
    crona::IDNode *                       transID;
+	 crona::ExpNode*											 transExp;
+	 crona::LValNode*											 transLVal;
+	 crona::StrToken*										 	 transStrToken;
+
 }
 
 %define parse.assert
@@ -143,7 +147,9 @@
 %type <transVarDecl>    				varDecl
 %type <transType>       				type
 %type <transID>         				id
-
+%type <transExp>								exp
+%type	<transExp>								term
+%type <transLVal>								lval
 
 %right ASSIGN
 %left OR
@@ -173,7 +179,7 @@ decl 		: varDecl SEMICOLON {
 		  // with the appropriate SDD to create an AST
 		  }
 		| fnDecl { $$ = $1;}
-;
+
 varDecl 	: id COLON type {
 		  size_t line = $1->line();
 		  size_t col = $1->col();
@@ -272,16 +278,16 @@ callExp		: id LPAREN RPAREN { }
 actualsList	: exp { }
 		| actualsList COMMA exp { }
 
-term 		: lval { }
-		| INTLITERAL { }
-		| STRLITERAL { }
-		| TRUE { }
-		| FALSE { }
-		| HAVOC { }
-		| LPAREN exp RPAREN { }
+term 		: lval { $$ = $1;}
+		| INTLITERAL { $$ = new IntLitNode($1);}
+		| STRLITERAL { $$ = new StrLitNode($1);}
+		| TRUE { $$ = new TrueNode($1->line(), $1->col());}
+		| FALSE { $$ = new FalseNode($1->line(), $1->col());}
+		| HAVOC { $$ = new HavocNode($1->line(), $1->col());}
+		| LPAREN exp RPAREN { $$ = $2; }
 		| callExp { }
 
-lval		: id { }
+lval		: id { $$ = $1; }
 		| id LBRACE exp RBRACE { }
 
 id		: ID { $$ = new IDNode($1); }

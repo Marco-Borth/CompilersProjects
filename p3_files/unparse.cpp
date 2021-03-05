@@ -81,7 +81,7 @@ namespace crona{
 		out<<':';
 		this->myType->unparse(out, indent);
 	}
-  
+
 	// lvalNode needs to replace IdNode.
 	void AssignExpNode::unparse(std::ostream& out, int indent){
 		doIndent(out, indent);
@@ -183,6 +183,18 @@ namespace crona{
 	}
 	void IDNode::unparse(std::ostream& out, int indent){
 		out << this->myStrVal;
+	}
+
+	void HavocNode::unparse(std::ostream& out, int indent){
+		out << "havoc";
+	}
+
+	void FalseNode::unparse(std::ostream& out, int indent){
+		out << "false";
+	}
+
+	void TrueNode::unparse(std::ostream& out, int indent){
+		out << "true";
 	}
 
 	void IntTypeNode::unparse(std::ostream& out, int indent){
