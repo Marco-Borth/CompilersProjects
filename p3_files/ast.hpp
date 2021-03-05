@@ -63,7 +63,20 @@ private:
 	std::list<DeclNode * > * myGlobals;
 };
 
-class StmtNode : public ASTNode{
+/*
+class StmtListNode : public ASTNode  {
+	public:
+		StmtListNode(size_t lineIn, size_t colIn, StmtNode * stmt, std::list<StmtNode*> * stmtList)
+		: StmtNode(lineIn, colIn), myStmt(stmt), myStmtList(stmtList) {
+		}
+		void unparse(std::ostream& out, int indent);
+	private:
+		StmtNode * myStmt;
+		std::list<StmtNode*> * myStmtList;
+};
+*/
+
+class StmtNode : public ASTNode {
 protected:
 	StmtNode(size_t lineIn, size_t colIn)
 	: ASTNode(lineIn, colIn){
@@ -180,6 +193,30 @@ public:
 	// indicate if this is a reference type
 };
 
+class IntLitNode : public ExpNode{
+public:
+	IntLitNode(IntLitToken * token)
+	: ExpNode(token->line(), token->col()), myIntVal(token->num()){
+		myIntVal = token->num();
+	}
+	void unparse(std::ostream& out, int indent);
+private:
+	/** The name of the identifier **/
+	int myIntVal;
+};
+
+class StrLitNode : public ExpNode{
+public:
+	StrLitNode(StrToken * token)
+	: ExpNode(token->line(), token->col()), myStrVal(token->str()){
+		myStrVal = token->str();
+	}
+	void unparse(std::ostream& out, int indent);
+private:
+	/** The name of the identifier **/
+	std::string myStrVal;
+};
+
 /** A variable declaration. Note that this class is intended to
  * represent a global or local variable of any type (including a struct
  * type. Note that this is not intended to represent a declaration of
@@ -215,7 +252,6 @@ private:
 	TypeNode * myType;
 	IDNode * myId;
 };
-
 
 // Possible StmtListNode needed.
 class FnDeclNode : public DeclNode{
@@ -271,18 +307,28 @@ public:
 	void unparse(std::ostream& out, int indent);
 };
 
-/*
-class StmtListNode : public StmtNode  {
+class ArrayTypeNode : public TypeNode{
+public:
+	ArrayTypeNode(size_t lineIn, size_t colIn, TypeNode * type, IntLitNode * intVal)
+	: TypeNode(lineIn, colIn), myType(type), myIntVal(intVal){
+	}
+	void unparse(std::ostream& out, int indent);
+private:
+	TypeNode * myType;
+	IntLitNode * myIntVal;
+};
+
+// lvalNode needs to replace IdNode.
+class AssignExpNode : public ExpNode {
 	public:
-		StmtListNode(size_t lineIn, size_t colIn, StmtNode * stmt, StmtListNode * stmtList)
-		: StmtNode(lineIn, colIn), myStmt(stmt), myStmtList(stmtList) {
+		AssignExpNode(size_t lineIn, size_t colIn, IDNode * id, ExpNode * exp)
+		: ExpNode(lineIn, colIn), myId(id), myExp(exp) {
 		}
 		void unparse(std::ostream& out, int indent);
 	private:
-		IDNode * myStmt;
-		ExpNode * myStmtList;
+		IDNode * myId;
+		ExpNode * myExp;
 };
-*/
 
 // lvalNode needs to replace IdNode.
 class AssignStmtNode : public StmtNode {
@@ -339,41 +385,43 @@ class WriteStmtNode : public StmtNode {
 		ExpNode * myExp;
 };
 
-// Possible StmtListNode needed.
+// Stmt List needed with James Fix.
+//std::list<StmtNode*> * stmtList
 class IfStmtNode : public StmtNode {
 	public:
-		IfStmtNode(size_t lineIn, size_t colIn, ExpNode * exp, StmtNode * stmt)
-		: StmtNode(lineIn, colIn), myExp(exp), myStmt(stmt) {
+		IfStmtNode(size_t lineIn, size_t colIn, ExpNode * exp, StmtNode * stmtList)
+		: StmtNode(lineIn, colIn), myExp(exp), myStmtList(stmtList) {
 		}
 		void unparse(std::ostream& out, int indent);
 	private:
 		ExpNode * myExp;
-		StmtNode * myStmt;
+		StmtNode * myStmtList;
 };
 
-// Possible StmtListNode needed.
+// Stmt List needed with James Fix.
+//std::list<StmtNode*> * stmtList
 class IfElseStmtNode : public StmtNode {
 	public:
-		IfElseStmtNode(size_t lineIn, size_t colIn, ExpNode * exp, StmtNode * ifStmt, StmtNode * elseStmt)
-		: StmtNode(lineIn, colIn), myExp(exp), myIfStmt(ifStmt), myElseStmt(elseStmt) {
+		IfElseStmtNode(size_t lineIn, size_t colIn, ExpNode * exp, StmtNode * ifStmtList, StmtNode * elseStmtList)
+		: StmtNode(lineIn, colIn), myExp(exp), myIfStmtList(ifStmtList), myElseStmtList(elseStmtList) {
 		}
 		void unparse(std::ostream& out, int indent);
 	private:
 		ExpNode * myExp;
-		StmtNode * myIfStmt;
-		StmtNode * myElseStmt;
+		StmtNode * myIfStmtList;
+		StmtNode * myElseStmtList;
 };
 
-// Possible StmtListNode needed.
+// Stmt List needed with James Fix.
 class WhileStmtNode : public StmtNode {
 	public:
-		WhileStmtNode(size_t lineIn, size_t colIn, ExpNode * exp, StmtNode * stmt)
-		: StmtNode(lineIn, colIn), myExp(exp), myStmt(stmt) {
+		WhileStmtNode(size_t lineIn, size_t colIn, ExpNode * exp, StmtNode * stmtList)
+		: StmtNode(lineIn, colIn), myExp(exp), myStmtList(stmtList) {
 		}
 		void unparse(std::ostream& out, int indent);
 	private:
 		ExpNode * myExp;
-		StmtNode * myStmt;
+		StmtNode * myStmtList;
 };
 
 class ReturnStmtNode : public StmtNode {
