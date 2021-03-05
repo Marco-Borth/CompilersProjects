@@ -21,7 +21,6 @@ namespace crona{
 	of DeclNodes.
 	*/
 
-
 	void ProgramNode::unparse(std::ostream& out, int indent){
 		/* Oh, hey it's a for-each loop in C++!
 		   The loop iterates over each element in a collection
@@ -180,9 +179,18 @@ namespace crona{
 	}
 
 	void ArrayTypeNode::unparse(std::ostream& out, int indent){
-		out << "array[";
+		this->myType->unparse(out, 0);
+		out << " array[";
 		this->myIntVal->unparse(out, 0);
 		out << "] ";
+	}
+
+	void IntLitNode::unparse(std::ostream& out, int indent){
+		out << this->myIntVal;
+	}
+
+	void StrLitNode::unparse(std::ostream& out, int indent){
+		out << this->myStrVal;
 	}
 
 } // End namespace crona

@@ -155,14 +155,26 @@ private:
 
 class IntLitNode : public ExpNode{
 public:
-	IntLitNode(IDToken * token)
-	: ExpNode(token->line(), token->col()), myIntVal(stoi(token->value())){
-		myIntVal = stoi(token->value());
+	IntLitNode(IntLitToken * token)
+	: ExpNode(token->line(), token->col()), myIntVal(token->num()){
+		myIntVal = token->num();
 	}
 	void unparse(std::ostream& out, int indent);
 private:
 	/** The name of the identifier **/
 	int myIntVal;
+};
+
+class StrLitNode : public ExpNode{
+public:
+	StrLitNode(StrToken * token)
+	: ExpNode(token->line(), token->col()), myStrVal(token->str()){
+		myStrVal = token->str();
+	}
+	void unparse(std::ostream& out, int indent);
+private:
+	/** The name of the identifier **/
+	std::string myStrVal;
 };
 
 /** A variable declaration. Note that this class is intended to
@@ -244,11 +256,12 @@ public:
 
 class ArrayTypeNode : public TypeNode{
 public:
-	ArrayTypeNode(size_t lineIn, size_t colIn, IntLitNode * intVal)
-	: TypeNode(lineIn, colIn), myIntVal(intVal){
+	ArrayTypeNode(size_t lineIn, size_t colIn, TypeNode * type, IntLitNode * intVal)
+	: TypeNode(lineIn, colIn), myType(type), myIntVal(intVal){
 	}
 	void unparse(std::ostream& out, int indent);
 private:
+	TypeNode * myType;
 	IntLitNode * myIntVal;
 };
 

@@ -16,7 +16,7 @@
 		class Scanner;
 	}
 
-//The following definition is required when 
+//The following definition is required when
 // we don't have the %locations directive
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -42,7 +42,7 @@
    #include "ast.hpp"
    #include "tokens.hpp"
 
-  //Request tokens from our scanner member, not 
+  //Request tokens from our scanner member, not
   // from a global function
   #undef yylex
   #define yylex scanner.yylex
@@ -50,6 +50,7 @@
 
 %union {
    crona::Token*                         transToken;
+   crona::IntLitToken*                   transIntToken;
    crona::IDToken*                       transIDToken;
    crona::ProgramNode*                   transProgram;
    std::list<crona::DeclNode *> *        transDeclList;
@@ -61,13 +62,13 @@
 
 %define parse.assert
 
-/* Terminals 
+/* Terminals
  *  No need to touch these, but do note the translation type
  *  of each node. Most are just "transToken", which is defined in
  *  the %union above to mean that the token translation is an instance
  *  of crona::Token *, and thus has no fields (other than line and column).
  *  Some terminals, like ID, are "transIDToken", meaning the translation
- *  also has a name field. 
+ *  also has a name field.
 */
 %token                   END	   0 "end file"
 %token	<transToken>     AND
@@ -138,7 +139,7 @@
 %nonassoc LESS GREATER LESSEQ GREATEREQ EQUALS NOTEQUALS
 %left DASH CROSS
 %left STAR SLASH
-%left NOT 
+%left NOT
 
 %%
 
@@ -148,9 +149,9 @@ program 	: globals
 		  *root = $$;
 		  }
 
-globals 	: globals decl 
-	  	  { 
-	  	  $$ = $1; 
+globals 	: globals decl
+	  	  {
+	  	  $$ = $1;
 	  	  DeclNode * declNode = $2;
 		  $$->push_back(declNode);
 	  	  }
@@ -172,17 +173,18 @@ varDecl 	: id COLON type
 		  $$ = new VarDeclNode(line, col, $3, $1);
 		  }
 
-type 		: INT
-	  	  { 
-		  $$ = new IntTypeNode($1->line(), $1->col());
-		  }
-		| INT ARRAY LBRACE INTLITERAL RBRACE { }
-		| BOOL { }
+type 		: INT { $$ = new IntTypeNode($1->line(), $1->col()); }
+		| INT ARRAY LBRACE INTLITERAL RBRACE {
+			IntTypeNode * intType = new IntTypeNode($1->line(), $1->col());
+			IntLitNode * size = new IntLitNode($4);
+			$$ = new ArrayTypeNode($2->line(), $2->col(), intType, size);
+		}
+		| BOOL {  $$ = new BoolTypeNode($1->line(), $1->col()); }
 		| BOOL ARRAY LBRACE INTLITERAL RBRACE { }
-		| BYTE { }
+		| BYTE { $$ = new ByteTypeNode($1->line(), $1->col()); }
 		| BYTE ARRAY LBRACE INTLITERAL RBRACE { }
-		| STRING { }
-		| VOID { }
+		| STRING { $$ = new StringTypeNode($1->line(), $1->col()); }
+		| VOID { $$ = new VoidTypeNode($1->line(), $1->col()); }
 
 fnDecl 		: id COLON type formals fnBody { }
 
@@ -211,9 +213,9 @@ stmt		: varDecl SEMICOLON { }
 		| WHILE LPAREN exp RPAREN LCURLY stmtList RCURLY { }
 		| RETURN exp SEMICOLON { }
 		| RETURN SEMICOLON { }
-		| callExp SEMICOLON { } 
+		| callExp SEMICOLON { }
 
-exp		: assignExp { } 
+exp		: assignExp { }
 		| exp DASH exp { }
 		| exp CROSS exp { }
 		| exp STAR exp { }
@@ -251,7 +253,7 @@ lval		: id { }
 		| id LBRACE exp RBRACE { }
 
 id		: ID { $$ = new IDNode($1); }
-	
+
 %%
 
 void crona::Parser::error(const std::string& msg){
