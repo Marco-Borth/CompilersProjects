@@ -56,11 +56,11 @@
 	 std::list<crona::StmtNode*>*					 transStmtList;
 	 crona::StmtNode*											 transStmt;
    std::list<crona::DeclNode *> *        transDeclList;
+	 std::list<crona::FormalDeclNode*>*		 transFormalDeclList;
+	 crona::FormalDeclNode*								 transFormalDecl;
+	 crona::FnDeclNode *									 transFnDecl;
    crona::DeclNode *                     transDecl;
    crona::VarDeclNode *                  transVarDecl;
-	 std::list<crona::FormalDeclNode*>*		 transFormalDeclList;
-   crona::FormalDeclNode *               transFormalDecl;
-   crona::FnDeclNode *                   transFnDecl;
    crona::TypeNode *                     transType;
    crona::IDNode *                       transID;
 	 crona::ExpNode *											 transExp;
@@ -132,16 +132,16 @@
 */
 /*    (attribute type)    (nonterminal)    */
 %type <transProgram>    				program
-%type <transStmtList>						fnBody
-%type <transStmtList>						stmtList
-%type <transStmt>								stmt
 %type <transDeclList>   				globals
 %type <transDecl>       				decl
-%type <transVarDecl>    				varDecl
+%type <transFnDecl>							fnDecl
+%type <transFormalDecl>					formalDecl
 %type <transFormalDeclList>			formals
 %type <transFormalDeclList>			formalsList
-%type <transFormalDecl> 				formalDecl
-%type <transFnDecl> 						fnDecl
+%type <transStmtList>						stmtList
+%type <transStmt>								stmt
+%type <transStmtList>						fnBody
+%type <transVarDecl>    				varDecl
 %type <transType>       				type
 %type <transID>         				id
 %type <transID>         				exp
@@ -157,23 +157,19 @@
 
 %%
 
-program 	: globals
-		  {
+program 	: globals {
 		  	$$ = new ProgramNode($1);
 		  	*root = $$;
 		  }
 
-globals 	: globals decl
-	  	  {
+globals 	: globals decl {
 	  	  	$$ = $1;
 	  	  	DeclNode * declNode = $2;
 		  		$$->push_back(declNode);
 	  	  }
-		| /* epsilon */
-		  { $$ = new std::list<DeclNode * >(); }
+		| /* epsilon */ {$$ = new std::list<DeclNode * >(); }
 
-decl 		: varDecl SEMICOLON
-		  {
+decl 		: varDecl SEMICOLON {
 		  //TODO: Make sure to fill out this rule
 		  // (as well as any other empty rule!)
 		  // with the appropriate SDD to create an AST
@@ -185,6 +181,7 @@ varDecl 	: id COLON type {
 		  	size_t col = $1->col();
 		  	$$ = new VarDeclNode(line, col, $3, $1);
 		  }
+
 
 type 		: INT { $$ = new IntTypeNode($1->line(), $1->col()); }
 		| INT ARRAY LBRACE INTLITERAL RBRACE {
@@ -215,22 +212,23 @@ fnDecl 		: id COLON type formals fnBody {
 
 formals 	: LPAREN RPAREN { }
 		| LPAREN formalsList RPAREN {
-		//$$ = $2;
-		}
-
-formalsList	: formalDecl {
-		//$$ = $1;
-	 	}
-		| formalDecl COMMA formalsList {
-		//std::list<FormalDeclNode*>* temp = new std::list<FormalDeclNode*>();
-		//temp->push_front($1);
-		//$$ = temp;
+			//$$ = $2;
 		}
 
 formalDecl 	: id COLON type {
 		//size_t line = $1->line();
 		//size_t col = $1->col();
 		//$$ = new FormalDeclNode(line, col, $3, $1);
+		}
+
+formalsList	: formalDecl {
+		//std::list<FormalDeclNode*>* temp = new std::list<FormalDeclNode*>();
+		//temp->push_front($1);
+		//$$ = temp;
+	 	}
+		| formalDecl COMMA formalsList {
+    //$3->push_front($1);
+		//$$ = $3;
 		}
 
 fnBody		: LCURLY stmtList RCURLY { }
