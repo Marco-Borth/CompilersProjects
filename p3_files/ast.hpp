@@ -109,6 +109,8 @@ protected:
 	ExpNode(size_t line, size_t col)
 	: ASTNode(line, col){
 	}
+public:
+	void unparse(std::ostream& out, int indent) override = 0;
 };
 
 /**  \class TypeNode
