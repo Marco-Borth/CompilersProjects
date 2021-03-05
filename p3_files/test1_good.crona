@@ -8,12 +8,9 @@ arr : int array [50];
 tautology : bool array [5];
 masterboard : byte array [2048];
 
-oneCondition : int ( control : bool ) {}
-tenReasons101010 : byte ( one : bool , two : string, ten : int array [8] ) {}
-methodMan : string () { alpha : string; }
-bigTest : void () { hanky++; panky--; read holabolu; oneCondition(); return; }
-whatsThis : bool () { abat : bool; abat = true; }
-meloveFuncts : bool (e : int, qbert : int array [3]) { }
-meloveFuncts2 : bool (e : int, qbert : int array [4]) {read test; return 1-4/2;}
-repeatAfterMe : string () { while (argo < 100) { laslo = (laslo * 5 / (2 + argo)); argo++; } }
-zyx : string () { worldClass("first", true, false); }
+noCondition : bool () {}
+oneCondition : int (control : bool) {}
+twoCondition : byte (level : bool , switch : int) {}
+threeCondition : bool (cond1 : bool , cond2 : int , cond3 : byte array [10]) {}
+uno : int (control : bool) { return 4;}
+dos : byte (level : bool , switch : int) {return 56; return 70;}

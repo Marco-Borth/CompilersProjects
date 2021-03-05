@@ -53,7 +53,16 @@ namespace crona{
 		this->myId->unparse(out, indent);
 		out << " : ";
 		this->myType->unparse(out, indent);
-		out << " (";
+		out << " ( ";
+
+		if (m_formal_list != nullptr) {
+			for (auto formal : *m_formal_list){
+				formal->unparse(out, indent);
+				out << ", ";
+			}
+		}
+
+		/*
 		if (m_formal_list != nullptr && !m_formal_list->empty())
 		{
 			// while (!m_formal_list->empty())
@@ -65,20 +74,30 @@ namespace crona{
 				formal->unparse(out, indent);
 			}
 		}
+		*/
+
 		out << ") {";
+		if (m_stmt_list != nullptr) {
+			for (auto stmt : *m_stmt_list){
+				stmt->unparse(out, indent);
+			}
+		}
+		/*
 		if (m_stmt_list != nullptr && !m_stmt_list->empty())
 		{
 			for (auto stmt : *m_stmt_list){
 				stmt->unparse(out, indent);
 			}
 		}
-		out << "}\n";
+		*/
+		out << "}";
+		out << "\n";
 	}
 
 
 	void FormalDeclNode::unparse(std::ostream& out, int indent){
 		this->myId->unparse(out, indent);
-		out<<':';
+		out<<" : ";
 		this->myType->unparse(out, indent);
 	}
 
@@ -132,9 +151,9 @@ namespace crona{
 	// Stmt List needed with James Fix.
 	void IfStmtNode::unparse(std::ostream& out, int indent){
 		doIndent(out, indent);
-		out << "if (";
+		out << "if ( ";
 		this->myExp->unparse(out, 0);
-		out << ") {";
+		out << " ) {";
 		this->myStmtList->unparse(out, 0);
 		out << "} ";
 	}
@@ -142,9 +161,9 @@ namespace crona{
 	// Stmt List needed with James Fix.
 	void IfElseStmtNode::unparse(std::ostream& out, int indent){
 		doIndent(out, indent);
-		out << "if (";
+		out << "if ( ";
 		this->myExp->unparse(out, 0);
-		out << ") {";
+		out << " ) {";
 		this->myIfStmtList->unparse(out, 0);
 		out << "} else {";
 		this->myElseStmtList->unparse(out, 0);
@@ -154,9 +173,9 @@ namespace crona{
 	// Stmt List needed with James Fix.
 	void WhileStmtNode::unparse(std::ostream& out, int indent){
 		doIndent(out, indent);
-		out << "while (";
+		out << "while ( ";
 		this->myExp->unparse(out, 0);
-		out << ") {";
+		out << " ) {";
 		this->myStmtList->unparse(out, 0);
 		out << "} ";
 	}
@@ -221,7 +240,7 @@ namespace crona{
 		this->myType->unparse(out, 0);
 		out << " array[";
 		this->myIntVal->unparse(out, 0);
-		out << "] ";
+		out << "]";
 	}
 
 	void IntLitNode::unparse(std::ostream& out, int indent){

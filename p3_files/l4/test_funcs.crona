@@ -1,4 +1,7 @@
-oneCondition : int ( control : bool ) {}
+noCondition : bool () {}
+oneCondition : int (control : bool) {return 4;}
+twoCondition : byte (level : bool , switch : int) {return 56;}
+threeCondition : bool (cond1 : bool , cond2 : int , cond3 : byte array [10]) {return 70;}
 tenReasons101010 : byte ( one : bool , two : string, ten : int array [8] ) {}
 methodMan : string () { alpha : string; }
 bigTest : void () { hanky++; panky--; read holabolu; oneCondition(); return; }

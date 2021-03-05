@@ -66,7 +66,6 @@
 	 crona::ExpNode*											 transExp;
 	 crona::LValNode*											 transLVal;
 	 crona::StrToken*										 	 transStrToken;
-
 }
 
 %define parse.assert
@@ -162,14 +161,14 @@
 %%
 
 program 	: globals {
-		  $$ = new ProgramNode($1);
-		  *root = $$;
+		  	$$ = new ProgramNode($1);
+		  	*root = $$;
 		  }
 
 globals 	: globals decl {
-	  	  $$ = $1;
-	  	  DeclNode * declNode = $2;
-		  	$$->push_back(declNode);
+	  	  	$$ = $1;
+	  	  	DeclNode * declNode = $2;
+		  		$$->push_back(declNode);
 	  	  }
 		| /* epsilon */ {$$ = new std::list<DeclNode * >(); }
 
@@ -178,67 +177,81 @@ decl 		: varDecl SEMICOLON {
 		  // (as well as any other empty rule!)
 		  // with the appropriate SDD to create an AST
 		  }
-		| fnDecl { $$ = $1;}
-
+		| fnDecl { $$ = $1; }
+;
 varDecl 	: id COLON type {
-		  size_t line = $1->line();
-		  size_t col = $1->col();
-		  $$ = new VarDeclNode(line, col, $3, $1);
+		  	size_t line = $1->line();
+		  	size_t col = $1->col();
+		  	$$ = new VarDeclNode(line, col, $3, $1);
 		  }
 
 
 type 		: INT { $$ = new IntTypeNode($1->line(), $1->col()); }
 		| INT ARRAY LBRACE INTLITERAL RBRACE {
-			IntTypeNode * intType = new IntTypeNode($1->line(), $1->col());
+			IntTypeNode * type = new IntTypeNode($1->line(), $1->col());
 			IntLitNode * size = new IntLitNode($4);
-			$$ = new ArrayTypeNode($2->line(), $2->col(), intType, size);
+			$$ = new ArrayTypeNode($2->line(), $2->col(), type, size);
 		}
 		| BOOL {  $$ = new BoolTypeNode($1->line(), $1->col()); }
 		| BOOL ARRAY LBRACE INTLITERAL RBRACE {
-			BoolTypeNode * intType = new BoolTypeNode($1->line(), $1->col());
+			BoolTypeNode * type = new BoolTypeNode($1->line(), $1->col());
 			IntLitNode * size = new IntLitNode($4);
-			$$ = new ArrayTypeNode($2->line(), $2->col(), intType, size);
+			$$ = new ArrayTypeNode($2->line(), $2->col(), type, size);
 		}
 		| BYTE { $$ = new ByteTypeNode($1->line(), $1->col()); }
 		| BYTE ARRAY LBRACE INTLITERAL RBRACE {
-			ByteTypeNode * intType = new ByteTypeNode($1->line(), $1->col());
+			ByteTypeNode * type = new ByteTypeNode($1->line(), $1->col());
 			IntLitNode * size = new IntLitNode($4);
-			$$ = new ArrayTypeNode($2->line(), $2->col(), intType, size);
+			$$ = new ArrayTypeNode($2->line(), $2->col(), type, size);
 		}
 		| STRING { $$ = new StringTypeNode($1->line(), $1->col()); }
 		| VOID { $$ = new VoidTypeNode($1->line(), $1->col()); }
 
 fnDecl 		: id COLON type formals fnBody {
-		//size_t line = $1->line();
-		//size_t col = $1->col();
-		//$$ = new FnDeclNode(line, col, $3, $1, $4, $5);
+			size_t line = $1->line();
+			size_t col = $1->col();
+			$$ = new FnDeclNode(line, col, $3, $1, $4, $5);
 		}
 
-formals 	: LPAREN RPAREN { }
+formals 	: LPAREN RPAREN {
+			std::list<FormalDeclNode*> * noFormals = nullptr;
+			$$ = noFormals;
+		}
 		| LPAREN formalsList RPAREN {
-		//$$ = $2;
+			$$ = $2;
 		}
 
 formalDecl 	: id COLON type {
-		//size_t line = $1->line();
-		//size_t col = $1->col();
-		//$$ = new FormalDeclNode(line, col, $3, $1);
+			size_t line = $1->line();
+			size_t col = $1->col();
+			$$ = new FormalDeclNode(line, col, $3, $1);
 		}
 
 formalsList	: formalDecl {
-		//std::list<FormalDeclNode*>* temp = new std::list<FormalDeclNode*>();
-		//temp->push_front($1);
-		//$$ = temp;
+			std::list<FormalDeclNode*>* temp = new std::list<FormalDeclNode*>();
+			temp->push_front($1);
+			$$ = temp;
 	 	}
 		| formalDecl COMMA formalsList {
-    //$3->push_front($1);
-		//$$ = $3;
+    	$3->push_front($1);
+			$$ = $3;
 		}
 
-fnBody		: LCURLY stmtList RCURLY { }
+fnBody		: LCURLY stmtList RCURLY { $$ = $2; }
+					| LCURLY RCURLY {
+						std::list<StmtNode*> * noStmts = nullptr;
+						$$ = noStmts;
+					}
 
-stmtList 	: /* epsilon */ { }
-		| stmtList stmt { }
+stmtList 	: stmt /* epsilon */ {
+			std::list<StmtNode*>* temp = new std::list<StmtNode*>();
+			temp->push_front($1);
+			$$ = temp;
+ 		}
+		| stmt stmtList {
+			$2->push_front($1);
+			$$ = $2;
+		}
 
 stmt		: varDecl SEMICOLON { }
 		| assignExp SEMICOLON { }
@@ -249,7 +262,11 @@ stmt		: varDecl SEMICOLON { }
 		| IF LPAREN exp RPAREN LCURLY stmtList RCURLY { }
 		| IF LPAREN exp RPAREN LCURLY stmtList RCURLY ELSE LCURLY stmtList RCURLY { }
 		| WHILE LPAREN exp RPAREN LCURLY stmtList RCURLY { }
-		| RETURN exp SEMICOLON { }//$$ = new ReturnStmtNode(size_t lineIn, size_t colIn, ExpNode * exp); }
+		| RETURN exp SEMICOLON {
+			size_t line = $1->line();
+			size_t col = $1->col();
+			$$ = new ReturnStmtNode(line, col, $2);
+		}
 		| RETURN SEMICOLON { }
 		| callExp SEMICOLON { }
 
