@@ -49,6 +49,7 @@ namespace crona{
 
 	// Stmt List needed with James Fix.
 	void FnDeclNode::unparse(std::ostream& out, int indent){
+		out << "\n";
 		doIndent(out, indent);
 		this->myId->unparse(out, indent);
 		out << " : ";
@@ -78,8 +79,11 @@ namespace crona{
 
 		out << ") {";
 		if (m_stmt_list != nullptr) {
+			out << "\n";
 			for (auto stmt : *m_stmt_list){
+				out << "	";
 				stmt->unparse(out, indent);
+				out << "\n";
 			}
 		}
 		/*
@@ -90,8 +94,7 @@ namespace crona{
 			}
 		}
 		*/
-		out << "}";
-		out << "\n";
+		out << "}\n";
 	}
 
 
@@ -176,14 +179,25 @@ namespace crona{
 		out << "while ( ";
 		this->myExp->unparse(out, 0);
 		out << " ) {";
-		this->myStmtList->unparse(out, 0);
+		if (myStmtList != nullptr) {
+			out << "\n";
+			for (auto stmt : *myStmtList){
+				out << "	";
+				stmt->unparse(out, indent);
+				out << "\n";
+			}
+		}
+		//this->myStmtList->unparse(out, 0);
 		out << "} ";
 	}
 
 	void ReturnStmtNode::unparse(std::ostream& out, int indent){
 		doIndent(out, indent);
-		out << "return ";
-		this->myExp->unparse(out, 0);
+		out << "return";
+		if (this->myExp != nullptr) {
+			out << " ";
+			this->myExp->unparse(out, 0);
+		}
 		out << "; ";
 	}
 

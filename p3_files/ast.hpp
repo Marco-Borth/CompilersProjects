@@ -9,6 +9,8 @@
 // ASTnode class (base class for all other kinds of nodes)
 // **********************************************************************
 
+using namespace std;
+
 namespace crona{
 
 /* You may find it useful to forward declare AST subclasses
@@ -415,13 +417,13 @@ class IfElseStmtNode : public StmtNode {
 // Stmt List needed with James Fix.
 class WhileStmtNode : public StmtNode {
 	public:
-		WhileStmtNode(size_t lineIn, size_t colIn, ExpNode * exp, StmtNode * stmtList)
+		WhileStmtNode(size_t lineIn, size_t colIn, ExpNode * exp, list<StmtNode*> * stmtList)
 		: StmtNode(lineIn, colIn), myExp(exp), myStmtList(stmtList) {
 		}
 		void unparse(std::ostream& out, int indent);
 	private:
 		ExpNode * myExp;
-		StmtNode * myStmtList;
+		list<StmtNode*> * myStmtList;
 };
 
 class ReturnStmtNode : public StmtNode {

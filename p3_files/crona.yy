@@ -213,13 +213,8 @@ fnDecl 		: id COLON type formals fnBody {
 			$$ = new FnDeclNode(line, col, $3, $1, $4, $5);
 		}
 
-formals 	: LPAREN RPAREN {
-			std::list<FormalDeclNode*> * noFormals = nullptr;
-			$$ = noFormals;
-		}
-		| LPAREN formalsList RPAREN {
-			$$ = $2;
-		}
+formals 	: LPAREN RPAREN { $$ = nullptr; }
+		| LPAREN formalsList RPAREN { $$ = $2; }
 
 formalDecl 	: id COLON type {
 			size_t line = $1->line();
@@ -238,10 +233,7 @@ formalsList	: formalDecl {
 		}
 
 fnBody		: LCURLY stmtList RCURLY { $$ = $2; }
-					| LCURLY RCURLY {
-						std::list<StmtNode*> * noStmts = nullptr;
-						$$ = noStmts;
-					}
+					| LCURLY RCURLY { $$ = nullptr; }
 
 stmtList 	: stmt /* epsilon */ {
 			std::list<StmtNode*>* temp = new std::list<StmtNode*>();
@@ -253,21 +245,38 @@ stmtList 	: stmt /* epsilon */ {
 			$$ = $2;
 		}
 
-stmt		: varDecl SEMICOLON { }
-		| assignExp SEMICOLON { }
+stmt		: varDecl SEMICOLON { $$ = $1; }
+		| assignExp SEMICOLON { /*$$ = $1;*/ }
 		| lval DASHDASH SEMICOLON { }
 		| lval CROSSCROSS SEMICOLON { }
 		| READ lval SEMICOLON { }
-		| WRITE exp SEMICOLON { }
+		| WRITE exp SEMICOLON {
+			size_t line = $1->line();
+			size_t col = $1->col();
+			$$ = new WriteStmtNode(line, col, $2);
+		 }
 		| IF LPAREN exp RPAREN LCURLY stmtList RCURLY { }
 		| IF LPAREN exp RPAREN LCURLY stmtList RCURLY ELSE LCURLY stmtList RCURLY { }
-		| WHILE LPAREN exp RPAREN LCURLY stmtList RCURLY { }
+		| WHILE LPAREN exp RPAREN LCURLY RCURLY {
+			size_t line = $1->line();
+			size_t col = $1->col();
+			$$ = new WhileStmtNode(line, col, $3, nullptr);
+		}
+		| WHILE LPAREN exp RPAREN LCURLY stmtList RCURLY {
+			size_t line = $1->line();
+			size_t col = $1->col();
+			$$ = new WhileStmtNode(line, col, $3, $6);
+		}
 		| RETURN exp SEMICOLON {
 			size_t line = $1->line();
 			size_t col = $1->col();
 			$$ = new ReturnStmtNode(line, col, $2);
 		}
-		| RETURN SEMICOLON { }
+		| RETURN SEMICOLON {
+			size_t line = $1->line();
+			size_t col = $1->col();
+			$$ = new ReturnStmtNode(line, col, nullptr);
+		}
 		| callExp SEMICOLON { }
 
 exp		: assignExp { }
@@ -285,7 +294,7 @@ exp		: assignExp { }
 		| exp LESSEQ exp { }
 		| NOT exp { }
 		| DASH term { }
-		| term { }
+		| term { $$ = $1; }
 
 assignExp	: lval ASSIGN exp { }
 
