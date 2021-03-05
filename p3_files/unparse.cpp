@@ -1,12 +1,14 @@
 #include "ast.hpp"
 
+using namespace std;
+
 namespace crona{
 
 	/*
 	doIndent is declared static, which means that it can
 	only be called in this file (its symbol is not exported).
 	*/
-	static void doIndent(std::ostream& out, int indent){
+	static void doIndent(ostream& out, int indent){
 		for (int k = 0 ; k < indent; k++){ out << "\t"; }
 	}
 
@@ -21,7 +23,7 @@ namespace crona{
 	of DeclNodes.
 	*/
 
-	void ProgramNode::unparse(std::ostream& out, int indent){
+	void ProgramNode::unparse(ostream& out, int indent){
 		/* Oh, hey it's a for-each loop in C++!
 		   The loop iterates over each element in a collection
 		   without that gross i++ nonsense.
@@ -39,23 +41,22 @@ namespace crona{
 		}
 	}
 
-	void VarDeclNode::unparse(std::ostream& out, int indent){
+	void VarDeclNode::unparse(ostream& out, int indent){
 		this->myId->unparse(out, 0);
 		out << " : ";
 		this->myType->unparse(out, 0);
 		out << ";\n";
 	}
 
-	// Stmt List needed with James Fix.
-	void FnDeclNode::unparse(std::ostream& out, int indent){
+	void FnDeclNode::unparse(ostream& out, int indent){
 		out << "\n";
 		this->myId->unparse(out, indent);
 		out << " : ";
 		this->myType->unparse(out, indent);
 		out << " ( ";
 
-		if (m_formal_list != nullptr) {
-			for (auto formal : *m_formal_list){
+		if (myFormalList != nullptr) {
+			for (auto formal : *myFormalList){
 				formal->unparse(out, indent);
 				out << ", ";
 			}
@@ -76,10 +77,10 @@ namespace crona{
 		*/
 
 		out << ") {";
-		if (m_stmt_list != nullptr) {
+		if (myStmtList != nullptr) {
 			out << "\n";
 			indent++;
-			for (auto stmt : *m_stmt_list){
+			for (auto stmt : *myStmtList){
 				doIndent(out, indent);
 				stmt->unparse(out, indent);
 				out << "\n";
@@ -97,14 +98,14 @@ namespace crona{
 	}
 
 
-	void FormalDeclNode::unparse(std::ostream& out, int indent){
+	void FormalDeclNode::unparse(ostream& out, int indent){
 		this->myId->unparse(out, indent);
 		out<<" : ";
 		this->myType->unparse(out, indent);
 	}
 
 	// lvalNode needs to replace IdNode.
-	void AssignExpNode::unparse(std::ostream& out, int indent){
+	void AssignExpNode::unparse(ostream& out, int indent){
 		this->myId->unparse(out, 0);
 		out << " = ";
 		this->myExp->unparse(out, 0);
@@ -112,7 +113,7 @@ namespace crona{
 	}
 
 	// lvalNode needs to replace IdNode.
-	void AssignStmtNode::unparse(std::ostream& out, int indent){
+	void AssignStmtNode::unparse(ostream& out, int indent){
 		this->myId->unparse(out, 0);
 		out << " = ";
 		this->myExp->unparse(out, 0);
@@ -120,32 +121,31 @@ namespace crona{
 	}
 
 	// lvalNode needs to replace IdNode.
-	void PostIncStmtNode::unparse(std::ostream& out, int indent){
+	void PostIncStmtNode::unparse(ostream& out, int indent){
 		this->myId->unparse(out, 0);
 		out << "++; ";
 	}
 
 	// lvalNode needs to replace IdNode.
-	void PostDecStmtNode::unparse(std::ostream& out, int indent){
+	void PostDecStmtNode::unparse(ostream& out, int indent){
 		this->myId->unparse(out, 0);
 		out << "--; ";
 	}
 
 	// lvalNode needs to replace IdNode.
-	void ReadStmtNode::unparse(std::ostream& out, int indent){
+	void ReadStmtNode::unparse(ostream& out, int indent){
 		out << "read ";
 		this->myId->unparse(out, 0);
 		out << "; ";
 	}
 
-	void WriteStmtNode::unparse(std::ostream& out, int indent){
+	void WriteStmtNode::unparse(ostream& out, int indent){
 		out << "write ";
 		this->myExp->unparse(out, 0);
 		out << "; ";
 	}
 
-	// Stmt List needed with James Fix.
-	void IfStmtNode::unparse(std::ostream& out, int indent){
+	void IfStmtNode::unparse(ostream& out, int indent){
 		out << "if ( ";
 		this->myExp->unparse(out, 0);
 		out << " ) {";
@@ -163,8 +163,7 @@ namespace crona{
 		out << "} ";
 	}
 
-	// Stmt List needed with James Fix.
-	void IfElseStmtNode::unparse(std::ostream& out, int indent){
+	void IfElseStmtNode::unparse(ostream& out, int indent){
 		out << "if ( ";
 		this->myExp->unparse(out, 0);
 		out << " ) {";
@@ -193,7 +192,7 @@ namespace crona{
 		out << "} ";
 	}
 
-	void WhileStmtNode::unparse(std::ostream& out, int indent){
+	void WhileStmtNode::unparse(ostream& out, int indent){
 		out << "while ( ";
 		this->myExp->unparse(out, 0);
 		out << " ) {";
@@ -211,7 +210,7 @@ namespace crona{
 		out << "}";
 	}
 
-	void ReturnStmtNode::unparse(std::ostream& out, int indent){
+	void ReturnStmtNode::unparse(ostream& out, int indent){
 		out << "return";
 		if (this->myExp != nullptr) {
 			out << " ";
@@ -220,66 +219,66 @@ namespace crona{
 		out << "; ";
 	}
 
-	void CallStmtNode::unparse(std::ostream& out, int indent){
+	void CallStmtNode::unparse(ostream& out, int indent){
 		this->myId->unparse(out, 0);
 		out << " (";
 		this->myExp->unparse(out, 0);
 		out << "); ";
 	}
-	void IndexNode::unparse(std::ostream& out, int indent){
+	void IndexNode::unparse(ostream& out, int indent){
 		m_id_node->unparse(out, indent);
 		out <<'[';
 		m_exp_node->unparse(out, indent);
 		out <<']';
 	}
-	void IDNode::unparse(std::ostream& out, int indent){
+	void IDNode::unparse(ostream& out, int indent){
 		out << this->myStrVal;
 	}
 
-	void HavocNode::unparse(std::ostream& out, int indent){
+	void HavocNode::unparse(ostream& out, int indent){
 		out << "havoc";
 	}
 
-	void FalseNode::unparse(std::ostream& out, int indent){
+	void FalseNode::unparse(ostream& out, int indent){
 		out << "false";
 	}
 
-	void TrueNode::unparse(std::ostream& out, int indent){
+	void TrueNode::unparse(ostream& out, int indent){
 		out << "true";
 	}
 
-	void IntTypeNode::unparse(std::ostream& out, int indent){
+	void IntTypeNode::unparse(ostream& out, int indent){
 		out << "int";
 	}
 
-	void BoolTypeNode::unparse(std::ostream& out, int indent){
+	void BoolTypeNode::unparse(ostream& out, int indent){
 		out << "bool";
 	}
 
-	void ByteTypeNode::unparse(std::ostream& out, int indent){
+	void ByteTypeNode::unparse(ostream& out, int indent){
 		out << "byte";
 	}
 
-	void StringTypeNode::unparse(std::ostream& out, int indent){
+	void StringTypeNode::unparse(ostream& out, int indent){
 		out << "string";
 	}
 
-	void VoidTypeNode::unparse(std::ostream& out, int indent){
+	void VoidTypeNode::unparse(ostream& out, int indent){
 		out << "void";
 	}
 
-	void ArrayTypeNode::unparse(std::ostream& out, int indent){
+	void ArrayTypeNode::unparse(ostream& out, int indent){
 		this->myType->unparse(out, 0);
 		out << " array[";
 		this->myIntVal->unparse(out, 0);
 		out << "]";
 	}
 
-	void IntLitNode::unparse(std::ostream& out, int indent){
+	void IntLitNode::unparse(ostream& out, int indent){
 		out << this->myIntVal;
 	}
 
-	void StrLitNode::unparse(std::ostream& out, int indent){
+	void StrLitNode::unparse(ostream& out, int indent){
 		out << this->myStrVal;
 	}
 

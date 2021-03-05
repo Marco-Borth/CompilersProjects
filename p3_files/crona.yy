@@ -179,13 +179,12 @@ decl 		: varDecl SEMICOLON {
 		  // with the appropriate SDD to create an AST
 		  }
 		| fnDecl { $$ = $1; }
-;
+
 varDecl 	: id COLON type {
 		  	size_t line = $1->line();
 		  	size_t col = $1->col();
 		  	$$ = new VarDeclNode(line, col, $3, $1);
 		  }
-
 
 type 		: INT { $$ = new IntTypeNode($1->line(), $1->col()); }
 		| INT ARRAY LBRACE INTLITERAL RBRACE {

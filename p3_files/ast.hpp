@@ -65,19 +65,6 @@ private:
 	std::list<DeclNode * > * myGlobals;
 };
 
-/*
-class StmtListNode : public ASTNode  {
-	public:
-		StmtListNode(size_t lineIn, size_t colIn, StmtNode * stmt, std::list<StmtNode*> * stmtList)
-		: StmtNode(lineIn, colIn), myStmt(stmt), myStmtList(stmtList) {
-		}
-		void unparse(std::ostream& out, int indent);
-	private:
-		StmtNode * myStmt;
-		std::list<StmtNode*> * myStmtList;
-};
-*/
-
 class StmtNode : public ASTNode {
 protected:
 	StmtNode(size_t lineIn, size_t colIn)
@@ -255,18 +242,17 @@ private:
 	IDNode * myId;
 };
 
-// Possible StmtListNode needed.
 class FnDeclNode : public DeclNode{
 public:
-	FnDeclNode(size_t l, size_t c, TypeNode * type, IDNode * id, std::list<FormalDeclNode*> * i_formal_list, std::list<StmtNode*> * i_stmt_list)
-	: DeclNode(type->line(), type->col()), myType(type), myId(id), m_formal_list(i_formal_list), m_stmt_list(i_stmt_list) {
+	FnDeclNode(size_t l, size_t c, TypeNode * type, IDNode * id, list<FormalDeclNode*> * formalList, list<StmtNode*> * stmtList)
+	: DeclNode(type->line(), type->col()), myType(type), myId(id), myFormalList(formalList), myStmtList(stmtList) {
 	}
-	void unparse(std::ostream& out, int indent);
+	void unparse(ostream& out, int indent);
 private:
 	TypeNode * myType;
 	IDNode * myId;
-	std::list<FormalDeclNode*> * m_formal_list;
-	std::list<StmtNode*> * m_stmt_list;
+	list<FormalDeclNode*> * myFormalList;
+	list<StmtNode*> * myStmtList;
 };
 
 class IntTypeNode : public TypeNode{
@@ -274,7 +260,7 @@ public:
 	IntTypeNode(size_t lineIn, size_t colIn)
 	: TypeNode(lineIn, colIn){
 	}
-	void unparse(std::ostream& out, int indent);
+	void unparse(ostream& out, int indent);
 };
 
 class BoolTypeNode : public TypeNode{
@@ -282,7 +268,7 @@ public:
 	BoolTypeNode(size_t lineIn, size_t colIn)
 	: TypeNode(lineIn, colIn){
 	}
-	void unparse(std::ostream& out, int indent);
+	void unparse(ostream& out, int indent);
 };
 
 class ByteTypeNode : public TypeNode{
@@ -290,7 +276,7 @@ public:
 	ByteTypeNode(size_t lineIn, size_t colIn)
 	: TypeNode(lineIn, colIn){
 	}
-	void unparse(std::ostream& out, int indent);
+	void unparse(ostream& out, int indent);
 };
 
 class StringTypeNode : public TypeNode{
@@ -298,7 +284,7 @@ public:
 	StringTypeNode(size_t lineIn, size_t colIn)
 	: TypeNode(lineIn, colIn){
 	}
-	void unparse(std::ostream& out, int indent);
+	void unparse(ostream& out, int indent);
 };
 
 class VoidTypeNode : public TypeNode{
@@ -306,7 +292,7 @@ public:
 	VoidTypeNode(size_t lineIn, size_t colIn)
 	: TypeNode(lineIn, colIn){
 	}
-	void unparse(std::ostream& out, int indent);
+	void unparse(ostream& out, int indent);
 };
 
 class ArrayTypeNode : public TypeNode{
@@ -314,7 +300,7 @@ public:
 	ArrayTypeNode(size_t lineIn, size_t colIn, TypeNode * type, IntLitNode * intVal)
 	: TypeNode(lineIn, colIn), myType(type), myIntVal(intVal){
 	}
-	void unparse(std::ostream& out, int indent);
+	void unparse(ostream& out, int indent);
 private:
 	TypeNode * myType;
 	IntLitNode * myIntVal;
@@ -326,7 +312,7 @@ class AssignExpNode : public ExpNode {
 		AssignExpNode(size_t lineIn, size_t colIn, IDNode * id, ExpNode * exp)
 		: ExpNode(lineIn, colIn), myId(id), myExp(exp) {
 		}
-		void unparse(std::ostream& out, int indent);
+		void unparse(ostream& out, int indent);
 	private:
 		IDNode * myId;
 		ExpNode * myExp;
@@ -338,7 +324,7 @@ class AssignStmtNode : public StmtNode {
 		AssignStmtNode(size_t lineIn, size_t colIn, IDNode * id, ExpNode * exp)
 		: StmtNode(lineIn, colIn), myId(id), myExp(exp) {
 		}
-		void unparse(std::ostream& out, int indent);
+		void unparse(ostream& out, int indent);
 	private:
 		IDNode * myId;
 		ExpNode * myExp;
@@ -350,7 +336,7 @@ class PostIncStmtNode : public StmtNode {
 		PostIncStmtNode(size_t lineIn, size_t colIn, IDNode * id)
 		: StmtNode(lineIn, colIn), myId(id) {
 		}
-		void unparse(std::ostream& out, int indent);
+		void unparse(ostream& out, int indent);
 	private:
 		IDNode * myId;
 };
@@ -361,7 +347,7 @@ class PostDecStmtNode : public StmtNode {
 		PostDecStmtNode(size_t lineIn, size_t colIn, IDNode * id)
 		: StmtNode(lineIn, colIn), myId(id) {
 		}
-		void unparse(std::ostream& out, int indent);
+		void unparse(ostream& out, int indent);
 	private:
 		IDNode * myId;
 };
@@ -372,7 +358,7 @@ class ReadStmtNode : public StmtNode {
 		ReadStmtNode(size_t lineIn, size_t colIn, IDNode * id)
 		: StmtNode(lineIn, colIn), myId(id) {
 		}
-		void unparse(std::ostream& out, int indent);
+		void unparse(ostream& out, int indent);
 	private:
 		IDNode * myId;
 };
@@ -382,13 +368,11 @@ class WriteStmtNode : public StmtNode {
 		WriteStmtNode(size_t lineIn, size_t colIn, ExpNode * exp)
 		: StmtNode(lineIn, colIn), myExp(exp) {
 		}
-		void unparse(std::ostream& out, int indent);
+		void unparse(ostream& out, int indent);
 	private:
 		ExpNode * myExp;
 };
 
-// Stmt List needed with James Fix.
-//std::list<StmtNode*> * stmtList
 class IfStmtNode : public StmtNode {
 	public:
 		IfStmtNode(size_t lineIn, size_t colIn, ExpNode * exp, list<StmtNode*> * stmtList)
@@ -400,8 +384,6 @@ class IfStmtNode : public StmtNode {
 		list<StmtNode*> * myStmtList;
 };
 
-// Stmt List needed with James Fix.
-//std::list<StmtNode*> * stmtList
 class IfElseStmtNode : public StmtNode {
 	public:
 		IfElseStmtNode(size_t lineIn, size_t colIn, ExpNode * exp, list<StmtNode*> * ifStmtList, list<StmtNode*> * elseStmtList)
