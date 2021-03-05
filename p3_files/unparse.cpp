@@ -50,16 +50,38 @@ namespace crona{
 	// Stmt List needed with James Fix.
 	void FnDeclNode::unparse(std::ostream& out, int indent){
 		doIndent(out, indent);
-		this->myId->unparse(out, 0);
+		this->myId->unparse(out, indent);
 		out << " : ";
-		this->myType->unparse(out, 0);
+		this->myType->unparse(out, indent);
 		out << " (";
-		this->myFormalList->unparse(out, 0);
+		if (m_formal_list != nullptr && !m_formal_list->empty())
+		{
+			// while (!m_formal_list->empty())
+			// {
+			// 	(m_formal_list->front())->unparse(out, indent);
+			// 	m_formal_list->pop_front();
+			// }
+			for (auto formal : *m_formal_list){
+				formal->unparse(out, indent);
+			}
+		}
 		out << ") {";
-		this->myStmtList->unparse(out, 0);
+		if (m_stmt_list != nullptr && !m_stmt_list->empty())
+		{
+			for (auto stmt : *m_stmt_list){
+				stmt->unparse(out, indent);
+			}
+		}
 		out << "}\n";
 	}
 
+
+	void FormalDeclNode::unparse(std::ostream& out, int indent){
+		this->myId->unparse(out, indent);
+		out<<':';
+		this->myType->unparse(out, indent);
+	}
+  
 	// lvalNode needs to replace IdNode.
 	void AssignExpNode::unparse(std::ostream& out, int indent){
 		doIndent(out, indent);
@@ -153,7 +175,12 @@ namespace crona{
 		this->myExp->unparse(out, 0);
 		out << "); ";
 	}
-
+	void IndexNode::unparse(std::ostream& out, int indent){
+		m_id_node->unparse(out, indent);
+		out <<'[';
+		m_exp_node->unparse(out, indent);
+		out <<']';
+	}
 	void IDNode::unparse(std::ostream& out, int indent){
 		out << this->myStrVal;
 	}
