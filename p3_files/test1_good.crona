@@ -111,4 +111,11 @@ oscar : void (c:bool, d:bool, e:int, h:int) {
 	}
 }
 
+papa : void (c:bool, d:bool, e:int, h:int) {
+	if(true)
+	{
+		h=e+myFunct2(c);
+	}
+}
+
 //END CallStmtNode and CallExpNode Tests
