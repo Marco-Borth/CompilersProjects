@@ -1,0 +1,20 @@
+global1:int;
+global2:int;
+alpha : int (c:bool, d:int) {b[3]++; c = false; write(c);}
+//Binary Exp
+bravo : void (c:bool, d:bool, e:int) {if(c && d){e++;}}
+charlie : void (c:bool, d:bool, e:int) {if(c || d){e++;}}
+charlie : void (c:bool, d:bool, e:int, g:bool, f:bool) {if((c || d)&&(g&&f)){e++;}}
+echo : void (c:bool, d:bool, e:int, h:int) {
+	if(true)
+	{
+		e=(e+h);
+	}
+}
+foxtrot : void (c:bool, d:bool, e:int, h:int) {
+	if(true)
+	{
+		e=(e-h);
+	}
+}
+

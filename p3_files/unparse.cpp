@@ -56,9 +56,16 @@ namespace crona{
 		out << " ( ";
 
 		if (myFormalList != nullptr) {
+			int l_size = myFormalList->size();
+			int iter = 0;
 			for (auto formal : *myFormalList){
 				formal->unparse(out, indent);
-				out << ", ";
+				if (iter != (l_size-1))
+				{
+					out << ", "; //If this is the last element of the formals
+											//list then do not include the comma.
+				}
+				iter++;
 			}
 		}
 		out << ") {";
@@ -82,7 +89,7 @@ namespace crona{
 
 	// lvalNode needs to replace IdNode.
 	void AssignExpNode::unparse(ostream& out, int indent){
-		this->myId->unparse(out, 0);
+		this->m_lval->unparse(out, 0);
 		out << " = ";
 		this->myExp->unparse(out, 0);
 		out << "; ";
@@ -90,10 +97,7 @@ namespace crona{
 
 	// lvalNode needs to replace IdNode.
 	void AssignStmtNode::unparse(ostream& out, int indent){
-		this->myId->unparse(out, 0);
-		out << " = ";
-		this->myExp->unparse(out, 0);
-		out << "; ";
+		this->m_expNode->unparse(out, indent);
 	}
 
 	void PostIncStmtNode::unparse(ostream& out, int indent){
@@ -205,6 +209,25 @@ namespace crona{
 		m_exp_node->unparse(out, indent);
 		out <<']';
 	}
+//BEGIN Binary Expression Unparse defns
+	// void AndExpNode::unparse(ostream& out, int indent){
+	// 	out<<'(';
+	// 	this->m_l_expNode->unparse(out,indent);
+	// 	out<<this->m_op;
+	// 	this->m_r_expNode->unparse(out,indent);
+	// 	out<<')';
+	// }
+
+	void BinaryExpNode::unparse(ostream& out, int indent){
+		out<<'(';
+		this->m_l_expNode->unparse(out,indent);
+		out<<this->m_op;
+		this->m_r_expNode->unparse(out,indent);
+		out<<')';
+	}
+
+//END Binary Expression Unparse defns
+
 	void IDNode::unparse(ostream& out, int indent){
 		out << this->myStrVal;
 	}
