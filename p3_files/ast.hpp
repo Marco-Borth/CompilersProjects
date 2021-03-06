@@ -279,9 +279,42 @@ public:
 	: BinaryExpNode(line, col, i_l_expNode, i_r_expNode, " <= "){
 	}
 };
-
-
 //END Binary Expression Subclasses
+
+class UnaryExpNode : public ExpNode
+{
+public:
+	UnaryExpNode (size_t line, size_t col, ExpNode* i_expNode)
+	: ExpNode(line,col){
+		m_expNode = i_expNode;
+	}
+	void unparse(std::ostream& out, int indent) override = 0; //Abstract Unparse Function
+protected:
+	ExpNode* m_expNode;
+};
+
+//BEGIN Unary Expression Subclasses.
+
+class NegNode : public UnaryExpNode
+{
+public:
+	NegNode (size_t line, size_t col, ExpNode* i_expNode)
+	: UnaryExpNode ( line, col, i_expNode){
+	}
+	void unparse(std::ostream& out, int indent);
+};
+
+class NotNode : public UnaryExpNode
+{
+public:
+	NotNode (size_t line, size_t col, ExpNode* i_expNode)
+	: UnaryExpNode ( line, col, i_expNode){
+	}
+	void unparse(std::ostream& out, int indent);
+};
+
+//END Unary Expression Subclasses.
+
 
 /**  \class TypeNode
 * Superclass of nodes that indicate a data type. For example, in

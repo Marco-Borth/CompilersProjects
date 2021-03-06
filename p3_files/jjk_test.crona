@@ -1,7 +1,7 @@
 global1:int;
 global2:int;
 alpha : int (c:bool, d:int) {b[3]++; c = false; write(c);}
-//Binary Exp
+//Test Binary Exps
 bravo : void (c:bool, d:bool, e:int) {if(c && d){e++;}}
 charlie : void (c:bool, d:bool, e:int) {if(c || d){e++;}}
 charlie : void (c:bool, d:bool, e:int, g:bool, f:bool) {if((c || d)&&(g&&f)){e++;}}
@@ -58,4 +58,25 @@ lima : void (c:bool, d:bool, e:int, h:int) {
 		d = true;
 	}
 }
+//END Test Binary Expressions
 
+//Begin Unary Node Test
+mike : void (c:bool, d:bool, e:int, h:int) {
+	if((e >= h) || (e<=h))
+	{
+		e = -e;
+	}
+}
+
+november : void (c:bool, d:bool, e:int, h:int) {
+	if((e >= h) || (e<=h))
+	{
+		e = -e+3;c = !d;
+	}
+}
+
+//END Unary Node Test
+
+//BEGIN CallStmtNode and CallExpNode Tests
+
+//END CallStmtNode and CallExpNode Tests

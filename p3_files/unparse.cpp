@@ -209,14 +209,6 @@ namespace crona{
 		m_exp_node->unparse(out, indent);
 		out <<']';
 	}
-//BEGIN Binary Expression Unparse defns
-	// void AndExpNode::unparse(ostream& out, int indent){
-	// 	out<<'(';
-	// 	this->m_l_expNode->unparse(out,indent);
-	// 	out<<this->m_op;
-	// 	this->m_r_expNode->unparse(out,indent);
-	// 	out<<')';
-	// }
 
 	void BinaryExpNode::unparse(ostream& out, int indent){
 		out<<'(';
@@ -226,7 +218,17 @@ namespace crona{
 		out<<')';
 	}
 
-//END Binary Expression Unparse defns
+	void NegNode::unparse(ostream& out, int indent){
+		out<<"-(";
+		this->m_expNode->unparse(out,indent);
+		out<<')';
+	}
+
+	void NotNode::unparse(ostream& out, int indent){
+		out<<"!(";
+		this->m_expNode->unparse(out,indent);
+		out<<')';
+	}
 
 	void IDNode::unparse(ostream& out, int indent){
 		out << this->myStrVal;

@@ -311,8 +311,8 @@ exp		: assignExp { $$ = $1; }
 		| exp GREATEREQ exp { $$ = new GreaterEqExpNode($1->line(), $1->col(), $1, $3);}
 		| exp LESS exp { $$ = new LessExpNode($1->line(), $1->col(), $1, $3);}
 		| exp LESSEQ exp { $$ = new LessEqExpNode($1->line(), $1->col(), $1, $3);}
-		| NOT exp { }
-		| DASH term { }
+		| NOT exp { $$ = new NotNode($1->line(), $1->col(), $2);}
+		| DASH term { $$ = new NegNode($1->line(), $1->col(), $2);}
 		| term { $$ = $1; }
 
 assignExp	: lval ASSIGN exp { $$ = new AssignExpNode($1->line(), $1->col(), $1, $3);}
