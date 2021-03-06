@@ -166,6 +166,168 @@ private:
 	ExpNode* m_exp_node;
 };
 
+class BinaryExpNode : public ExpNode
+{ //Abstract class for Binary Expression Subclasses
+public:
+	BinaryExpNode(size_t line, size_t col, ExpNode* i_l_expNode, ExpNode* i_r_expNode, std::string i_op)
+	: ExpNode(line,col){
+		m_l_expNode = i_l_expNode;
+		m_r_expNode = i_r_expNode;
+		m_op = i_op;
+	}
+	//void unparse(std::ostream& out, int indent) override = 0; //Abstract unparse function.
+	void unparse(std::ostream& out, int indent);
+protected:
+	ExpNode* m_l_expNode;
+	ExpNode* m_r_expNode;
+	std::string m_op;
+};
+
+//BEGIN Binary Expression Subclasses
+class AndExpNode : public BinaryExpNode
+{
+public:
+	AndExpNode (size_t line, size_t col, ExpNode* i_l_expNode, ExpNode* i_r_expNode)
+	: BinaryExpNode(line, col, i_l_expNode, i_r_expNode, " && "){
+	}
+};
+
+class OrExpNode : public BinaryExpNode
+{
+public:
+	OrExpNode (size_t line, size_t col, ExpNode* i_l_expNode, ExpNode* i_r_expNode)
+	: BinaryExpNode(line, col, i_l_expNode, i_r_expNode, " || "){
+	}
+};
+
+class MinusExpNode : public BinaryExpNode
+{
+public:
+	MinusExpNode (size_t line, size_t col, ExpNode* i_l_expNode, ExpNode* i_r_expNode)
+	: BinaryExpNode(line, col, i_l_expNode, i_r_expNode, " - "){
+	}
+};
+
+class PlusExpNode : public BinaryExpNode
+{
+public:
+	PlusExpNode (size_t line, size_t col, ExpNode* i_l_expNode, ExpNode* i_r_expNode)
+	: BinaryExpNode(line, col, i_l_expNode, i_r_expNode, " + "){
+	}
+};
+
+class MultExpNode : public BinaryExpNode
+{
+public:
+	MultExpNode (size_t line, size_t col, ExpNode* i_l_expNode, ExpNode* i_r_expNode)
+	: BinaryExpNode(line, col, i_l_expNode, i_r_expNode, " * "){
+	}
+};
+
+class DivExpNode : public BinaryExpNode
+{
+public:
+	DivExpNode (size_t line, size_t col, ExpNode* i_l_expNode, ExpNode* i_r_expNode)
+	: BinaryExpNode(line, col, i_l_expNode, i_r_expNode, " / "){
+	}
+};
+
+class EqualsExpNode : public BinaryExpNode
+{
+public:
+	EqualsExpNode (size_t line, size_t col, ExpNode* i_l_expNode, ExpNode* i_r_expNode)
+	: BinaryExpNode(line, col, i_l_expNode, i_r_expNode, " == "){
+	}
+};
+
+class NotEqualsExpNode : public BinaryExpNode
+{
+public:
+	NotEqualsExpNode (size_t line, size_t col, ExpNode* i_l_expNode, ExpNode* i_r_expNode)
+	: BinaryExpNode(line, col, i_l_expNode, i_r_expNode, " != "){
+	}
+};
+
+class GreaterExpNode : public BinaryExpNode
+{
+public:
+	GreaterExpNode (size_t line, size_t col, ExpNode* i_l_expNode, ExpNode* i_r_expNode)
+	: BinaryExpNode(line, col, i_l_expNode, i_r_expNode, " > "){
+	}
+};
+
+class GreaterEqExpNode : public BinaryExpNode
+{
+public:
+	GreaterEqExpNode (size_t line, size_t col, ExpNode* i_l_expNode, ExpNode* i_r_expNode)
+	: BinaryExpNode(line, col, i_l_expNode, i_r_expNode, " >= "){
+	}
+};
+
+class LessExpNode : public BinaryExpNode
+{
+public:
+	LessExpNode (size_t line, size_t col, ExpNode* i_l_expNode, ExpNode* i_r_expNode)
+	: BinaryExpNode(line, col, i_l_expNode, i_r_expNode, " < "){
+	}
+};
+
+class LessEqExpNode : public BinaryExpNode
+{
+public:
+	LessEqExpNode (size_t line, size_t col, ExpNode* i_l_expNode, ExpNode* i_r_expNode)
+	: BinaryExpNode(line, col, i_l_expNode, i_r_expNode, " <= "){
+	}
+};
+//END Binary Expression Subclasses
+
+class UnaryExpNode : public ExpNode
+{
+public:
+	UnaryExpNode (size_t line, size_t col, ExpNode* i_expNode)
+	: ExpNode(line,col){
+		m_expNode = i_expNode;
+	}
+	void unparse(std::ostream& out, int indent) override = 0; //Abstract Unparse Function
+protected:
+	ExpNode* m_expNode;
+};
+
+//BEGIN Unary Expression Subclasses.
+
+class NegNode : public UnaryExpNode
+{
+public:
+	NegNode (size_t line, size_t col, ExpNode* i_expNode)
+	: UnaryExpNode ( line, col, i_expNode){
+	}
+	void unparse(std::ostream& out, int indent);
+};
+
+class NotNode : public UnaryExpNode
+{
+public:
+	NotNode (size_t line, size_t col, ExpNode* i_expNode)
+	: UnaryExpNode ( line, col, i_expNode){
+	}
+	void unparse(std::ostream& out, int indent);
+};
+//END Unary Expression Subclasses.
+
+class CallExpNode : public ExpNode
+{
+public:
+	CallExpNode (size_t line, size_t col, IDNode* i_id_node ,std::list<ExpNode*>* i_exp_list)
+	: ExpNode (line, col){
+		m_id_node = i_id_node;
+		m_exp_list = i_exp_list;
+	}
+	void unparse(std::ostream& out, int indent);
+private:
+	IDNode* m_id_node;
+	std::list<ExpNode*>* m_exp_list;
+};
+
 /**  \class TypeNode
 * Superclass of nodes that indicate a data type. For example, in
 * the declaration "int a", the int part is the type node (a is an IDNode
@@ -306,28 +468,28 @@ private:
 	IntLitNode * myIntVal;
 };
 
-// lvalNode needs to replace IdNode.
+// lvalNode needs to replace IDNode.
 class AssignExpNode : public ExpNode {
 	public:
-		AssignExpNode(size_t lineIn, size_t colIn, IDNode * id, ExpNode * exp)
-		: ExpNode(lineIn, colIn), myId(id), myExp(exp) {
+		AssignExpNode(size_t lineIn, size_t colIn, LValNode * i_lval, ExpNode * exp)
+		: ExpNode(lineIn, colIn), m_lval(i_lval), myExp(exp) {
 		}
 		void unparse(ostream& out, int indent);
 	private:
-		IDNode * myId;
+		LValNode * m_lval;
 		ExpNode * myExp;
 };
 
-// lvalNode needs to replace IdNode.
+// lvalNode needs to replace IDNode.
 class AssignStmtNode : public StmtNode {
 	public:
-		AssignStmtNode(size_t lineIn, size_t colIn, IDNode * id, ExpNode * exp)
-		: StmtNode(lineIn, colIn), myId(id), myExp(exp) {
+		AssignStmtNode(AssignExpNode* i_expNode)
+		: StmtNode(i_expNode->line(), i_expNode->col()) {
+			m_expNode=i_expNode;
 		}
 		void unparse(ostream& out, int indent);
 	private:
-		IDNode * myId;
-		ExpNode * myExp;
+		AssignExpNode* m_expNode;
 };
 
 class PostIncStmtNode : public StmtNode {
@@ -414,18 +576,18 @@ class ReturnStmtNode : public StmtNode {
 		ExpNode * myExp;
 };
 
-// Possible ActualsListNode needed.
 class CallStmtNode : public StmtNode {
 	public:
-		CallStmtNode(size_t lineIn, size_t colIn, IDNode * id, ExpNode * exp)
-		: StmtNode(lineIn, colIn), myId(id), myExp(exp) {
+		CallStmtNode(CallExpNode* i_call_exp_node)
+		: StmtNode(i_call_exp_node->line(), i_call_exp_node->col()){
+			m_call_exp_node = i_call_exp_node;
 		}
 		void unparse(ostream& out, int indent);
 	private:
-		IDNode * myId;
-		ExpNode * myExp;
+		CallExpNode* m_call_exp_node;
 };
 
-} //End namespace crona
+}
+//End namespace crona
 
 #endif

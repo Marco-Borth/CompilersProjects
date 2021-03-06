@@ -66,6 +66,9 @@
 	 crona::ExpNode*											 transExp;
 	 crona::LValNode*											 transLVal;
 	 crona::StrToken*										 	 transStrToken;
+	 crona::AssignExpNode*								 transAssignExp;
+	 std::list<crona::ExpNode*>*					 transExpList;
+	 crona::CallExpNode*									 transCallExp;
 }
 
 %define parse.assert
@@ -150,6 +153,9 @@
 %type <transExp>								exp
 %type	<transExp>								term
 %type <transLVal>								lval
+%type <transAssignExp>					assignExp
+%type <transCallExp>						callExp
+%type <transExpList>						actualsList
 
 %right ASSIGN
 %left OR
@@ -248,7 +254,7 @@ stmtList 	: stmt {
 		}
 
 stmt		: varDecl SEMICOLON { $$ = $1; }
-		| assignExp SEMICOLON { /*$$ = $1;*/ }
+		| assignExp SEMICOLON { $$ = new AssignStmtNode($1);}
 		| lval DASHDASH SEMICOLON {
 			size_t line = $1->line();
 			size_t col = $1->col();
@@ -294,32 +300,38 @@ stmt		: varDecl SEMICOLON { $$ = $1; }
 			size_t col = $1->col();
 			$$ = new ReturnStmtNode(line, col, nullptr);
 		}
-		| callExp SEMICOLON { }
+		| callExp SEMICOLON {$$= new CallStmtNode($1);}
 
-exp		: assignExp { }
-		| exp DASH exp { }
-		| exp CROSS exp { }
-		| exp STAR exp { }
-		| exp SLASH exp { }
-		| exp AND exp { }
-		| exp OR exp { }
-		| exp EQUALS exp { }
-		| exp NOTEQUALS exp { }
-		| exp GREATER exp { }
-		| exp GREATEREQ exp { }
-		| exp LESS exp { }
-		| exp LESSEQ exp { }
-		| NOT exp { }
-		| DASH term { }
+exp		: assignExp { $$ = $1; }
+		| exp DASH exp { $$ = new MinusExpNode($1->line(), $1->col(), $1, $3);}
+		| exp CROSS exp {$$ = new PlusExpNode($1->line(), $1->col(), $1, $3); }
+		| exp STAR exp { $$ = new MultExpNode($1->line(), $1->col(), $1, $3); }
+		| exp SLASH exp { $$ = new DivExpNode($1->line(), $1->col(), $1, $3); }
+		| exp AND exp { $$ = new AndExpNode($1->line(), $1->col(), $1, $3);}
+		| exp OR exp { $$ = new OrExpNode($1->line(), $1->col(), $1, $3); }
+		| exp EQUALS exp { $$ = new EqualsExpNode($1->line(), $1->col(), $1, $3); }
+		| exp NOTEQUALS exp { $$ = new NotEqualsExpNode($1->line(), $1->col(), $1, $3);}
+		| exp GREATER exp { $$ = new GreaterExpNode($1->line(), $1->col(), $1, $3);}
+		| exp GREATEREQ exp { $$ = new GreaterEqExpNode($1->line(), $1->col(), $1, $3);}
+		| exp LESS exp { $$ = new LessExpNode($1->line(), $1->col(), $1, $3);}
+		| exp LESSEQ exp { $$ = new LessEqExpNode($1->line(), $1->col(), $1, $3);}
+		| NOT exp { $$ = new NotNode($1->line(), $1->col(), $2);}
+		| DASH term { $$ = new NegNode($1->line(), $1->col(), $2);}
 		| term { $$ = $1; }
 
-assignExp	: lval ASSIGN exp { }
+assignExp	: lval ASSIGN exp { $$ = new AssignExpNode($1->line(), $1->col(), $1, $3);}
 
-callExp		: id LPAREN RPAREN { }
-		| id LPAREN actualsList RPAREN { }
+callExp		: id LPAREN RPAREN { $$ = new CallExpNode($1->line(), $1->col(), $1, nullptr);}
+		| id LPAREN actualsList RPAREN { $$ = new CallExpNode($1->line(), $1->col(), $1, $3);}
 
-actualsList	: exp { }
-		| actualsList COMMA exp { }
+actualsList	: exp { std::list<ExpNode*>* temp = new std::list<ExpNode*>;
+										temp->push_front($1);
+										$$ = temp;
+									}
+		| exp COMMA actualsList {
+															$3->push_front($1);
+															$$ = $3;
+														}
 
 term 		: lval { $$ = $1;}
 		| INTLITERAL { $$ = new IntLitNode($1);}
@@ -331,7 +343,7 @@ term 		: lval { $$ = $1;}
 		| callExp { }
 
 lval		: id { $$ = $1; }
-		| id LBRACE exp RBRACE { }
+		| id LBRACE exp RBRACE { $$ = new IndexNode($1, $3); }
 
 id		: ID { $$ = new IDNode($1); }
 
