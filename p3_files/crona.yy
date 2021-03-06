@@ -67,6 +67,8 @@
 	 crona::LValNode*											 transLVal;
 	 crona::StrToken*										 	 transStrToken;
 	 crona::AssignExpNode*								 transAssignExp;
+	 std::list<crona::ExpNode*>*					 transExpList;
+	 crona::CallExpNode*									 transCallExp;
 }
 
 %define parse.assert
@@ -152,6 +154,8 @@
 %type	<transExp>								term
 %type <transLVal>								lval
 %type <transAssignExp>					assignExp
+%type <transCallExp>						callExp
+%type <transExpList>						actualsList
 
 %right ASSIGN
 %left OR
@@ -296,7 +300,7 @@ stmt		: varDecl SEMICOLON { $$ = $1; }
 			size_t col = $1->col();
 			$$ = new ReturnStmtNode(line, col, nullptr);
 		}
-		| callExp SEMICOLON { }
+		| callExp SEMICOLON {$$= new CallStmtNode($1);}
 
 exp		: assignExp { $$ = $1; }
 		| exp DASH exp { $$ = new MinusExpNode($1->line(), $1->col(), $1, $3);}
@@ -317,11 +321,17 @@ exp		: assignExp { $$ = $1; }
 
 assignExp	: lval ASSIGN exp { $$ = new AssignExpNode($1->line(), $1->col(), $1, $3);}
 
-callExp		: id LPAREN RPAREN { }
-		| id LPAREN actualsList RPAREN { }
+callExp		: id LPAREN RPAREN { $$ = new CallExpNode($1->line(), $1->col(), $1, nullptr);}
+		| id LPAREN actualsList RPAREN { $$ = new CallExpNode($1->line(), $1->col(), $1, $3);}
 
-actualsList	: exp { }
-		| actualsList COMMA exp { }
+actualsList	: exp { std::list<ExpNode*>* temp = new std::list<ExpNode*>;
+										temp->push_front($1);
+										$$ = temp;
+									}
+		| exp COMMA actualsList {
+															$3->push_front($1);
+															$$ = $3;
+														}
 
 term 		: lval { $$ = $1;}
 		| INTLITERAL { $$ = new IntLitNode($1);}

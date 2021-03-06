@@ -236,7 +236,7 @@ class EqualsExpNode : public BinaryExpNode
 {
 public:
 	EqualsExpNode (size_t line, size_t col, ExpNode* i_l_expNode, ExpNode* i_r_expNode)
-	: BinaryExpNode(line, col, i_l_expNode, i_r_expNode, " = "){
+	: BinaryExpNode(line, col, i_l_expNode, i_r_expNode, " == "){
 	}
 };
 
@@ -312,9 +312,21 @@ public:
 	}
 	void unparse(std::ostream& out, int indent);
 };
-
 //END Unary Expression Subclasses.
 
+class CallExpNode : public ExpNode
+{
+public:
+	CallExpNode (size_t line, size_t col, IDNode* i_id_node ,std::list<ExpNode*>* i_exp_list)
+	: ExpNode (line, col){
+		m_id_node = i_id_node;
+		m_exp_list = i_exp_list;
+	}
+	void unparse(std::ostream& out, int indent);
+private:
+	IDNode* m_id_node;
+	std::list<ExpNode*>* m_exp_list;
+};
 
 /**  \class TypeNode
 * Superclass of nodes that indicate a data type. For example, in
@@ -456,7 +468,7 @@ private:
 	IntLitNode * myIntVal;
 };
 
-// lvalNode needs to replace IdNode.
+// lvalNode needs to replace IDNode.
 class AssignExpNode : public ExpNode {
 	public:
 		AssignExpNode(size_t lineIn, size_t colIn, LValNode * i_lval, ExpNode * exp)
@@ -468,7 +480,7 @@ class AssignExpNode : public ExpNode {
 		ExpNode * myExp;
 };
 
-// lvalNode needs to replace IdNode.
+// lvalNode needs to replace IDNode.
 class AssignStmtNode : public StmtNode {
 	public:
 		AssignStmtNode(AssignExpNode* i_expNode)
@@ -564,18 +576,18 @@ class ReturnStmtNode : public StmtNode {
 		ExpNode * myExp;
 };
 
-// Possible ActualsListNode needed.
 class CallStmtNode : public StmtNode {
 	public:
-		CallStmtNode(size_t lineIn, size_t colIn, IDNode * id, ExpNode * exp)
-		: StmtNode(lineIn, colIn), myId(id), myExp(exp) {
+		CallStmtNode(CallExpNode* i_call_exp_node)
+		: StmtNode(i_call_exp_node->line(), i_call_exp_node->col()){
+			m_call_exp_node = i_call_exp_node;
 		}
 		void unparse(ostream& out, int indent);
 	private:
-		IDNode * myId;
-		ExpNode * myExp;
+		CallExpNode* m_call_exp_node;
 };
 
-} //End namespace crona
+}
+//End namespace crona
 
 #endif
