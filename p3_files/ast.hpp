@@ -216,6 +216,71 @@ public:
 	}
 };
 
+class MultExpNode : public BinaryExpNode
+{
+public:
+	MultExpNode (size_t line, size_t col, ExpNode* i_l_expNode, ExpNode* i_r_expNode)
+	: BinaryExpNode(line, col, i_l_expNode, i_r_expNode, " * "){
+	}
+};
+
+class DivExpNode : public BinaryExpNode
+{
+public:
+	DivExpNode (size_t line, size_t col, ExpNode* i_l_expNode, ExpNode* i_r_expNode)
+	: BinaryExpNode(line, col, i_l_expNode, i_r_expNode, " / "){
+	}
+};
+
+class EqualsExpNode : public BinaryExpNode
+{
+public:
+	EqualsExpNode (size_t line, size_t col, ExpNode* i_l_expNode, ExpNode* i_r_expNode)
+	: BinaryExpNode(line, col, i_l_expNode, i_r_expNode, " = "){
+	}
+};
+
+class NotEqualsExpNode : public BinaryExpNode
+{
+public:
+	NotEqualsExpNode (size_t line, size_t col, ExpNode* i_l_expNode, ExpNode* i_r_expNode)
+	: BinaryExpNode(line, col, i_l_expNode, i_r_expNode, " != "){
+	}
+};
+
+class GreaterExpNode : public BinaryExpNode
+{
+public:
+	GreaterExpNode (size_t line, size_t col, ExpNode* i_l_expNode, ExpNode* i_r_expNode)
+	: BinaryExpNode(line, col, i_l_expNode, i_r_expNode, " > "){
+	}
+};
+
+class GreaterEqExpNode : public BinaryExpNode
+{
+public:
+	GreaterEqExpNode (size_t line, size_t col, ExpNode* i_l_expNode, ExpNode* i_r_expNode)
+	: BinaryExpNode(line, col, i_l_expNode, i_r_expNode, " >= "){
+	}
+};
+
+class LessExpNode : public BinaryExpNode
+{
+public:
+	LessExpNode (size_t line, size_t col, ExpNode* i_l_expNode, ExpNode* i_r_expNode)
+	: BinaryExpNode(line, col, i_l_expNode, i_r_expNode, " < "){
+	}
+};
+
+class LessEqExpNode : public BinaryExpNode
+{
+public:
+	LessEqExpNode (size_t line, size_t col, ExpNode* i_l_expNode, ExpNode* i_r_expNode)
+	: BinaryExpNode(line, col, i_l_expNode, i_r_expNode, " <= "){
+	}
+};
+
+
 //END Binary Expression Subclasses
 
 /**  \class TypeNode

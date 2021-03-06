@@ -301,16 +301,16 @@ stmt		: varDecl SEMICOLON { $$ = $1; }
 exp		: assignExp { $$ = $1; }
 		| exp DASH exp { $$ = new MinusExpNode($1->line(), $1->col(), $1, $3);}
 		| exp CROSS exp {$$ = new PlusExpNode($1->line(), $1->col(), $1, $3); }
-		| exp STAR exp { }
-		| exp SLASH exp { }
+		| exp STAR exp { $$ = new MultExpNode($1->line(), $1->col(), $1, $3); }
+		| exp SLASH exp { $$ = new DivExpNode($1->line(), $1->col(), $1, $3); }
 		| exp AND exp { $$ = new AndExpNode($1->line(), $1->col(), $1, $3);}
 		| exp OR exp { $$ = new OrExpNode($1->line(), $1->col(), $1, $3); }
-		| exp EQUALS exp { }
-		| exp NOTEQUALS exp { }
-		| exp GREATER exp { }
-		| exp GREATEREQ exp { }
-		| exp LESS exp { }
-		| exp LESSEQ exp { }
+		| exp EQUALS exp { $$ = new EqualsExpNode($1->line(), $1->col(), $1, $3); }
+		| exp NOTEQUALS exp { $$ = new NotEqualsExpNode($1->line(), $1->col(), $1, $3);}
+		| exp GREATER exp { $$ = new GreaterExpNode($1->line(), $1->col(), $1, $3);}
+		| exp GREATEREQ exp { $$ = new GreaterEqExpNode($1->line(), $1->col(), $1, $3);}
+		| exp LESS exp { $$ = new LessExpNode($1->line(), $1->col(), $1, $3);}
+		| exp LESSEQ exp { $$ = new LessEqExpNode($1->line(), $1->col(), $1, $3);}
 		| NOT exp { }
 		| DASH term { }
 		| term { $$ = $1; }

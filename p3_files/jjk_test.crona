@@ -17,4 +17,45 @@ foxtrot : void (c:bool, d:bool, e:int, h:int) {
 		e=(e-h);
 	}
 }
+golf : void (c:bool, d:bool, e:int, h:int) {
+	if(true)
+	{
+		e=(e*h);
+	}
+}
+
+hotel : void (c:bool, d:bool, e:int, h:int) {
+	if(true)
+	{
+		e=(e/h);
+	}
+}
+
+india : void (c:bool, d:bool, e:int, h:int) {
+	if(e == h)
+	{
+		d = true;
+	}
+}
+
+juliet : void (c:bool, d:bool, e:int, h:int) {
+	if(e != h)
+	{
+		d = true;
+	}
+}
+
+kilo : void (c:bool, d:bool, e:int, h:int) {
+	if((e > h) || (e<h))
+	{
+		d = true;
+	}
+}
+
+lima : void (c:bool, d:bool, e:int, h:int) {
+	if((e >= h) || (e<=h))
+	{
+		d = true;
+	}
+}
 
