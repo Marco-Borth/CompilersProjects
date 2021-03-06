@@ -340,7 +340,7 @@ term 		: lval { $$ = $1;}
 		| FALSE { $$ = new FalseNode($1->line(), $1->col());}
 		| HAVOC { $$ = new HavocNode($1->line(), $1->col());}
 		| LPAREN exp RPAREN { $$ = $2; }
-		| callExp { }
+		| callExp { $$ = $1;}
 
 lval		: id { $$ = $1; }
 		| id LBRACE exp RBRACE { $$ = new IndexNode($1, $3); }
