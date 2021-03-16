@@ -1,5 +1,0 @@
-global1:int;
-global2:int;
-main:int(x:bool){
-	a:int;
-}
