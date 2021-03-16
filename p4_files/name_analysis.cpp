@@ -10,7 +10,7 @@ namespace crona{
 
 bool ASTNode::nameAnalysis(SymbolTable * symTab){
 	throw new ToDoError("This function should have"
-		"been overriden in the subclass!");
+		" been overriden in the subclass!");
 }
 
 bool ProgramNode::nameAnalysis(SymbolTable * symTab){
@@ -28,7 +28,19 @@ bool VarDeclNode::nameAnalysis(SymbolTable * symTab){
 	bool nameAnalysisOk = true;
 	SemSymbol * varSymbol = new SemSymbol();
 
-	varSymbol->setEntry(myType);
+	varSymbol->setEntry(getTypeNode());
+
+	/*
+	ScopeTable * varScope = symTab->getScope();
+	for (auto symbol : *varScope) {
+		if (ID() == symbol->getFIFO()->myID) {
+			nameAnalysisOk = false;
+		}
+	}
+	*/
+
+	std::string symbolMsg = ID()->getName();
+	symbolMsg == symbolMsg + "()";
 
 	if (nameAnalysisOk) {
 		symTab->getScope()->setEntry(ID()->getName(), varSymbol);
@@ -43,23 +55,19 @@ bool VarDeclNode::nameAnalysis(SymbolTable * symTab){
 	return nameAnalysisOk;
 }
 
-/*
-bool FormalDeclNode::nameAnalysis(SymbolTable * symTab){
-	bool nameAnalysisOk = true;
-	throw new ToDoError("[DELETE ME] I'm a varDecl"
-		" you should add the information from my"
-		" subtree to the symbolTable as a new"
-		" entry in the current scope table"
-	);
-	return nameAnalysisOk;
-}
-*/
-
 bool FnDeclNode::nameAnalysis(SymbolTable * symTab){
 	bool nameAnalysisOk = true;
 	bool formalAnalysisOk = true;
 	bool stmtAnalysisOk = true;
 	SemSymbol * fnSymbol = new SemSymbol();
+
+	/*
+	for (auto symbol : *varScope) {
+		if (ID() == symbol->myID) {
+			nameAnalysisOk = false;
+		}
+	}
+	*/
 
 	for (auto formal : *myFormals){
 		fnSymbol->setEntry(formal->getTypeNode());
@@ -81,17 +89,45 @@ bool FnDeclNode::nameAnalysis(SymbolTable * symTab){
 
 	if (stmtAnalysisOk) {
 		for (auto stmt : *myBody) {
+			//if(stmt->)
 			stmtAnalysisOk = stmt->nameAnalysis(symTab) && stmtAnalysisOk;
 		}
 	}
 
 	nameAnalysisOk = stmtAnalysisOk && nameAnalysisOk;
-	/*
-	throw new ToDoError("[DELETE ME] I'm an fnDecl."
-		" you should add and make current a new"
-		" scope table for my body"
-	);
-	*/
+	if(!nameAnalysisOk) {
+		throw new ToDoError("[DELETE ME] I'm an fnDecl."
+			" you should add and make current a new"
+			" scope table for my body"
+		);
+	}
+	return nameAnalysisOk;
+}
+
+bool PostDecStmtNode::nameAnalysis(SymbolTable * symTab) {
+	bool nameAnalysisOk = true;
+	SemSymbol * Symbol = new SemSymbol();
+	Symbol->setEntry(myLVal);
+	symTab->getScope()->setEntry("--", Symbol);
+	//myExp->nameAnalysis(symTab);
+	return nameAnalysisOk;
+}
+
+bool PostIncStmtNode::nameAnalysis(SymbolTable * symTab) {
+	bool nameAnalysisOk = true;
+	SemSymbol * Symbol = new SemSymbol();
+	Symbol->setEntry(myLVal);
+	symTab->getScope()->setEntry("++", Symbol);
+	//myExp->nameAnalysis(symTab);
+	return nameAnalysisOk;
+}
+
+bool ReturnStmtNode::nameAnalysis(SymbolTable * symTab) {
+	bool nameAnalysisOk = true;
+	SemSymbol * Symbol = new SemSymbol();
+	Symbol->setEntry(myExp);
+	symTab->getScope()->setEntry("return", Symbol);
+	//myExp->nameAnalysis(symTab);
 	return nameAnalysisOk;
 }
 
