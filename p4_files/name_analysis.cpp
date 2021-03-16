@@ -17,7 +17,7 @@ bool ProgramNode::nameAnalysis(SymbolTable * symTab){
 	bool res = true;
 	ScopeTable * Scope = new ScopeTable();
 
-	symTab->push_front(Scope);
+	symTab->setEntry(Scope);
 	for (auto global : *myGlobals){
 		res = global->nameAnalysis(symTab) && res;
 	}
@@ -27,18 +27,20 @@ bool ProgramNode::nameAnalysis(SymbolTable * symTab){
 bool VarDeclNode::nameAnalysis(SymbolTable * symTab){
 	bool nameAnalysisOk = true;
 	SemSymbol * varSymbol = new SemSymbol();
+	ScopeTable * varScope = symTab->getScope();
 
-	varSymbol->push_front(myType);
-	mySymbol = varSymbol;
+	varSymbol->setEntry(myType);
 
-	for (auto symbol : *symTab->myFront) {
+	/*
+	for (auto symbol : *varScope) {
 		if (ID() == symbol->myID) {
 			nameAnalysisOk = false;
 		}
 	}
+	*/
 
 	if (nameAnalysisOk) {
-		symTab->myFront->insert(myID, varSymbol);
+		symTab->getScope()->setEntry(ID()->getName(), varSymbol);
 	} else {
 		throw new ToDoError("[DELETE ME] I'm a varDecl"
 			" you should add the information from my"
@@ -47,39 +49,36 @@ bool VarDeclNode::nameAnalysis(SymbolTable * symTab){
 		);
 	}
 
-	if (mySymbol == nullptr) {
-
-	}
 	return nameAnalysisOk;
 }
 
-bool formalDeclNode::nameAnalysis(SymbolTable * symTab){
+/*
+bool FormalDeclNode::nameAnalysis(SymbolTable * symTab){
 	bool nameAnalysisOk = true;
-	/*
 	throw new ToDoError("[DELETE ME] I'm a varDecl"
 		" you should add the information from my"
 		" subtree to the symbolTable as a new"
 		" entry in the current scope table"
 	);
-	*/
 	return nameAnalysisOk;
 }
+*/
 
 bool FnDeclNode::nameAnalysis(SymbolTable * symTab){
 	bool nameAnalysisOk = true;
 	bool formalAnalysisOk = true;
 	bool stmtAnalysisOk = true;
-	SemSymbol * fnSymbol;
+	SemSymbol * fnSymbol = nullptr;
 
-	fnSymbol->push_front(myRetType);
+	fnSymbol->setEntry(myRetType);
 
 	for (auto formal : *myFormals){
-		fnSymbol->push_front(myType);
+		fnSymbol->setEntry(formal->getTypeNode());
 	}
 
 	ScopeTable * Scope = new ScopeTable();
 
-	symTab->push_front(Scope);
+	symTab->setEntry(Scope);
 
 	for (auto formal : *myFormals){
 		formalAnalysisOk = formal->nameAnalysis(symTab) && formalAnalysisOk;
