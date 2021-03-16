@@ -104,16 +104,23 @@ bool FnDeclNode::nameAnalysis(SymbolTable * symTab){
 	return nameAnalysisOk;
 }
 
-/*
-bool WhileStmtNode::nameAnalysis(SymbolTable * symTab) {
+bool PostDecStmtNode::nameAnalysis(SymbolTable * symTab) {
 	bool nameAnalysisOk = true;
 	SemSymbol * Symbol = new SemSymbol();
-	Symbol->setEntry(myExp);
-	symTab->getScope()->setEntry("return", Symbol);
+	Symbol->setEntry(myLVal);
+	symTab->getScope()->setEntry("--", Symbol);
 	//myExp->nameAnalysis(symTab);
 	return nameAnalysisOk;
 }
-*/
+
+bool PostIncStmtNode::nameAnalysis(SymbolTable * symTab) {
+	bool nameAnalysisOk = true;
+	SemSymbol * Symbol = new SemSymbol();
+	Symbol->setEntry(myLVal);
+	symTab->getScope()->setEntry("++", Symbol);
+	//myExp->nameAnalysis(symTab);
+	return nameAnalysisOk;
+}
 
 bool ReturnStmtNode::nameAnalysis(SymbolTable * symTab) {
 	bool nameAnalysisOk = true;
