@@ -4,7 +4,7 @@
 
 namespace crona{
 
-//TODO here is a subset of the nodes needed to do nameAnalysis, 
+//TODO here is a subset of the nodes needed to do nameAnalysis,
 // you should add the rest to allow for a complete treatment
 // of any AST
 
@@ -24,8 +24,8 @@ bool ProgramNode::nameAnalysis(SymbolTable * symTab){
 bool VarDeclNode::nameAnalysis(SymbolTable * symTab){
 	bool nameAnalysisOk = true;
 	throw new ToDoError("[DELETE ME] I'm a varDecl"
-		" you should add the information from my"	
-		" subtree to the symbolTable as a new"	
+		" you should add the information from my"
+		" subtree to the symbolTable as a new"
 		" entry in the current scope table"
 	);
 	return nameAnalysisOk;
@@ -34,7 +34,7 @@ bool VarDeclNode::nameAnalysis(SymbolTable * symTab){
 bool FnDeclNode::nameAnalysis(SymbolTable * symTab){
 	bool nameAnalysisOk = true;
 	throw new ToDoError("[DELETE ME] I'm an fnDecl."
-		" you should add and make current a new"	
+		" you should add and make current a new"
 		" scope table for my body"
 	);
 	return nameAnalysisOk;
