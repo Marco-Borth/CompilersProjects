@@ -23,6 +23,12 @@ ScopeTable::ScopeTable(){
 	symbols = new HashMap<std::string, SemSymbol *>();
 }
 
+void ScopeTable::setEntry(std::string idLit, SemSymbol * symbol){
+	symbols->emplace(idLit, symbol);
+}
+
+
+
 SymbolTable::SymbolTable(){
 	//TODO: implement the list of hashtables approach
 	// to building a symbol table:
@@ -31,6 +37,14 @@ SymbolTable::SymbolTable(){
 	// latest scope table will be removed from the front of
 	// the chain.
 	scopeTableChain = new std::list<ScopeTable *>();
+}
+
+void SymbolTable::setEntry (ScopeTable* scopeTableEntry){
+	scopeTableChain->push_front(scopeTableEntry);
+}
+
+ScopeTable* SymbolTable::getScope() const{
+	return (scopeTableChain->front()); //Returns the lastest element pushed of the ScopeTable list.
 }
 
 }
