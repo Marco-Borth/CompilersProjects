@@ -1,6 +1,8 @@
 global1:int;
 global2:int;
 
+
+
 main:int(x:bool, y:byte, z:int){
 	a:int;
 	hockey:int array [10];
@@ -12,6 +14,23 @@ main:int(x:bool, y:byte, z:int){
 	hockey[2]--;
 	read b;
 	write "alpha dog";
+	global1 = a;
+	f();
+
+	while(TRUE) {
+		blanko : byte;
+		if (a == 4) {
+			bigsby : bool;
+		}
+
+		if (b == "harold") {
+			walter : string;
+		} else {
+			walter : int;
+		}
+	}
 }
+
+
 
 f:void(){}
