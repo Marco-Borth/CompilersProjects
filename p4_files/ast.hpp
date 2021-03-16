@@ -176,7 +176,7 @@ public:
 	WriteStmtNode(size_t l, size_t c, ExpNode * srcIn)
 	: StmtNode(l, c), mySrc(srcIn){ }
 	void unparse(std::ostream& out, int indent) override;
-	//virtual bool nameAnalysis(SymbolTable * symTab) override;
+	virtual bool nameAnalysis(SymbolTable * symTab) override;
 private:
 	ExpNode * mySrc;
 };

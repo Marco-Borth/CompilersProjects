@@ -113,6 +113,15 @@ bool ReadStmtNode::nameAnalysis(SymbolTable * symTab) {
 	return nameAnalysisOk;
 }
 
+bool WriteStmtNode::nameAnalysis(SymbolTable * symTab) {
+	bool nameAnalysisOk = true;
+	SemSymbol * Symbol = new SemSymbol();
+	Symbol->setEntry(mySrc);
+	symTab->getScope()->setEntry("read", Symbol);
+	//myExp->nameAnalysis(symTab);
+	return nameAnalysisOk;
+}
+
 bool PostDecStmtNode::nameAnalysis(SymbolTable * symTab) {
 	bool nameAnalysisOk = true;
 	SemSymbol * Symbol = new SemSymbol();

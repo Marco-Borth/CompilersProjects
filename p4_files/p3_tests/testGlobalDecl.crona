@@ -11,6 +11,7 @@ main:int(x:bool, y:byte, z:int){
 	a++;
 	hockey[2]--;
 	read b;
+	write "alpha dog";
 }
 
 f:void(){}
