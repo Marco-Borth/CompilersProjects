@@ -27,17 +27,8 @@ bool ProgramNode::nameAnalysis(SymbolTable * symTab){
 bool VarDeclNode::nameAnalysis(SymbolTable * symTab){
 	bool nameAnalysisOk = true;
 	SemSymbol * varSymbol = new SemSymbol();
-	ScopeTable * varScope = symTab->getScope();
 
 	varSymbol->setEntry(myType);
-
-	/*
-	for (auto symbol : *varScope) {
-		if (ID() == symbol->myID) {
-			nameAnalysisOk = false;
-		}
-	}
-	*/
 
 	if (nameAnalysisOk) {
 		symTab->getScope()->setEntry(ID()->getName(), varSymbol);
@@ -68,13 +59,15 @@ bool FnDeclNode::nameAnalysis(SymbolTable * symTab){
 	bool nameAnalysisOk = true;
 	bool formalAnalysisOk = true;
 	bool stmtAnalysisOk = true;
-	SemSymbol * fnSymbol = nullptr;
-
-	fnSymbol->setEntry(myRetType);
+	SemSymbol * fnSymbol = new SemSymbol();
 
 	for (auto formal : *myFormals){
 		fnSymbol->setEntry(formal->getTypeNode());
 	}
+
+	fnSymbol->setEntry(myRetType);
+
+	symTab->getScope()->setEntry(ID()->getName(), fnSymbol);
 
 	ScopeTable * Scope = new ScopeTable();
 
