@@ -1,12 +1,11 @@
 global1:int;
 global2:int;
-
 main:int(x:bool, y:byte, z:int){
 	a:int;
-	b:string;
+	b:byte array[0];
 	return 4;
 	return "asdf";
 	return a;
 }
-
-f:void(){}
+f:void(){
+}
