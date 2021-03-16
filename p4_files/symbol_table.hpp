@@ -24,10 +24,10 @@ class SemSymbol {
 		SemSymbol();
 		//Build a destructor to deallocate the dynamic list
 		bool isEmpty() const;
-		TypeNode * getFIFO() const;
-		void setEntry (TypeNode* inp_type_entry);
+		ASTNode * getFIFO() const;
+		void setEntry (ASTNode* inp_type_entry);
 	private:
-		std::list<TypeNode*>* m_type_list;
+		std::list<ASTNode*>* m_type_list;
 	//TODO add the fields that
 	// each semantic symbol should track
 	// (i.e. the kind of the symbol (either a variable or function)
