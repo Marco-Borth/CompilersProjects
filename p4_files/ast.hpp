@@ -166,6 +166,7 @@ public:
 	ReadStmtNode(size_t l, size_t c, LValNode * dstIn)
 	: StmtNode(l, c), myDst(dstIn){ }
 	void unparse(std::ostream& out, int indent) override;
+	virtual bool nameAnalysis(SymbolTable * symTab) override;
 private:
 	LValNode * myDst;
 };
@@ -175,6 +176,7 @@ public:
 	WriteStmtNode(size_t l, size_t c, ExpNode * srcIn)
 	: StmtNode(l, c), mySrc(srcIn){ }
 	void unparse(std::ostream& out, int indent) override;
+	//virtual bool nameAnalysis(SymbolTable * symTab) override;
 private:
 	ExpNode * mySrc;
 };
@@ -417,7 +419,7 @@ public:
 	AssignExpNode(size_t l, size_t c, LValNode * dstIn, ExpNode * srcIn)
 	: ExpNode(l, c), myDst(dstIn), mySrc(srcIn){ }
 	void unparse(std::ostream& out, int indent) override;
-	bool nameAnalysis(SymbolTable * symTab) override { return mySrc->nameAnalysis(symTab); }
+	//bool nameAnalysis(SymbolTable * symTab) override { return mySrc->nameAnalysis(symTab); }
 private:
 	LValNode * myDst;
 	ExpNode * mySrc;

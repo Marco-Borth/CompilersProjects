@@ -3,13 +3,14 @@ global2:int;
 
 main:int(x:bool, y:byte, z:int){
 	a:int;
-	hockey:int;
+	hockey:int array [10];
 	b:string;
 	return 4;
 	return "asdf";
 	return a;
 	a++;
-	hockey--;
+	hockey[2]--;
+	read b;
 }
 
 f:void(){}

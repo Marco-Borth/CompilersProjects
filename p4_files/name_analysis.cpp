@@ -104,6 +104,15 @@ bool FnDeclNode::nameAnalysis(SymbolTable * symTab){
 	return nameAnalysisOk;
 }
 
+bool ReadStmtNode::nameAnalysis(SymbolTable * symTab) {
+	bool nameAnalysisOk = true;
+	SemSymbol * Symbol = new SemSymbol();
+	Symbol->setEntry(myDst);
+	symTab->getScope()->setEntry("read", Symbol);
+	//myExp->nameAnalysis(symTab);
+	return nameAnalysisOk;
+}
+
 bool PostDecStmtNode::nameAnalysis(SymbolTable * symTab) {
 	bool nameAnalysisOk = true;
 	SemSymbol * Symbol = new SemSymbol();
