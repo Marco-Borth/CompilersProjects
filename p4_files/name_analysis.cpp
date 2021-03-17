@@ -48,11 +48,13 @@ bool VarDeclNode::nameAnalysis(SymbolTable * symTab){
 	if (nameAnalysisOk) {
 		symTab->getScope()->setEntry(ID()->getName(), varSymbol);
 	} else {
+		/*
 		throw new ToDoError("[DELETE ME] I'm a varDecl"
 			" you should add the information from my"
 			" subtree to the symbolTable as a new"
 			" entry in the current scope table"
 		);
+		*/
 	}
 
 	return nameAnalysisOk;
@@ -82,11 +84,13 @@ bool FormalDeclNode::nameAnalysis(SymbolTable * symTab){
 	if (nameAnalysisOk) {
 		symTab->getScope()->setEntry(ID()->getName(), varSymbol);
 	} else {
+		/*
 		throw new ToDoError("[DELETE ME] I'm a varDecl"
 			" you should add the information from my"
 			" subtree to the symbolTable as a new"
 			" entry in the current scope table"
 		);
+		*/
 	}
 
 	return nameAnalysisOk;
@@ -114,7 +118,7 @@ bool FnDeclNode::nameAnalysis(SymbolTable * symTab){
 	fnSymbol->setEntry(myRetType);
 
 	symTab->getScope()->setEntry(ID()->getName(), fnSymbol);
-	
+
 	id->assignSymbol(fnSymbol);
 
 	ScopeTable * Scope = new ScopeTable();
@@ -136,10 +140,12 @@ bool FnDeclNode::nameAnalysis(SymbolTable * symTab){
 
 	nameAnalysisOk = stmtAnalysisOk && nameAnalysisOk;
 	if(!nameAnalysisOk) {
+		/*
 		throw new ToDoError("[DELETE ME] I'm an fnDecl."
 			" you should add and make current a new"
 			" scope table for my body"
 		);
+		*/
 	}
 	return nameAnalysisOk;
 }
@@ -177,7 +183,10 @@ bool PostDecStmtNode::nameAnalysis(SymbolTable * symTab) {
 	//Symbol->setEntry(myLVal);
 	//symTab->getScope()->setEntry("inc", Symbol);
 	//myExp->nameAnalysis(symTab);
-	return nameAnalysisOk;
+
+
+	return myLVal->nameAnalysis(symTab);
+	//return nameAnalysisOk;
 }
 
 bool PostIncStmtNode::nameAnalysis(SymbolTable * symTab) {
@@ -245,21 +254,37 @@ bool WhileStmtNode::nameAnalysis(SymbolTable * symTab) {
 }
 
 bool ReturnStmtNode::nameAnalysis(SymbolTable * symTab) {
-	bool nameAnalysisOk = true;
-	//SemSymbol * Symbol = new SemSymbol();
-	//Symbol->setEntry(myExp);
-	//symTab->getScope()->setEntry("return", Symbol);
-	//myExp->nameAnalysis(symTab);
-	return nameAnalysisOk;
+	return myExp->nameAnalysis(symTab);
 }
 
 bool CallStmtNode::nameAnalysis(SymbolTable * symTab) {
+	return myCallExp->nameAnalysis(symTab);;
+}
+
+bool CallExpNode::nameAnalysis(SymbolTable * symTab) {
+	return myID->nameAnalysis(symTab);;
+}
+
+bool IndexNode::nameAnalysis(SymbolTable * symTab) {
+	return myBase->nameAnalysis(symTab) && myOffset->nameAnalysis(symTab);
+}
+
+bool IDNode::nameAnalysis(SymbolTable * symTab) {
 	bool nameAnalysisOk = true;
-	SemSymbol * Symbol = new SemSymbol();
-	//Symbol->setEntry(myCallExp);
-	//symTab->getScope()->setEntry("call", Symbol);
-	//myExp->nameAnalysis(symTab);
+	for(auto scope : *symTab->returnList()) {
+		for(auto symbol : *scope->returnHashMap()) {
+			if(symbol.first == getName()) {
+				mySymbol = symbol.second;
+			}
+		}
+	}
+	if (mySymbol == nullptr) {
+		nameAnalysisOk = false;
+	}
+
 	return nameAnalysisOk;
 }
+
+
 
 }

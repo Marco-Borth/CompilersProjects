@@ -45,6 +45,7 @@ class ScopeTable {
 	public:
 		ScopeTable();
 		void setEntry(std::string idLit, SemSymbol * symbol);
+		HashMap<std::string, SemSymbol *> * returnHashMap();
 		//TODO: add functions for looking up symbols
 		// and/or returning information to indicate
 		// that the symbol does not exist within the
@@ -58,6 +59,7 @@ class SymbolTable{
 		SymbolTable();
 		void setEntry(ScopeTable* scopeTableEntry);
 		ScopeTable* getScope() const;
+		std::list<ScopeTable *> * returnList();
 		//TODO: add functions to create a new ScopeTable
 		// when a new scope is entered, drop a ScopeTable
 		// when a scope is exited, etc.

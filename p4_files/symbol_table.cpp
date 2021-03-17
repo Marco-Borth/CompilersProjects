@@ -27,6 +27,10 @@ void ScopeTable::setEntry(std::string idLit, SemSymbol * symbol){
 	symbols->emplace(idLit, symbol);
 }
 
+HashMap<std::string, SemSymbol *> * ScopeTable::returnHashMap(){
+	return symbols;
+}
+
 
 
 SymbolTable::SymbolTable(){
@@ -45,6 +49,10 @@ void SymbolTable::setEntry (ScopeTable* scopeTableEntry){
 
 ScopeTable* SymbolTable::getScope() const{
 	return (scopeTableChain->front()); //Returns the lastest element pushed of the ScopeTable list.
+}
+
+std::list<ScopeTable *> * SymbolTable::returnList() {
+	return scopeTableChain;
 }
 
 }
