@@ -35,6 +35,10 @@ bool ScopeTable::setEntry(std::string idLit, SemSymbol * symbol){
 	//and not added to the hash map.
 }
 
+HashMap<std::string, SemSymbol *> * ScopeTable::returnHashMap(){
+	return symbols;
+}
+
 
 
 SymbolTable::SymbolTable(){
@@ -56,6 +60,10 @@ ScopeTable* SymbolTable::getScope() const{
 }
 void SymbolTable::removeHead(){
 		scopeTableChain->pop_front();
+}
+
+std::list<ScopeTable *> * SymbolTable::returnList() {
+	return scopeTableChain;
 }
 
 }
