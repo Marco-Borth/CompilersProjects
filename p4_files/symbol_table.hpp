@@ -41,7 +41,7 @@ public:
 	std::list<TypeNode*>* getTypeList () const;
 private:
 	std::list<TypeNode*>* m_type_list;
-}
+};
 
 //A single scope. The symbol table is broken down into a
 // chain of scope tables, and each scope table holds
