@@ -2,18 +2,18 @@
 namespace crona{
 
 SemSymbol::SemSymbol(){
-	m_type_list = new std::list<ASTNode*>;
+	m_type_list = new std::list<TypeNode*>;
 }
 
 bool SemSymbol::isEmpty() const{
 	return (m_type_list->empty()); //If the list of type nodes is empty then return true.
 }
 
-ASTNode* SemSymbol::getFIFO() const{
+TypeNode * SemSymbol::getFIFO() const{
 	return (m_type_list->back()); //Returns the first in element of the type node list.
 }
 
-void SemSymbol::setEntry (ASTNode* inp_type_entry){
+void SemSymbol::setEntry (TypeNode * inp_type_entry){
 	m_type_list->push_front(inp_type_entry);
 }
 

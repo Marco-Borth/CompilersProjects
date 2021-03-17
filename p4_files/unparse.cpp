@@ -1,5 +1,6 @@
 #include "ast.hpp"
 #include "errors.hpp"
+#include "symbol_table.hpp"
 
 namespace crona{
 
@@ -14,25 +15,25 @@ void ProgramNode::unparse(std::ostream& out, int indent){
 }
 
 void VarDeclNode::unparse(std::ostream& out, int indent){
-	doIndent(out, indent); 
+	doIndent(out, indent);
 	myID->unparse(out, 0);
-	out << ":";
+	out << ": ";
 	myType->unparse(out, 0);
 	out << ";\n";
 }
 
 void FormalDeclNode::unparse(std::ostream& out, int indent){
-	doIndent(out, indent); 
+	doIndent(out, indent);
 	ID()->unparse(out, 0);
-	out << ":";
+	out << ": ";
 	getTypeNode()->unparse(out, 0);
 }
 
 void FnDeclNode::unparse(std::ostream& out, int indent){
-	doIndent(out, indent); 
+	doIndent(out, indent);
 	myID->unparse(out, 0);
-	out << ":";
-	myRetType->unparse(out, 0); 
+	out << ": ";
+	myRetType->unparse(out, 0);
 	out << "(";
 	bool firstFormal = true;
 	for(auto formal : *myFormals){
@@ -147,7 +148,7 @@ void CallExpNode::unparse(std::ostream& out, int indent){
 	doIndent(out, indent);
 	myID->unparse(out, 0);
 	out << "(";
-	
+
 	bool firstArg = true;
 	for(auto arg : *myArgs){
 		if (firstArg) { firstArg = false; }
@@ -170,84 +171,84 @@ void IndexNode::unparse(std::ostream& out, int indent){
 
 void MinusNode::unparse(std::ostream& out, int indent){
 	doIndent(out, indent);
-	myExp1->unparseNested(out); 
+	myExp1->unparseNested(out);
 	out << " - ";
 	myExp2->unparseNested(out);
 }
 
 void PlusNode::unparse(std::ostream& out, int indent){
 	doIndent(out, indent);
-	myExp1->unparseNested(out); 
+	myExp1->unparseNested(out);
 	out << " + ";
 	myExp2->unparseNested(out);
 }
 
 void TimesNode::unparse(std::ostream& out, int indent){
 	doIndent(out, indent);
-	myExp1->unparseNested(out); 
+	myExp1->unparseNested(out);
 	out << " * ";
 	myExp2->unparseNested(out);
 }
 
 void DivideNode::unparse(std::ostream& out, int indent){
 	doIndent(out, indent);
-	myExp1->unparseNested(out); 
+	myExp1->unparseNested(out);
 	out << " / ";
 	myExp2->unparseNested(out);
 }
 
 void AndNode::unparse(std::ostream& out, int indent){
 	doIndent(out, indent);
-	myExp1->unparseNested(out); 
+	myExp1->unparseNested(out);
 	out << " && ";
 	myExp2->unparseNested(out);
 }
 
 void OrNode::unparse(std::ostream& out, int indent){
 	doIndent(out, indent);
-	myExp1->unparseNested(out); 
+	myExp1->unparseNested(out);
 	out << " || ";
 	myExp2->unparseNested(out);
 }
 
 void EqualsNode::unparse(std::ostream& out, int indent){
 	doIndent(out, indent);
-	myExp1->unparseNested(out); 
+	myExp1->unparseNested(out);
 	out << " == ";
 	myExp2->unparseNested(out);
 }
 
 void NotEqualsNode::unparse(std::ostream& out, int indent){
 	doIndent(out, indent);
-	myExp1->unparseNested(out); 
+	myExp1->unparseNested(out);
 	out << " != ";
 	myExp2->unparseNested(out);
 }
 
 void GreaterNode::unparse(std::ostream& out, int indent){
 	doIndent(out, indent);
-	myExp1->unparseNested(out); 
+	myExp1->unparseNested(out);
 	out << " > ";
 	myExp2->unparseNested(out);
 }
 
 void GreaterEqNode::unparse(std::ostream& out, int indent){
 	doIndent(out, indent);
-	myExp1->unparseNested(out); 
+	myExp1->unparseNested(out);
 	out << " >= ";
 	myExp2->unparseNested(out);
 }
 
 void LessNode::unparse(std::ostream& out, int indent){
 	doIndent(out, indent);
-	myExp1->unparseNested(out); 
+	myExp1->unparseNested(out);
 	out << " < ";
 	myExp2->unparseNested(out);
 }
 
 void LessEqNode::unparse(std::ostream& out, int indent){
 	doIndent(out, indent);
-	myExp1->unparseNested(out); 
+	myExp1->unparseNested(out);
 	out << " <= ";
 	myExp2->unparseNested(out);
 }
@@ -255,13 +256,13 @@ void LessEqNode::unparse(std::ostream& out, int indent){
 void NotNode::unparse(std::ostream& out, int indent){
 	doIndent(out, indent);
 	out << "!";
-	myExp->unparseNested(out); 
+	myExp->unparseNested(out);
 }
 
 void NegNode::unparse(std::ostream& out, int indent){
 	doIndent(out, indent);
 	out << "-";
-	myExp->unparseNested(out); 
+	myExp->unparseNested(out);
 }
 
 void VoidTypeNode::unparse(std::ostream& out, int indent){
@@ -304,8 +305,12 @@ void LValNode::unparseNested(std::ostream& out){
 void IDNode::unparse(std::ostream& out, int indent){
 	doIndent(out, indent);
 	out << name;
-	//TODO: you'll need to add some code here to
-	// print the symbol if it isn't null
+	if(mySymbol != nullptr) {
+		out << "(";
+		TypeNode * symbolType = mySymbol->getFIFO();
+		symbolType->unparse(out, 0);
+		out << ")";
+	}
 }
 
 void HavocNode::unparse(std::ostream& out, int indent){
