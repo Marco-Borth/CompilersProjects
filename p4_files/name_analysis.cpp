@@ -27,6 +27,7 @@ bool ProgramNode::nameAnalysis(SymbolTable * symTab){
 bool VarDeclNode::nameAnalysis(SymbolTable * symTab){
 	bool nameAnalysisOk = true;
 	SemSymbol * varSymbol = new SemSymbol();
+	IDNode * id = ID();
 
 	varSymbol->setEntry(getTypeNode());
 
@@ -38,6 +39,43 @@ bool VarDeclNode::nameAnalysis(SymbolTable * symTab){
 		}
 	}
 	*/
+
+	std::string symbolMsg = ID()->getName();
+	symbolMsg == symbolMsg + "()";
+
+	id->assignSymbol(varSymbol);
+
+	if (nameAnalysisOk) {
+		symTab->getScope()->setEntry(ID()->getName(), varSymbol);
+	} else {
+		throw new ToDoError("[DELETE ME] I'm a varDecl"
+			" you should add the information from my"
+			" subtree to the symbolTable as a new"
+			" entry in the current scope table"
+		);
+	}
+
+	return nameAnalysisOk;
+}
+
+bool FormalDeclNode::nameAnalysis(SymbolTable * symTab){
+	bool nameAnalysisOk = true;
+	SemSymbol * varSymbol = new SemSymbol();
+	IDNode * id = ID();
+
+	varSymbol->setEntry(getTypeNode());
+
+	/*
+	ScopeTable * varScope = symTab->getScope();
+	for (auto symbol : *varScope) {
+		if (ID() == symbol->getFIFO()->myID) {
+			nameAnalysisOk = false;
+		}
+	}
+	*/
+
+	id->assignSymbol(varSymbol);
+
 	if (nameAnalysisOk) {
 		symTab->getScope()->setEntry(ID()->getName(), varSymbol);
 	} else {
@@ -56,6 +94,7 @@ bool FnDeclNode::nameAnalysis(SymbolTable * symTab){
 	bool formalAnalysisOk = true;
 	bool stmtAnalysisOk = true;
 	SemSymbol * fnSymbol = new SemSymbol();
+	IDNode * id = ID();
 
 	/*
 	for (auto symbol : *varScope) {
@@ -102,54 +141,54 @@ bool FnDeclNode::nameAnalysis(SymbolTable * symTab){
 
 bool AssignStmtNode::nameAnalysis(SymbolTable * symTab) {
 	bool nameAnalysisOk = true;
-	SemSymbol * Symbol = new SemSymbol();
-	Symbol->setEntry(myExp);
-	symTab->getScope()->setEntry("assign", Symbol);
+	//SemSymbol * Symbol = new SemSymbol();
+	//Symbol->setEntry(myExp);
+	//symTab->getScope()->setEntry("assign", Symbol);
 	//myExp->nameAnalysis(symTab);
 	return nameAnalysisOk;
 }
 
 bool ReadStmtNode::nameAnalysis(SymbolTable * symTab) {
 	bool nameAnalysisOk = true;
-	SemSymbol * Symbol = new SemSymbol();
-	Symbol->setEntry(myDst);
-	symTab->getScope()->setEntry("read", Symbol);
+	//SemSymbol * Symbol = new SemSymbol();
+	//Symbol->setEntry(myDst);
+	//symTab->getScope()->setEntry("read", Symbol);
 	//myExp->nameAnalysis(symTab);
 	return nameAnalysisOk;
 }
 
 bool WriteStmtNode::nameAnalysis(SymbolTable * symTab) {
 	bool nameAnalysisOk = true;
-	SemSymbol * Symbol = new SemSymbol();
-	Symbol->setEntry(mySrc);
-	symTab->getScope()->setEntry("write", Symbol);
+	//SemSymbol * Symbol = new SemSymbol();
+	//Symbol->setEntry(mySrc);
+	//symTab->getScope()->setEntry("write", Symbol);
 	//myExp->nameAnalysis(symTab);
 	return nameAnalysisOk;
 }
 
 bool PostDecStmtNode::nameAnalysis(SymbolTable * symTab) {
 	bool nameAnalysisOk = true;
-	SemSymbol * Symbol = new SemSymbol();
-	Symbol->setEntry(myLVal);
-	symTab->getScope()->setEntry("inc", Symbol);
+	//SemSymbol * Symbol = new SemSymbol();
+	//Symbol->setEntry(myLVal);
+	//symTab->getScope()->setEntry("inc", Symbol);
 	//myExp->nameAnalysis(symTab);
 	return nameAnalysisOk;
 }
 
 bool PostIncStmtNode::nameAnalysis(SymbolTable * symTab) {
 	bool nameAnalysisOk = true;
-	SemSymbol * Symbol = new SemSymbol();
-	Symbol->setEntry(myLVal);
-	symTab->getScope()->setEntry("dec", Symbol);
+	//SemSymbol * Symbol = new SemSymbol();
+	//Symbol->setEntry(myLVal);
+	//symTab->getScope()->setEntry("dec", Symbol);
 	//myExp->nameAnalysis(symTab);
 	return nameAnalysisOk;
 }
 
 bool IfStmtNode::nameAnalysis(SymbolTable * symTab) {
 	bool nameAnalysisOk = true;
-	SemSymbol * Symbol = new SemSymbol();
-	Symbol->setEntry(myCond);
-	symTab->getScope()->setEntry("if", Symbol);
+	//SemSymbol * Symbol = new SemSymbol();
+	//Symbol->setEntry(myCond);
+	//symTab->getScope()->setEntry("if", Symbol);
 
 	ScopeTable * Scope = new ScopeTable();
 
@@ -164,9 +203,9 @@ bool IfStmtNode::nameAnalysis(SymbolTable * symTab) {
 
 bool IfElseStmtNode::nameAnalysis(SymbolTable * symTab) {
 	bool nameAnalysisOk = true;
-	SemSymbol * Symbol = new SemSymbol();
-	Symbol->setEntry(myCond);
-	symTab->getScope()->setEntry("ifElse", Symbol);
+	//SemSymbol * Symbol = new SemSymbol();
+	//Symbol->setEntry(myCond);
+	//symTab->getScope()->setEntry("ifElse", Symbol);
 
 	ScopeTable * Scope = new ScopeTable();
 
@@ -185,9 +224,9 @@ bool IfElseStmtNode::nameAnalysis(SymbolTable * symTab) {
 
 bool WhileStmtNode::nameAnalysis(SymbolTable * symTab) {
 	bool nameAnalysisOk = true;
-	SemSymbol * Symbol = new SemSymbol();
-	Symbol->setEntry(myCond);
-	symTab->getScope()->setEntry("while", Symbol);
+	//SemSymbol * Symbol = new SemSymbol();
+	//Symbol->setEntry(myCond);
+	//symTab->getScope()->setEntry("while", Symbol);
 
 	ScopeTable * Scope = new ScopeTable();
 
@@ -202,9 +241,9 @@ bool WhileStmtNode::nameAnalysis(SymbolTable * symTab) {
 
 bool ReturnStmtNode::nameAnalysis(SymbolTable * symTab) {
 	bool nameAnalysisOk = true;
-	SemSymbol * Symbol = new SemSymbol();
-	Symbol->setEntry(myExp);
-	symTab->getScope()->setEntry("return", Symbol);
+	//SemSymbol * Symbol = new SemSymbol();
+	//Symbol->setEntry(myExp);
+	//symTab->getScope()->setEntry("return", Symbol);
 	//myExp->nameAnalysis(symTab);
 	return nameAnalysisOk;
 }
@@ -212,8 +251,8 @@ bool ReturnStmtNode::nameAnalysis(SymbolTable * symTab) {
 bool CallStmtNode::nameAnalysis(SymbolTable * symTab) {
 	bool nameAnalysisOk = true;
 	SemSymbol * Symbol = new SemSymbol();
-	Symbol->setEntry(myCallExp);
-	symTab->getScope()->setEntry("call", Symbol);
+	//Symbol->setEntry(myCallExp);
+	//symTab->getScope()->setEntry("call", Symbol);
 	//myExp->nameAnalysis(symTab);
 	return nameAnalysisOk;
 }
