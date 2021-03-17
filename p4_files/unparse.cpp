@@ -307,7 +307,7 @@ void IDNode::unparse(std::ostream& out, int indent){
 	out << name;
 	if(mySymbol != nullptr) {
 		out << "(";
-		TypeNode * symbolType = mySymbol->getFIFO();
+		TypeNode * symbolType = mySymbol->getType();
 		symbolType->unparse(out, 0);
 		out << ")";
 	}
