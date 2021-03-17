@@ -71,6 +71,7 @@ public:
 	: LValNode(lIn, cIn), name(nameIn), mySymbol(nullptr){}
 	std::string getName(){ return name; }
 	void unparse(std::ostream& out, int indent) override;
+	void assignSymbol(SemSymbol * symbolIn) { mySymbol = symbolIn; };
 private:
 	std::string name;
 	SemSymbol * mySymbol;
@@ -124,6 +125,7 @@ public:
 	FormalDeclNode(size_t lIn, size_t cIn, TypeNode * type, IDNode * id)
 	: VarDeclNode(lIn, cIn, type, id){ }
 	void unparse(std::ostream& out, int indent) override;
+	virtual bool nameAnalysis(SymbolTable *) override;
 	private:
 		TypeNode * myType;
 		IDNode * myID;
