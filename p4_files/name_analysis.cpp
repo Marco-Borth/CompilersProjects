@@ -17,7 +17,7 @@ bool ProgramNode::nameAnalysis(SymbolTable * symTab){
 	bool res = true;
 	ScopeTable * Scope = new ScopeTable();
 
-	symTab->setEntry(Scope);
+	symTab->setEntry(Scope); //Pushes new scope to table of scopes
 	for (auto global : *myGlobals){
 		res = global->nameAnalysis(symTab) && res;
 	}
@@ -38,10 +38,6 @@ bool VarDeclNode::nameAnalysis(SymbolTable * symTab){
 		}
 	}
 	*/
-
-	std::string symbolMsg = ID()->getName();
-	symbolMsg == symbolMsg + "()";
-
 	if (nameAnalysisOk) {
 		symTab->getScope()->setEntry(ID()->getName(), varSymbol);
 	} else {
