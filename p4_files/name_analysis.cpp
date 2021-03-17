@@ -32,7 +32,7 @@ bool VarDeclNode::nameAnalysis(SymbolTable * symTab){
 		Report::fatal(line(), col(),"Invalid type in declaration");
 
 	}
-	SemSymbol * varSymbol = new VarSymbol(myType);
+	SemSymbol * varSymbol = new SemSymbol(myType);
 	myID->assignSymbol(varSymbol);
 	if (!symTab->getScope()->setEntry(ID()->getName(), varSymbol))
 	{
@@ -51,7 +51,7 @@ bool FormalDeclNode::nameAnalysis(SymbolTable * symTab){
 		Report::fatal(line(), col(),"Invalid type in declaration");
 
 	}
-	SemSymbol * varSymbol = new VarSymbol(myType);
+	SemSymbol * varSymbol = new SemSymbol(myType);
 	myID->assignSymbol(varSymbol);
 	if (!symTab->getScope()->setEntry(ID()->getName(), varSymbol))
 	{
@@ -66,8 +66,14 @@ bool FnDeclNode::nameAnalysis(SymbolTable * symTab){
 	bool nameAnalysisOk = true;
 	bool formalAnalysisOk = true;
 	bool stmtAnalysisOk = true;
-	SemSymbol* fnSymbol = new FnSymbol(myRetType);
+	SemSymbol* fnSymbol = new SemSymbol(myRetType);
 	myID->assignSymbol(fnSymbol);
+	if (myRetType->getTypeName() == "array")
+	{
+		nameAnalysisOk = false;
+		Report::fatal(line(), col(),"Invalid type in declaration");
+
+	}
 	if (!symTab->getScope()->setEntry(ID()->getName(), fnSymbol)) //Is the new identifer unique?
 	{
 		nameAnalysisOk=false;//Keep nameAnalysisOk here to avoid accidentally setting it back to true

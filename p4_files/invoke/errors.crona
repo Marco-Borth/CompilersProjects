@@ -26,3 +26,11 @@ f:void(){
 		}
 	}
 }
+
+main:int(x:bool, y:byte, z:int){
+
+}
+
+
+
+follow:void(){}

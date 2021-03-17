@@ -10,18 +10,16 @@ TypeNode* SemSymbol::getType() const
 	return (m_type);
 }
 
-std::string VarSymbol::print() const{
-	//Var Print funct goes here.
-}
-
-void FnSymbol::addType(TypeNode* inp_type){
+void SemSymbol::addType(TypeNode* inp_type){
 	m_type_list->push_front(inp_type);
 }
 
+/*
 std::string FnSymbol::print() const
 {
 	//Fn Print funct goes here.
 }
+*/
 
 
 ScopeTable::ScopeTable(){

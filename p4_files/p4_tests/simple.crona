@@ -1,13 +1,3 @@
 glob:bool;
 global1:int;
 global2:int;
-
-
-
-main:int(x:bool, y:byte, z:int){
-	
-}
-
-
-
-f:void(){}
