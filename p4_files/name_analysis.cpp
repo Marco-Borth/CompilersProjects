@@ -238,16 +238,14 @@ bool IfElseStmtNode::nameAnalysis(SymbolTable * symTab) {
 
 bool WhileStmtNode::nameAnalysis(SymbolTable * symTab) {
 	bool nameAnalysisOk = true;
-	//SemSymbol * Symbol = new SemSymbol();
-	//Symbol->setEntry(myCond);
-	//symTab->getScope()->setEntry("while", Symbol);
+	nameAnalysisOk = nameAnalysisOk && myCond->nameAnalysis(symTab);
+	if(nameAnalysisOk) {
+		ScopeTable * Scope = new ScopeTable();
+		symTab->setEntry(Scope);
 
-	ScopeTable * Scope = new ScopeTable();
-
-	symTab->setEntry(Scope);
-
-	for (auto stmt : *myBody) {
-		nameAnalysisOk = stmt->nameAnalysis(symTab) && nameAnalysisOk;
+		for (auto stmt : *myBody) {
+			nameAnalysisOk = stmt->nameAnalysis(symTab) && nameAnalysisOk;
+		}
 	}
 
 	return nameAnalysisOk;
@@ -261,8 +259,29 @@ bool CallStmtNode::nameAnalysis(SymbolTable * symTab) {
 	return myCallExp->nameAnalysis(symTab);;
 }
 
+bool UnaryExpNode::nameAnalysis(SymbolTable * symTab) {
+	return myExp->nameAnalysis(symTab);
+}
+
+bool BinaryExpNode::nameAnalysis(SymbolTable * symTab) {
+	return myExp1->nameAnalysis(symTab) && myExp2->nameAnalysis(symTab);
+}
+
+bool AssignExpNode::nameAnalysis(SymbolTable * symTab) {
+	return myDst->nameAnalysis(symTab) && mySrc->nameAnalysis(symTab);
+}
+
 bool CallExpNode::nameAnalysis(SymbolTable * symTab) {
-	return myID->nameAnalysis(symTab);;
+	bool nameAnalysisOk = true;
+	nameAnalysisOk = nameAnalysisOk && myID->nameAnalysis(symTab);
+
+	if(nameAnalysisOk) {
+		for (auto exp : * myArgs) {
+			nameAnalysisOk = nameAnalysisOk && exp->nameAnalysis(symTab);
+		}
+	}
+
+	return nameAnalysisOk;
 }
 
 bool IndexNode::nameAnalysis(SymbolTable * symTab) {
