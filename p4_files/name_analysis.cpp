@@ -111,6 +111,8 @@ bool FnDeclNode::nameAnalysis(SymbolTable * symTab){
 	fnSymbol->setEntry(myRetType);
 
 	symTab->getScope()->setEntry(ID()->getName(), fnSymbol);
+	
+	id->assignSymbol(fnSymbol);
 
 	ScopeTable * Scope = new ScopeTable();
 
