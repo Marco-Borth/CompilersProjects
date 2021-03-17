@@ -19,21 +19,29 @@ namespace crona{
 // variable, function, etc. Semantic symbols
 // exist for the lifetime of a scope in the
 // symbol table.
-class SemSymbol {
+class SemSymbol { //Abstract Parent SemSymbol class
 	public:
-		SemSymbol();
-		//Build a destructor to deallocate the dynamic list
-		bool isEmpty() const;
-		TypeNode * getFIFO() const;
-		void setEntry (TypeNode * inp_type_entry);
-	private:
-		std::list<TypeNode*>* m_type_list;
-		std::string myType;
-	//TODO add the fields that
-	// each semantic symbol should track
-	// (i.e. the kind of the symbol (either a variable or function)
-	// and functions to get/set those fields
+		SemSymbol() {};
 };
+
+class VarSymbol : SemSymbol
+{
+public:
+	VarSymbol(TypeNode* inp_type); //Passes in the type of the variable at instantiation.
+	TypeNode* getType() const; //Retrieve the type of var symbol.
+private:
+	TypeNode* m_type;
+};
+
+class FnSymbol : SemSymbol
+{
+public:
+	FnSymbol();
+	void addType (TypeNode * inp_type);
+	std::list<TypeNode*>* getTypeList () const;
+private:
+	std::list<TypeNode*>* m_type_list;
+}
 
 //A single scope. The symbol table is broken down into a
 // chain of scope tables, and each scope table holds
