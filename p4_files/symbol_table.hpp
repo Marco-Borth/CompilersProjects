@@ -21,27 +21,31 @@ namespace crona{
 // symbol table.
 class SemSymbol { //Abstract Parent SemSymbol class
 	public:
-		SemSymbol() {};
+		SemSymbol(TypeNode* inp_type);
+		TypeNode* getMyType() const; //Retrieve the type.
+		virtual std::string print() const =0;
+	protected:
+		TypeNode* m_type;
 };
 
 class VarSymbol : SemSymbol
 {
 public:
-	VarSymbol(TypeNode* inp_type); //Passes in the type of the variable at instantiation.
-	TypeNode* getType() const; //Retrieve the type of var symbol.
-private:
-	TypeNode* m_type;
+	VarSymbol(TypeNode* inp_type)
+	: SemSymbol(inp_type) {}
+	std::string print () const override; // "("m_type->getTypeName()")"
 };
 
 class FnSymbol : SemSymbol
 {
 public:
-	FnSymbol();
+	FnSymbol(TypeNode* inp_type)
+	: SemSymbol(inp_type) {}
 	void addType (TypeNode * inp_type);
-	std::list<TypeNode*>* getTypeList () const;
+	std::string print () const override;
 private:
 	std::list<TypeNode*>* m_type_list;
-};
+}
 
 //A single scope. The symbol table is broken down into a
 // chain of scope tables, and each scope table holds
@@ -52,7 +56,7 @@ private:
 class ScopeTable {
 	public:
 		ScopeTable();
-		void setEntry(std::string idLit, SemSymbol * symbol);
+		bool setEntry(std::string idLit, SemSymbol * symbol);
 		//TODO: add functions for looking up symbols
 		// and/or returning information to indicate
 		// that the symbol does not exist within the
@@ -66,6 +70,7 @@ class SymbolTable{
 		SymbolTable();
 		void setEntry(ScopeTable* scopeTableEntry);
 		ScopeTable* getScope() const;
+		void removeHead();
 		//TODO: add functions to create a new ScopeTable
 		// when a new scope is entered, drop a ScopeTable
 		// when a scope is exited, etc.
