@@ -1,30 +1,38 @@
 #include "symbol_table.hpp"
 namespace crona{
 
-SemSymbol::SemSymbol(){
-	m_type_list = new std::list<TypeNode*>;
+SemSymbol::SemSymbol(TypeNode* inp_type)
+{
+	m_type = inp_type;
+}
+TypeNode* SemSymbol::getType() const
+{
+	return (m_type);
 }
 
-bool SemSymbol::isEmpty() const{
-	return (m_type_list->empty()); //If the list of type nodes is empty then return true.
+std::string VarSymbol::print() const{
+	//Var Print funct goes here.
 }
 
-TypeNode * SemSymbol::getFIFO() const{
-	return (m_type_list->back()); //Returns the first in element of the type node list.
+void FnSymbol::addType(TypeNode* inp_type){
+	m_type_list->push_front(inp_type);
 }
 
-void SemSymbol::setEntry (TypeNode * inp_type_entry){
-	m_type_list->push_front(inp_type_entry);
+std::string FnSymbol::print() const
+{
+	//Fn Print funct goes here.
 }
-
 
 
 ScopeTable::ScopeTable(){
 	symbols = new HashMap<std::string, SemSymbol *>();
 }
 
-void ScopeTable::setEntry(std::string idLit, SemSymbol * symbol){
-	symbols->emplace(idLit, symbol);
+bool ScopeTable::setEntry(std::string idLit, SemSymbol * symbol){
+	return (symbols->emplace(idLit, symbol).second); //Emplace returns a pair. The first element
+	//is an iterator relating where the new pair we added is located in the scope table hash. The
+	//second element is true the entry was unique and added or false if the entry was not unique
+	//and not added to the hash map.
 }
 
 HashMap<std::string, SemSymbol *> * ScopeTable::returnHashMap(){
@@ -49,6 +57,9 @@ void SymbolTable::setEntry (ScopeTable* scopeTableEntry){
 
 ScopeTable* SymbolTable::getScope() const{
 	return (scopeTableChain->front()); //Returns the lastest element pushed of the ScopeTable list.
+}
+void SymbolTable::removeHead(){
+		scopeTableChain->pop_front();
 }
 
 std::list<ScopeTable *> * SymbolTable::returnList() {

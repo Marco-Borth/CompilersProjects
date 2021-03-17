@@ -19,21 +19,33 @@ namespace crona{
 // variable, function, etc. Semantic symbols
 // exist for the lifetime of a scope in the
 // symbol table.
-class SemSymbol {
+class SemSymbol { //Abstract Parent SemSymbol class
 	public:
-		SemSymbol();
-		//Build a destructor to deallocate the dynamic list
-		bool isEmpty() const;
-		TypeNode * getFIFO() const;
-		void setEntry (TypeNode * inp_type_entry);
-	private:
-		std::list<TypeNode*>* m_type_list;
-		std::string myType;
-	//TODO add the fields that
-	// each semantic symbol should track
-	// (i.e. the kind of the symbol (either a variable or function)
-	// and functions to get/set those fields
+		SemSymbol(TypeNode* inp_type);
+		TypeNode* getMyType() const; //Retrieve the type.
+		virtual std::string print() const =0;
+	protected:
+		TypeNode* m_type;
 };
+
+class VarSymbol : SemSymbol
+{
+public:
+	VarSymbol(TypeNode* inp_type)
+	: SemSymbol(inp_type) {}
+	std::string print () const override; // "("m_type->getTypeName()")"
+};
+
+class FnSymbol : SemSymbol
+{
+public:
+	FnSymbol(TypeNode* inp_type)
+	: SemSymbol(inp_type) {}
+	void addType (TypeNode * inp_type);
+	std::string print () const override;
+private:
+	std::list<TypeNode*>* m_type_list;
+}
 
 //A single scope. The symbol table is broken down into a
 // chain of scope tables, and each scope table holds
@@ -44,7 +56,7 @@ class SemSymbol {
 class ScopeTable {
 	public:
 		ScopeTable();
-		void setEntry(std::string idLit, SemSymbol * symbol);
+		bool setEntry(std::string idLit, SemSymbol * symbol);
 		HashMap<std::string, SemSymbol *> * returnHashMap();
 		//TODO: add functions for looking up symbols
 		// and/or returning information to indicate
@@ -60,6 +72,7 @@ class SymbolTable{
 		void setEntry(ScopeTable* scopeTableEntry);
 		ScopeTable* getScope() const;
 		std::list<ScopeTable *> * returnList();
+		void removeHead();
 		//TODO: add functions to create a new ScopeTable
 		// when a new scope is entered, drop a ScopeTable
 		// when a scope is exited, etc.

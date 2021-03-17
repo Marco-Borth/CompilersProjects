@@ -17,7 +17,7 @@ bool ProgramNode::nameAnalysis(SymbolTable * symTab){
 	bool res = true;
 	ScopeTable * Scope = new ScopeTable();
 
-	symTab->setEntry(Scope);
+	symTab->setEntry(Scope); //Pushes new scope to table of scopes
 	for (auto global : *myGlobals){
 		res = global->nameAnalysis(symTab) && res;
 	}
@@ -26,73 +26,39 @@ bool ProgramNode::nameAnalysis(SymbolTable * symTab){
 
 bool VarDeclNode::nameAnalysis(SymbolTable * symTab){
 	bool nameAnalysisOk = true;
-	SemSymbol * varSymbol = new SemSymbol();
-	IDNode * id = ID();
+	if (myType->getTypeName() == "void")
+	{
+		nameAnalysisOk = false;
+		Report::fatal(line(), col(),"Invalid type in declaration");
 
-	varSymbol->setEntry(getTypeNode());
-
-	/*
-	ScopeTable * varScope = symTab->getScope();
-	for (auto symbol : *varScope) {
-		if (ID() == symbol->getFIFO()->myID) {
-			nameAnalysisOk = false;
-		}
 	}
-	*/
-
-	std::string symbolMsg = ID()->getName();
-	symbolMsg == symbolMsg + "()";
-
-	id->assignSymbol(varSymbol);
-
-	if (nameAnalysisOk) {
-		symTab->getScope()->setEntry(ID()->getName(), varSymbol);
-	} else {
-		/*
-		throw new ToDoError("[DELETE ME] I'm a varDecl"
-			" you should add the information from my"
-			" subtree to the symbolTable as a new"
-			" entry in the current scope table"
-		);
-		*/
+	SemSymbol * varSymbol = new VarSymbol(myType);
+	myID->assignSymbol(varSymbol);
+	if (!symTab->getScope()->setEntry(ID()->getName(), varSymbol))
+	{
+		nameAnalysisOk=false;//Keep nameAnalysisOk here to avoid accidentally setting it back to true
+		//if it void type but unique.
+		Report::fatal(line(), col(), "Multiply declared identifier");
 	}
-
 	return nameAnalysisOk;
 }
 
 bool FormalDeclNode::nameAnalysis(SymbolTable * symTab){
 	bool nameAnalysisOk = true;
-	SemSymbol * varSymbol = new SemSymbol();
-	IDNode * id = ID();
+	if (myType->getTypeName() == "void")
+	{
+		nameAnalysisOk = false;
+		Report::fatal(line(), col(),"Invalid type in declaration");
 
-	varSymbol->setEntry(getTypeNode());
-
-	/*
-	ScopeTable * varScope = symTab->getScope();
-	for (auto symbol : *varScope) {
-		if (ID() == symbol->getFIFO()->myID) {
-			nameAnalysisOk = false;
-		}
 	}
-	*/
-
-	std::string symbolMsg = ID()->getName();
-	symbolMsg == symbolMsg + "()";
-
-	id->assignSymbol(varSymbol);
-
-	if (nameAnalysisOk) {
-		symTab->getScope()->setEntry(ID()->getName(), varSymbol);
-	} else {
-		/*
-		throw new ToDoError("[DELETE ME] I'm a varDecl"
-			" you should add the information from my"
-			" subtree to the symbolTable as a new"
-			" entry in the current scope table"
-		);
-		*/
+	SemSymbol * varSymbol = new VarSymbol(myType);
+	myID->assignSymbol(varSymbol);
+	if (!symTab->getScope()->setEntry(ID()->getName(), varSymbol))
+	{
+		nameAnalysisOk=false;//Keep nameAnalysisOk here to avoid accidentally setting it back to true
+		//if it void type but unique.
+		Report::fatal(line(), col(), "Multiply declared identifier");
 	}
-
 	return nameAnalysisOk;
 }
 
@@ -100,54 +66,32 @@ bool FnDeclNode::nameAnalysis(SymbolTable * symTab){
 	bool nameAnalysisOk = true;
 	bool formalAnalysisOk = true;
 	bool stmtAnalysisOk = true;
-	SemSymbol * fnSymbol = new SemSymbol();
-	IDNode * id = ID();
+	SemSymbol* fnSymbol = new FnSymbol(myRetType);
+	myID->assignSymbol(fnSymbol);
+	if (!symTab->getScope()->setEntry(ID()->getName(), fnSymbol)) //Is the new identifer unique?
+	{
+		nameAnalysisOk=false;//Keep nameAnalysisOk here to avoid accidentally setting it back to true
+		//if it void type but unique.
+		Report::fatal(line(), col(), "Multiply declared identifier");
+	}
 
-	/*
-	for (auto symbol : *varScope) {
-		if (ID() == symbol->myID) {
-			nameAnalysisOk = false;
+	symTab->setEntry(new ScopeTable()); //Change scope.
+
+	for (auto formal : *myFormals){ //Are the formals valid unique identifers?
+		if (!formal->nameAnalysis(symTab))
+		{
+			formalAnalysisOk = false;
+		}
+		fnSymbol->addType(formal->getTypeNode());
+	}
+	for (auto stmt : *myBody){ //Do the stmts pass name analysis?
+		if (!stmt->nameAnalysis(symTab))
+		{
+			stmtAnalysisOk = false;
 		}
 	}
-	*/
-
-	for (auto formal : *myFormals){
-		fnSymbol->setEntry(formal->getTypeNode());
-	}
-
-	fnSymbol->setEntry(myRetType);
-
-	symTab->getScope()->setEntry(ID()->getName(), fnSymbol);
-
-	id->assignSymbol(fnSymbol);
-
-	ScopeTable * Scope = new ScopeTable();
-
-	symTab->setEntry(Scope);
-
-	for (auto formal : *myFormals){
-		formalAnalysisOk = formal->nameAnalysis(symTab) && formalAnalysisOk;
-	}
-
-	stmtAnalysisOk = formalAnalysisOk && stmtAnalysisOk;
-
-	if (stmtAnalysisOk) {
-		for (auto stmt : *myBody) {
-			//if(stmt->)
-			stmtAnalysisOk = stmt->nameAnalysis(symTab) && stmtAnalysisOk;
-		}
-	}
-
-	nameAnalysisOk = stmtAnalysisOk && nameAnalysisOk;
-	if(!nameAnalysisOk) {
-		/*
-		throw new ToDoError("[DELETE ME] I'm an fnDecl."
-			" you should add and make current a new"
-			" scope table for my body"
-		);
-		*/
-	}
-	return nameAnalysisOk;
+	symTab->removeHead();
+	return (nameAnalysisOk && formalAnalysisOk && stmtAnalysisOk);
 }
 
 bool AssignStmtNode::nameAnalysis(SymbolTable * symTab) {
