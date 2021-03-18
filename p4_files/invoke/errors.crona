@@ -3,10 +3,14 @@ holdup:int array[4](bog : bool){}
 f:void(){
   f();
 	read b;
-	write "alpha dog";
 	global1 = a;
 
-	while(TRUE) {
+
+
+	a++;
+	write b;
+
+  while(TRUE) {
 		blanko : byte;
 		if (a == 4) {
 			bigsby : bool;

@@ -12,8 +12,13 @@ main:int(){
 	return 4;
 	return a;
 
-	a++;
 	hockey[2]--;
+
+	write "alpha dog";
+
+	while(true){}
+
+	while(a > 0){}
 }
 
 f:void(){}
