@@ -1,33 +1,15 @@
 holdup:int array[4](bog : bool){}
 
 f:void(){
-  f();
-	read b;
-	global1 = a;
-
-
-
-	a++;
-	write b;
-
-  while(TRUE) {
-		blanko : byte;
-		if (a == 4) {
-			bigsby : bool;
-		}
-
-		if (b == "harold") {
-			walter : string;
-		} else {
-			walter : int;
-		}
-	}
+  b:string
+  barry: void;
+  if (b == "harold") {
+    walter : string;
+  } else {
+    walter : int;
+  }
 }
 
 main:int(x:bool, y:byte, z:int){
 
 }
-
-
-
-follow:void(){}
