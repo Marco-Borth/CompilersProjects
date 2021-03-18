@@ -76,6 +76,10 @@ bool FnDeclNode::nameAnalysis(SymbolTable * symTab){
 
 	}
 
+	for (auto formal : *myFormals){ //Are the formals valid unique identifers?
+		fnSymbol->addType(formal->getTypeNode());
+	}
+
 	if (!symTab->getScope()->setEntry(ID()->getName(), fnSymbol)) //Is the new identifer unique?
 	{
 		nameAnalysisOk=false;//Keep nameAnalysisOk here to avoid accidentally setting it back to true
@@ -83,18 +87,14 @@ bool FnDeclNode::nameAnalysis(SymbolTable * symTab){
 		Report::fatal(line(), col(), "Multiply declared identifier");
 	}
 
-	for (auto formal : *myFormals){ //Are the formals valid unique identifers?
-		fnSymbol->addType(formal->getTypeNode());
-	}
-
-	for (auto formal : *myFormals){ //Are the formals valid unique identifers?
-		formalAnalysisOk = formal->nameAnalysis(symTab) && formalAnalysisOk;
-	}
-
 	symTab->setEntry(new ScopeTable()); //Change scope.
 
+	for (auto formal : *myFormals){ //Are the formals valid unique identifers?
+		nameAnalysisOk = formal->nameAnalysis(symTab) && nameAnalysisOk;
+	}
+
 	for (auto stmt : *myBody){ //Do the stmts pass name analysis?
-		stmtAnalysisOk = stmt->nameAnalysis(symTab) && stmtAnalysisOk;
+		nameAnalysisOk = stmt->nameAnalysis(symTab) && nameAnalysisOk;
 	}
 	//symTab->removeHead();
 	return (nameAnalysisOk && formalAnalysisOk && stmtAnalysisOk);
