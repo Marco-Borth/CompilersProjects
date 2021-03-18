@@ -1,3 +1,19 @@
 glob:bool;
 global1:int;
 global2:int;
+
+main:int(){
+	a:int;
+	return "asdf";
+
+	hockey:int array [10];
+	b:string;
+
+	return 4;
+	return a;
+
+	a++;
+	hockey[2]--;
+}
+
+f:void(){}

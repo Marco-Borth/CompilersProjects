@@ -67,6 +67,7 @@ bool FnDeclNode::nameAnalysis(SymbolTable * symTab){
 	bool formalAnalysisOk = true;
 	bool stmtAnalysisOk = true;
 	SemSymbol* fnSymbol = new SemSymbol(myRetType);
+	fnSymbol->convertToFn();
 	myID->assignSymbol(fnSymbol);
 	if (myRetType->getTypeName() == "array")
 	{
@@ -74,6 +75,7 @@ bool FnDeclNode::nameAnalysis(SymbolTable * symTab){
 		Report::fatal(line(), col(),"Invalid type in declaration");
 
 	}
+
 	if (!symTab->getScope()->setEntry(ID()->getName(), fnSymbol)) //Is the new identifer unique?
 	{
 		nameAnalysisOk=false;//Keep nameAnalysisOk here to avoid accidentally setting it back to true
@@ -81,22 +83,20 @@ bool FnDeclNode::nameAnalysis(SymbolTable * symTab){
 		Report::fatal(line(), col(), "Multiply declared identifier");
 	}
 
-	symTab->setEntry(new ScopeTable()); //Change scope.
-
 	for (auto formal : *myFormals){ //Are the formals valid unique identifers?
-		if (!formal->nameAnalysis(symTab))
-		{
-			formalAnalysisOk = false;
-		}
 		fnSymbol->addType(formal->getTypeNode());
 	}
-	for (auto stmt : *myBody){ //Do the stmts pass name analysis?
-		if (!stmt->nameAnalysis(symTab))
-		{
-			stmtAnalysisOk = false;
-		}
+
+	for (auto formal : *myFormals){ //Are the formals valid unique identifers?
+		formalAnalysisOk = formal->nameAnalysis(symTab) && formalAnalysisOk;
 	}
-	symTab->removeHead();
+
+	symTab->setEntry(new ScopeTable()); //Change scope.
+
+	for (auto stmt : *myBody){ //Do the stmts pass name analysis?
+		stmtAnalysisOk = stmt->nameAnalysis(symTab) && stmtAnalysisOk;
+	}
+	//symTab->removeHead();
 	return (nameAnalysisOk && formalAnalysisOk && stmtAnalysisOk);
 }
 

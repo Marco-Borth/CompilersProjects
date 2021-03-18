@@ -4,7 +4,21 @@ namespace crona{
 SemSymbol::SemSymbol(TypeNode* inp_type)
 {
 	m_type = inp_type;
+	fnSymbol = false;
 }
+
+void SemSymbol::convertToFn() {
+	fnSymbol = true;
+}
+
+bool SemSymbol::isFn(){
+	return fnSymbol;
+}
+
+std::list<TypeNode*>* SemSymbol::returnList() {
+	return m_type_list;
+}
+
 TypeNode* SemSymbol::getType() const
 {
 	return (m_type);

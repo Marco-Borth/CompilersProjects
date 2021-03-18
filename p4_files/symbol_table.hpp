@@ -15,8 +15,6 @@ using namespace std;
 
 namespace crona{
 
-class SemSymbol;
-
 //A semantic symbol, which represents a single
 // variable, function, etc. Semantic symbols
 // exist for the lifetime of a scope in the
@@ -26,11 +24,14 @@ class SemSymbol { //Abstract Parent SemSymbol class
 	public:
 		SemSymbol(TypeNode* inp_type);
 		TypeNode* getType() const; //Retrieve the type.
+		void convertToFn();
+		bool isFn();
+		std::list<TypeNode*>* returnList();
 		void addType (TypeNode * inp_type);
-		std::string print() const;
-	protected:
+	private:
 		std::list<TypeNode*>* m_type_list;
 		TypeNode* m_type;
+		bool fnSymbol;
 };
 
 /*

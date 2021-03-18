@@ -1,14 +1,7 @@
+holdup:int array[4](bog : bool){}
+
 f:void(){
   f();
-
-  a:int;
-	hockey:int array [10];
-	b:string;
-	return 4;
-	return "asdf";
-	return a;
-	a++;
-	hockey[2]--;
 	read b;
 	write "alpha dog";
 	global1 = a;
