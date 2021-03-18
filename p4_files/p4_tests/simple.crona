@@ -2,12 +2,43 @@ glob:bool;
 global1:int;
 global2:int;
 
-
-
-main:int(x:bool, y:byte, z:int){
-	
-}
-
-
-
 f:void(){}
+
+main:int(){
+	a:int;
+	return "asdf";
+
+	hockey:int array [10];
+	b:string;
+
+	return 4;
+	return a;
+
+	hockey[2]--;
+
+	a++;
+	write b;
+	read b;
+	global1 = a;
+
+	write "alpha dog";
+
+	while(true){
+		blanko : byte;
+
+		if (b == "harold") {
+			walter : string;
+		} else {
+			bosco : int;
+		}
+	}
+
+	while(a > 0){
+		if (a == 4) {
+			bigsby : bool;
+			a = (-a) + bigsby;
+		}
+	}
+
+	f();
+}

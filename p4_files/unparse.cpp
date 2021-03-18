@@ -307,10 +307,36 @@ void IDNode::unparse(std::ostream& out, int indent){
 	out << name;
 	if(mySymbol != nullptr) {
 		out << "(";
-		TypeNode * symbolType = mySymbol->getType();
-		symbolType->unparse(out, 0);
+		if (mySymbol->isFn() == true) {
+			if (mySymbol->returnList() != nullptr) {
+				for(auto type : *mySymbol->returnList()) {
+					type->unparse(out, 0);
+					out << ", ";
+				}
+			}
+			out <<"->";
+		}
+		mySymbol->getType()->unparse(out, 0);
 		out << ")";
 	}
+	/*
+	if(mySymbol != nullptr) {
+		out << "(";
+
+		if (mySymbol->getReturnType() != nullptr) {
+			for(auto type : *mySymbol->returnList()) {
+				type->unparse(out, 0);
+				out << ", ";
+			}
+			out <<"->";
+			mySymbol->getType()->unparse(out, 0);
+
+			mySymbol->getType()->unparse(out, 0);
+			out << ")";
+		} else {
+		}
+	}
+	*/
 }
 
 void HavocNode::unparse(std::ostream& out, int indent){

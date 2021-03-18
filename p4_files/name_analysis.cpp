@@ -32,7 +32,7 @@ bool VarDeclNode::nameAnalysis(SymbolTable * symTab){
 		Report::fatal(line(), col(),"Invalid type in declaration");
 
 	}
-	SemSymbol * varSymbol = new VarSymbol(myType);
+	SemSymbol * varSymbol = new SemSymbol(myType);
 	myID->assignSymbol(varSymbol);
 	if (!symTab->getScope()->setEntry(ID()->getName(), varSymbol))
 	{
@@ -51,7 +51,7 @@ bool FormalDeclNode::nameAnalysis(SymbolTable * symTab){
 		Report::fatal(line(), col(),"Invalid type in declaration");
 
 	}
-	SemSymbol * varSymbol = new VarSymbol(myType);
+	SemSymbol * varSymbol = new SemSymbol(myType);
 	myID->assignSymbol(varSymbol);
 	if (!symTab->getScope()->setEntry(ID()->getName(), varSymbol))
 	{
@@ -66,8 +66,16 @@ bool FnDeclNode::nameAnalysis(SymbolTable * symTab){
 	bool nameAnalysisOk = true;
 	bool formalAnalysisOk = true;
 	bool stmtAnalysisOk = true;
-	SemSymbol* fnSymbol = new FnSymbol(myRetType);
+	SemSymbol* fnSymbol = new SemSymbol(myRetType);
+	fnSymbol->convertToFn();
 	myID->assignSymbol(fnSymbol);
+	if (myRetType->getTypeName() == "array")
+	{
+		nameAnalysisOk = false;
+		Report::fatal(line(), col(),"Invalid type in declaration");
+
+	}
+
 	if (!symTab->getScope()->setEntry(ID()->getName(), fnSymbol)) //Is the new identifer unique?
 	{
 		nameAnalysisOk=false;//Keep nameAnalysisOk here to avoid accidentally setting it back to true
@@ -75,85 +83,54 @@ bool FnDeclNode::nameAnalysis(SymbolTable * symTab){
 		Report::fatal(line(), col(), "Multiply declared identifier");
 	}
 
-	symTab->setEntry(new ScopeTable()); //Change scope.
-
 	for (auto formal : *myFormals){ //Are the formals valid unique identifers?
-		if (!formal->nameAnalysis(symTab))
-		{
-			formalAnalysisOk = false;
-		}
 		fnSymbol->addType(formal->getTypeNode());
 	}
-	for (auto stmt : *myBody){ //Do the stmts pass name analysis?
-		if (!stmt->nameAnalysis(symTab))
-		{
-			stmtAnalysisOk = false;
-		}
+
+	for (auto formal : *myFormals){ //Are the formals valid unique identifers?
+		formalAnalysisOk = formal->nameAnalysis(symTab) && formalAnalysisOk;
 	}
-	symTab->removeHead();
+
+	symTab->setEntry(new ScopeTable()); //Change scope.
+
+	for (auto stmt : *myBody){ //Do the stmts pass name analysis?
+		stmtAnalysisOk = stmt->nameAnalysis(symTab) && stmtAnalysisOk;
+	}
+	//symTab->removeHead();
 	return (nameAnalysisOk && formalAnalysisOk && stmtAnalysisOk);
 }
 
 bool AssignStmtNode::nameAnalysis(SymbolTable * symTab) {
-	bool nameAnalysisOk = true;
-	//SemSymbol * Symbol = new SemSymbol();
-	//Symbol->setEntry(myExp);
-	//symTab->getScope()->setEntry("assign", Symbol);
-	//myExp->nameAnalysis(symTab);
-	return nameAnalysisOk;
+	return myExp->nameAnalysis(symTab);
 }
 
 bool ReadStmtNode::nameAnalysis(SymbolTable * symTab) {
-	bool nameAnalysisOk = true;
-	//SemSymbol * Symbol = new SemSymbol();
-	//Symbol->setEntry(myDst);
-	//symTab->getScope()->setEntry("read", Symbol);
-	//myExp->nameAnalysis(symTab);
-	return nameAnalysisOk;
+	return myDst->nameAnalysis(symTab);
 }
 
 bool WriteStmtNode::nameAnalysis(SymbolTable * symTab) {
-	bool nameAnalysisOk = true;
-	//SemSymbol * Symbol = new SemSymbol();
-	//Symbol->setEntry(mySrc);
-	//symTab->getScope()->setEntry("write", Symbol);
-	//myExp->nameAnalysis(symTab);
-	return nameAnalysisOk;
+	return mySrc->nameAnalysis(symTab);
 }
 
 bool PostDecStmtNode::nameAnalysis(SymbolTable * symTab) {
-	bool nameAnalysisOk = true;
-	//SemSymbol * Symbol = new SemSymbol();
-	//Symbol->setEntry(myLVal);
-	//symTab->getScope()->setEntry("inc", Symbol);
-	//myExp->nameAnalysis(symTab);
-
-
 	return myLVal->nameAnalysis(symTab);
-	//return nameAnalysisOk;
 }
 
 bool PostIncStmtNode::nameAnalysis(SymbolTable * symTab) {
-	bool nameAnalysisOk = true;
-	//SemSymbol * Symbol = new SemSymbol();
-	//Symbol->setEntry(myLVal);
-	//symTab->getScope()->setEntry("dec", Symbol);
-	//myExp->nameAnalysis(symTab);
-	return nameAnalysisOk;
+	return myLVal->nameAnalysis(symTab);
 }
 
 bool IfStmtNode::nameAnalysis(SymbolTable * symTab) {
 	bool nameAnalysisOk = true;
-	//SemSymbol * Symbol = new SemSymbol();
-	//Symbol->setEntry(myCond);
-	//symTab->getScope()->setEntry("if", Symbol);
+	nameAnalysisOk = nameAnalysisOk && myCond->nameAnalysis(symTab);
 
-	ScopeTable * Scope = new ScopeTable();
+	if(nameAnalysisOk) {
+		ScopeTable * Scope = new ScopeTable();
+		symTab->setEntry(Scope);
 
-	symTab->setEntry(Scope);
-
-	for (auto stmt : *myBody) {
-		nameAnalysisOk = stmt->nameAnalysis(symTab) && nameAnalysisOk;
+		for (auto stmt : *myBody) {
+			nameAnalysisOk = stmt->nameAnalysis(symTab) && nameAnalysisOk;
+		}
 	}
 
 	return nameAnalysisOk;
@@ -161,20 +138,19 @@ bool IfStmtNode::nameAnalysis(SymbolTable * symTab) {
 
 bool IfElseStmtNode::nameAnalysis(SymbolTable * symTab) {
 	bool nameAnalysisOk = true;
-	//SemSymbol * Symbol = new SemSymbol();
-	//Symbol->setEntry(myCond);
-	//symTab->getScope()->setEntry("ifElse", Symbol);
+	nameAnalysisOk = nameAnalysisOk && myCond->nameAnalysis(symTab);
 
-	ScopeTable * Scope = new ScopeTable();
+	if(nameAnalysisOk) {
+		ScopeTable * Scope = new ScopeTable();
+		symTab->setEntry(Scope);
 
-	symTab->setEntry(Scope);
+		for (auto stmt : *myBodyTrue) {
+			nameAnalysisOk = stmt->nameAnalysis(symTab) && nameAnalysisOk;
+		}
 
-	for (auto stmt : *myBodyTrue) {
-		nameAnalysisOk = stmt->nameAnalysis(symTab) && nameAnalysisOk;
-	}
-
-	for (auto stmt : *myBodyFalse) {
-		nameAnalysisOk = stmt->nameAnalysis(symTab) && nameAnalysisOk;
+		for (auto stmt : *myBodyFalse) {
+			nameAnalysisOk = stmt->nameAnalysis(symTab) && nameAnalysisOk;
+		}
 	}
 
 	return nameAnalysisOk;
@@ -183,6 +159,7 @@ bool IfElseStmtNode::nameAnalysis(SymbolTable * symTab) {
 bool WhileStmtNode::nameAnalysis(SymbolTable * symTab) {
 	bool nameAnalysisOk = true;
 	nameAnalysisOk = nameAnalysisOk && myCond->nameAnalysis(symTab);
+
 	if(nameAnalysisOk) {
 		ScopeTable * Scope = new ScopeTable();
 		symTab->setEntry(Scope);
@@ -247,7 +224,5 @@ bool IDNode::nameAnalysis(SymbolTable * symTab) {
 
 	return nameAnalysisOk;
 }
-
-
 
 }

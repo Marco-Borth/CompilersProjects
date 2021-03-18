@@ -19,10 +19,27 @@ namespace crona{
 // variable, function, etc. Semantic symbols
 // exist for the lifetime of a scope in the
 // symbol table.
+
+class SemSymbol { //Abstract Parent SemSymbol class
+	public:
+		SemSymbol(TypeNode* inp_type);
+		TypeNode* getType() const; //Retrieve the type.
+		void convertToFn();
+		bool isFn();
+		std::list<TypeNode*>* returnList();
+		void addType (TypeNode * inp_type);
+	private:
+		std::list<TypeNode*>* m_type_list;
+		TypeNode* m_type;
+		bool fnSymbol;
+};
+
+/*
 class SemSymbol { //Abstract Parent SemSymbol class
 	public:
 		SemSymbol(TypeNode* inp_type);
 		TypeNode* getMyType() const; //Retrieve the type.
+		virtual void addType (TypeNode * inp_type) = 0;
 		virtual std::string print() const =0;
 	protected:
 		TypeNode* m_type;
@@ -32,7 +49,7 @@ class VarSymbol : SemSymbol
 {
 public:
 	VarSymbol(TypeNode* inp_type)
-	: SemSymbol(inp_type) {}
+	: SemSymbol(inp_type) { }
 	std::string print () const override; // "("m_type->getTypeName()")"
 };
 
@@ -40,12 +57,13 @@ class FnSymbol : SemSymbol
 {
 public:
 	FnSymbol(TypeNode* inp_type)
-	: SemSymbol(inp_type) {}
-	void addType (TypeNode * inp_type);
+	: SemSymbol(inp_type) { }
 	std::string print () const override;
+	void addType (TypeNode * inp_type) override;
 private:
 	std::list<TypeNode*>* m_type_list;
-}
+};
+*/
 
 //A single scope. The symbol table is broken down into a
 // chain of scope tables, and each scope table holds
