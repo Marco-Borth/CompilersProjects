@@ -308,14 +308,12 @@ void IDNode::unparse(std::ostream& out, int indent){
 	if(mySymbol != nullptr) {
 		out << "(";
 		if (mySymbol->isFn() == true) {
-			/*
 			if (mySymbol->returnList() != nullptr) {
 				for(auto type : *mySymbol->returnList()) {
 					type->unparse(out, 0);
 					out << ", ";
 				}
 			}
-			*/
 			out <<"->";
 		}
 		mySymbol->getType()->unparse(out, 0);
