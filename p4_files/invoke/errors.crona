@@ -13,8 +13,3 @@ f:void(){
 boxcars:int(x:bool, y:byte, z:int){
 
 }
-
-
-boxcars:int(x:bool){
-
-}

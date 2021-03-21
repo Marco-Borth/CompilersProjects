@@ -4,6 +4,7 @@
 
 /* Get our custom yyFlexScanner subclass */
 #include "scanner.hpp"
+#pragma clang diagnostic ignored "-Wdeprecated-register"
 #undef YY_DECL
 #define YY_DECL int crona::Scanner::yylex(crona::Parser::semantic_type * const lval)
 
@@ -30,7 +31,7 @@ WHITESPACE [\040\t]
 LETTER [a-zA-Z]
 ESCAPEE [nt'"\\]
 
- /* */ 
+ /* */
 BADESC [\\][^nt"\\\n]?
 STRELT ([\\][nt"\\])|([^\\\n"])
 
@@ -79,8 +80,8 @@ read		    { return makeBareToken(TokenKind::READ);}
 ">"		        { return makeBareToken(TokenKind::GREATER); }
 ">="          { return makeBareToken(TokenKind::GREATEREQ); }
 "="		        { return makeBareToken(TokenKind::ASSIGN); }
-({LETTER}|_)({LETTER}|{DIGIT}|_)* { 
-		            yylval->transToken = 
+({LETTER}|_)({LETTER}|{DIGIT}|_)* {
+		            yylval->transToken =
 		            new IDToken(lineNum, colNum, yytext);
 		            colNum += yyleng;
 		            return TokenKind::ID; }
@@ -104,13 +105,13 @@ read		    { return makeBareToken(TokenKind::READ);}
 				            errIntOverflow(lineNum, colNum);
 				            intVal = INT_MAX;
 			          }
-			          yylval->transToken = 
+			          yylval->transToken =
 			              new IntLitToken(lineNum, colNum, intVal);
 			          colNum += yyleng;
 			          return TokenKind::INTLITERAL; }
 
 \"{STRELT}*\" {
-   		          yylval->transToken = 
+   		          yylval->transToken =
                     new StrToken(lineNum, colNum, yytext);
 		            this->colNum += yyleng;
 		            return TokenKind::STRLITERAL; }
@@ -147,13 +148,13 @@ read		    { return makeBareToken(TokenKind::READ);}
 
 [ \t]+	      { colNum += yyleng; }
 
-([/][/])[^\n]*	  { /* Comment. No token, but update the 
-                   char num in the very specific case of 
-                   getting the correct EOF position */ 
+([/][/])[^\n]*	  { /* Comment. No token, but update the
+                   char num in the very specific case of
+                   getting the correct EOF position */
 		   colNum += yyleng;
 		  }
 
-.		          { 
+.		          {
 				errIllegal(lineNum, colNum, yytext);
 			    #if EXIT_ON_ERR
 			    exit(1);
