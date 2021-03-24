@@ -80,6 +80,73 @@ void AssignStmtNode::typeAnalysis(TypeAnalysis * ta){
 	}
 }
 
+void IfStmtNode::typeAnalysis(TypeAnalysis * ta){
+	myCond->typeAnalysis(ta);
+
+	const DataType * condType = ta->nodeType(myCond);
+
+	if(condType->getString() == "bool") {
+		for (auto stmt : *myBody){
+			stmt->typeAnalysis(ta);
+		}
+		ta->nodeType(this, condType);
+		return;
+	} else {
+		ta->errIfCond(this->line(), this->col());
+		ta->nodeType(this, ErrorType::produce());
+	}
+
+	//It can be a bit of a pain to write
+	// "const DataType *" everywhere, so here
+	// the use of auto is used instead to tell the
+	// compiler to figure out what the subType variable
+	// should be
+	auto subType = ta->nodeType(myCond);
+
+	// As error returns null if subType is NOT an error type
+	// otherwise, it returns the subType itself
+	if (subType->asError()){
+		ta->nodeType(this, subType);
+	} else {
+		ta->nodeType(this, BasicType::produce(VOID));
+	}
+}
+
+void IfElseStmtNode::typeAnalysis(TypeAnalysis * ta){
+	myCond->typeAnalysis(ta);
+
+	const DataType * condType = ta->nodeType(myCond);
+
+	if(condType->getString() == "bool") {
+		for (auto stmt : *myBodyTrue){
+			stmt->typeAnalysis(ta);
+		}
+		for (auto stmt : *myBodyFalse){
+			stmt->typeAnalysis(ta);
+		}
+		ta->nodeType(this, condType);
+		return;
+	} else {
+		ta->errIfCond(this->line(), this->col());
+		ta->nodeType(this, ErrorType::produce());
+	}
+
+	//It can be a bit of a pain to write
+	// "const DataType *" everywhere, so here
+	// the use of auto is used instead to tell the
+	// compiler to figure out what the subType variable
+	// should be
+	auto subType = ta->nodeType(myCond);
+
+	// As error returns null if subType is NOT an error type
+	// otherwise, it returns the subType itself
+	if (subType->asError()){
+		ta->nodeType(this, subType);
+	} else {
+		ta->nodeType(this, BasicType::produce(VOID));
+	}
+}
+
 void ExpNode::typeAnalysis(TypeAnalysis * ta){
 	TODO("Override me in the subclass");
 }
@@ -104,6 +171,7 @@ void AssignExpNode::typeAnalysis(TypeAnalysis * ta){
 		ta->nodeType(this, tgtType);
 		return;
 	}
+
 	//Some functions are already defined for you to
 	// report type errors. Note that these functions
 	// also tell the typeAnalysis object that the
@@ -127,6 +195,86 @@ void WriteStmtNode::typeAnalysis(TypeAnalysis * ta){
 	// 	return;
 	// }
 	// ta->errWriteVoid(this->line(), this->col()); //Outputs error message if we try to write a void value.
+
+void BinaryExpNode::typeAnalysis(TypeAnalysis * ta){
+	TODO("Override me in the subclass");
+}
+
+void ArithmeticExpNode::typeAnalysis(TypeAnalysis * ta){
+	myExp1->typeAnalysis(ta);
+	myExp2->typeAnalysis(ta);
+
+	const DataType * myExp1Type = ta->nodeType(myExp1);
+	const DataType * myExp2Type = ta->nodeType(myExp2);
+
+	if (myExp1Type == myExp2Type &&
+			myExp1Type->getString() == "int" &&
+			myExp2Type->getString() == "int"){
+		ta->nodeType(this, myExp1Type);
+		return;
+	}
+	ta->errMathOpd(this->line(), this->col());
+	ta->nodeType(this, ErrorType::produce());
+}
+
+void RelationalExpNode::typeAnalysis(TypeAnalysis * ta){
+	myExp1->typeAnalysis(ta);
+	myExp2->typeAnalysis(ta);
+
+	const DataType * myExp1Type = ta->nodeType(myExp1);
+	const DataType * myExp2Type = ta->nodeType(myExp2);
+
+	if (myExp1Type == myExp2Type &&
+			myExp1Type->getString() == "int" &&
+			myExp2Type->getString() == "int"){
+		ta->nodeType(this, BasicType::produce(BOOL));
+		return;
+	}
+	ta->errRelOpd(this->line(), this->col());
+	ta->nodeType(this, ErrorType::produce());
+}
+
+void LogicalExpNode::typeAnalysis(TypeAnalysis * ta){
+	myExp1->typeAnalysis(ta);
+	myExp2->typeAnalysis(ta);
+
+	const DataType * myExp1Type = ta->nodeType(myExp1);
+	const DataType * myExp2Type = ta->nodeType(myExp2);
+
+	if (myExp1Type == myExp2Type &&
+			myExp1Type->getString() == "bool" &&
+			myExp2Type->getString() == "bool"){
+		ta->nodeType(this, myExp1Type);
+		return;
+	}
+	ta->errLogicOpd(this->line(), this->col());
+	ta->nodeType(this, ErrorType::produce());
+}
+
+void NotNode::typeAnalysis(TypeAnalysis * ta){
+	myExp->typeAnalysis(ta);
+
+	const DataType * myExpType = ta->nodeType(myExp);
+
+	if (myExpType->getString() == "bool"){
+		ta->nodeType(this, myExpType);
+		return;
+	}
+	ta->errLogicOpd(this->line(), this->col());
+	ta->nodeType(this, ErrorType::produce());
+}
+
+void NegNode::typeAnalysis(TypeAnalysis * ta){
+	myExp->typeAnalysis(ta);
+
+	const DataType * myExpType = ta->nodeType(myExp);
+
+	if (myExpType->getString() == "int"){
+		ta->nodeType(this, myExpType);
+		return;
+	}
+	ta->errMathOpd(this->line(), this->col());
+	ta->nodeType(this, ErrorType::produce());
 }
 
 void DeclNode::typeAnalysis(TypeAnalysis * ta){
@@ -154,6 +302,7 @@ void IntLitNode::typeAnalysis(TypeAnalysis * ta){
 }
 
 void TrueNode::typeAnalysis(TypeAnalysis * ta){
+
 	// TrueNodes never fail their type analysis and always
 	// yield the type BOOl
 	ta->nodeType(this, BasicType::produce(BOOL));
