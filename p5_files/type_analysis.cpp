@@ -186,6 +186,16 @@ void AssignExpNode::typeAnalysis(TypeAnalysis * ta){
 	ta->nodeType(this, ErrorType::produce());
 }
 
+void WriteStmtNode::typeAnalysis(TypeAnalysis * ta){
+	// mySrc->typeAnalysis(ta); //Sets an entry in the Type Hash Table nodeToType
+	// const DataType * tgtType = ta->nodeType(mySrc); //Retrieves the DataType in the hash table
+	// if (tgtType->getString() != "void")
+	// {
+	// 	ta->nodeType(this, tgtType);
+	// 	return;
+	// }
+	// ta->errWriteVoid(this->line(), this->col()); //Outputs error message if we try to write a void value.
+
 void BinaryExpNode::typeAnalysis(TypeAnalysis * ta){
 	TODO("Override me in the subclass");
 }
@@ -292,15 +302,26 @@ void IntLitNode::typeAnalysis(TypeAnalysis * ta){
 }
 
 void TrueNode::typeAnalysis(TypeAnalysis * ta){
-	// IntLits never fail their type analysis and always
-	// yield the type INT
+
+	// TrueNodes never fail their type analysis and always
+	// yield the type BOOl
 	ta->nodeType(this, BasicType::produce(BOOL));
 }
 
 void FalseNode::typeAnalysis(TypeAnalysis * ta){
-	// IntLits never fail their type analysis and always
-	// yield the type INT
+	// FalseNodes never fail their type analysis and always
+	// yield the type BOOl
 	ta->nodeType(this, BasicType::produce(BOOL));
 }
+
+void HavocNode::typeAnalysis(TypeAnalysis * ta){
+	// HavocNodes never fail their type analysis and always
+	// yield the type BOOl
+	ta->nodeType(this, BasicType::produce(BOOL));
+}
+
+// void LValNode::typeAnalysis(TypeAnalysis * ta){
+//
+// }
 
 }
