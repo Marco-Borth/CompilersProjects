@@ -6,4 +6,13 @@ fn:void(){
 	b = true - false;
 	b = true * false;
 	b = false / true;
+
+	if(a == b){}
+	if(a != b){}
+
+	if(a > b){}
+	if(a <= b){}
+
+	if(a >= b){}
+	if(a < b){}
 }
