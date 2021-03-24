@@ -80,6 +80,38 @@ void AssignStmtNode::typeAnalysis(TypeAnalysis * ta){
 	}
 }
 
+void IfStmtNode::typeAnalysis(TypeAnalysis * ta){
+	myCond->typeAnalysis(ta);
+
+	const DataType * condType = ta->nodeType(myCond);
+
+	if(condType->getString() == "bool") {
+		for (auto stmt : *myBody){
+			stmt->typeAnalysis(ta);
+		}
+		ta->nodeType(this, condType);
+		return;
+	} else {
+		ta->errIfCond(this->line(), this->col());
+		ta->nodeType(this, ErrorType::produce());
+	}
+
+	//It can be a bit of a pain to write
+	// "const DataType *" everywhere, so here
+	// the use of auto is used instead to tell the
+	// compiler to figure out what the subType variable
+	// should be
+	auto subType = ta->nodeType(myCond);
+
+	// As error returns null if subType is NOT an error type
+	// otherwise, it returns the subType itself
+	if (subType->asError()){
+		ta->nodeType(this, subType);
+	} else {
+		ta->nodeType(this, BasicType::produce(VOID));
+	}
+}
+
 void ExpNode::typeAnalysis(TypeAnalysis * ta){
 	TODO("Override me in the subclass");
 }
@@ -129,15 +161,31 @@ void ArithmeticExpNode::typeAnalysis(TypeAnalysis * ta){
 
 	const DataType * myExp1Type = ta->nodeType(myExp1);
 	const DataType * myExp2Type = ta->nodeType(myExp2);
-	IntLitNode * intNode = new IntLitNode(0, 0, 0);
-	intNode->typeAnalysis(ta);
-	const DataType * intType = ta->nodeType(intNode);
 
-	if (myExp1Type == myExp2Type && myExp1Type->getString() == "int"){
+	if (myExp1Type == myExp2Type &&
+			myExp1Type->getString() == "int" &&
+			myExp2Type->getString() == "int"){
 		ta->nodeType(this, myExp1Type);
 		return;
 	}
 	ta->errMathOpd(this->line(), this->col());
+	ta->nodeType(this, ErrorType::produce());
+}
+
+void ComparisonExpNode::typeAnalysis(TypeAnalysis * ta){
+	myExp1->typeAnalysis(ta);
+	myExp2->typeAnalysis(ta);
+
+	const DataType * myExp1Type = ta->nodeType(myExp1);
+	const DataType * myExp2Type = ta->nodeType(myExp2);
+
+	if (myExp1Type == myExp2Type &&
+			myExp1Type->getString() == "int" &&
+			myExp2Type->getString() == "int"){
+		ta->nodeType(this, BasicType::produce(BOOL));
+		return;
+	}
+	ta->errRelOpd(this->line(), this->col());
 	ta->nodeType(this, ErrorType::produce());
 }
 

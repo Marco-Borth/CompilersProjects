@@ -7,4 +7,13 @@ fn:int(){
 	b = a + 5;
 	a = a * 10;
 	a = a / (b - 2);
+
+	if(a == b){}
+	if(a != b){}
+
+	if(a > b){}
+	if(a <= b){}
+
+	if(a >= b){}
+	if(a < b){}
 }

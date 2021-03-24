@@ -229,6 +229,7 @@ public:
 	: StmtNode(l, c), myCond(condIn), myBody(bodyIn){ }
 	void unparse(std::ostream& out, int indent) override;
 	bool nameAnalysis(SymbolTable * symTab) override;
+	virtual void typeAnalysis(TypeAnalysis *) override;
 private:
 	ExpNode * myCond;
 	std::list<StmtNode *> * myBody;
@@ -344,47 +345,54 @@ public:
 	void unparse(std::ostream& out, int indent) override;
 };
 
-class EqualsNode : public BinaryExpNode{
+class ComparisonExpNode : public BinaryExpNode{
+public:
+	ComparisonExpNode(size_t lIn, size_t cIn, ExpNode * lhs, ExpNode * rhs)
+	: BinaryExpNode(lIn, cIn, lhs, rhs) { }
+	virtual void typeAnalysis(TypeAnalysis *) override;
+};
+
+class EqualsNode : public ComparisonExpNode{
 public:
 	EqualsNode(size_t l, size_t c, ExpNode * e1, ExpNode * e2)
-	: BinaryExpNode(l, c, e1, e2){ }
+	: ComparisonExpNode(l, c, e1, e2){ }
 	void unparse(std::ostream& out, int indent) override;
 };
 
-class NotEqualsNode : public BinaryExpNode{
+class NotEqualsNode : public ComparisonExpNode{
 public:
 	NotEqualsNode(size_t l, size_t c, ExpNode * e1, ExpNode * e2)
-	: BinaryExpNode(l, c, e1, e2){ }
+	: ComparisonExpNode(l, c, e1, e2){ }
 	void unparse(std::ostream& out, int indent) override;
 };
 
-class LessNode : public BinaryExpNode{
+class LessNode : public ComparisonExpNode{
 public:
 	LessNode(size_t lineIn, size_t colIn,
 		ExpNode * exp1, ExpNode * exp2)
-	: BinaryExpNode(lineIn, colIn, exp1, exp2){ }
+	: ComparisonExpNode(lineIn, colIn, exp1, exp2){ }
 	void unparse(std::ostream& out, int indent) override;
 };
 
-class LessEqNode : public BinaryExpNode{
+class LessEqNode : public ComparisonExpNode{
 public:
 	LessEqNode(size_t l, size_t c, ExpNode * e1, ExpNode * e2)
-	: BinaryExpNode(l, c, e1, e2){ }
+	: ComparisonExpNode(l, c, e1, e2){ }
 	void unparse(std::ostream& out, int indent) override;
 };
 
-class GreaterNode : public BinaryExpNode{
+class GreaterNode : public ComparisonExpNode{
 public:
 	GreaterNode(size_t lineIn, size_t colIn,
 		ExpNode * exp1, ExpNode * exp2)
-	: BinaryExpNode(lineIn, colIn, exp1, exp2){ }
+	: ComparisonExpNode(lineIn, colIn, exp1, exp2){ }
 	void unparse(std::ostream& out, int indent) override;
 };
 
-class GreaterEqNode : public BinaryExpNode{
+class GreaterEqNode : public ComparisonExpNode{
 public:
 	GreaterEqNode(size_t l, size_t c, ExpNode * e1, ExpNode * e2)
-	: BinaryExpNode(l, c, e1, e2){ }
+	: ComparisonExpNode(l, c, e1, e2){ }
 	void unparse(std::ostream& out, int indent) override;
 };
 
