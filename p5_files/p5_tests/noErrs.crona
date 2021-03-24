@@ -26,4 +26,6 @@ fn:int(){
 	if(true && true){}
 	if(true || false){}
 	if(!true){}
+
+	write a;
 }
