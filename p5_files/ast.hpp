@@ -39,7 +39,7 @@ public:
 	}
 	virtual bool nameAnalysis(SymbolTable *) = 0;
 	//Note that there is no ASTNode::typeAnalysis. To allow
-	// for different type signatures, type analysis is 
+	// for different type signatures, type analysis is
 	// implemented as needed in various subclasses
 private:
 	size_t l;
@@ -140,25 +140,25 @@ private:
 
 class FormalDeclNode : public VarDeclNode{
 public:
-	FormalDeclNode(size_t lIn, size_t cIn, TypeNode * type, IDNode * id) 
+	FormalDeclNode(size_t lIn, size_t cIn, TypeNode * type, IDNode * id)
 	: VarDeclNode(lIn, cIn, type, id){ }
 	void unparse(std::ostream& out, int indent) override;
 };
 
 class FnDeclNode : public DeclNode{
 public:
-	FnDeclNode(size_t lIn, size_t cIn, 
+	FnDeclNode(size_t lIn, size_t cIn,
 	  IDNode * idIn, TypeNode * retTypeIn,
 	  std::list<FormalDeclNode *> * formalsIn,
 	  std::list<StmtNode *> * bodyIn)
-	: DeclNode(lIn, cIn), 
+	: DeclNode(lIn, cIn),
 	  myID(idIn), myRetType(retTypeIn),
 	  myFormals(formalsIn), myBody(bodyIn){ }
 	IDNode * ID() const { return myID; }
 	std::list<FormalDeclNode *> * getFormals() const{
 		return myFormals;
 	}
-	virtual TypeNode * getRetTypeNode() { 
+	virtual TypeNode * getRetTypeNode() {
 		return myRetType;
 	}
 	void unparse(std::ostream& out, int indent) override;
@@ -236,7 +236,7 @@ private:
 
 class IfElseStmtNode : public StmtNode{
 public:
-	IfElseStmtNode(size_t l, size_t c, ExpNode * condIn, 
+	IfElseStmtNode(size_t l, size_t c, ExpNode * condIn,
 	  std::list<StmtNode *> * bodyTrueIn,
 	  std::list<StmtNode *> * bodyFalseIn)
 	: StmtNode(l, c), myCond(condIn),
@@ -251,7 +251,7 @@ private:
 
 class WhileStmtNode : public StmtNode{
 public:
-	WhileStmtNode(size_t l, size_t c, ExpNode * condIn, 
+	WhileStmtNode(size_t l, size_t c, ExpNode * condIn,
 	  std::list<StmtNode *> * bodyIn)
 	: StmtNode(l, c), myCond(condIn), myBody(bodyIn){ }
 	void unparse(std::ostream& out, int indent) override;
@@ -289,36 +289,44 @@ public:
 	BinaryExpNode(size_t lIn, size_t cIn, ExpNode * lhs, ExpNode * rhs)
 	: ExpNode(lIn, cIn), myExp1(lhs), myExp2(rhs) { }
 	bool nameAnalysis(SymbolTable * symTab) override;
+	virtual void typeAnalysis(TypeAnalysis *) override;
 protected:
 	ExpNode * myExp1;
 	ExpNode * myExp2;
 };
 
-class PlusNode : public BinaryExpNode{
+class ArithmeticExpNode : public BinaryExpNode{
+public:
+	ArithmeticExpNode(size_t lIn, size_t cIn, ExpNode * lhs, ExpNode * rhs)
+	: BinaryExpNode(lIn, cIn, lhs, rhs) { }
+	virtual void typeAnalysis(TypeAnalysis *) override;
+};
+
+class PlusNode : public ArithmeticExpNode{
 public:
 	PlusNode(size_t l, size_t c, ExpNode * e1, ExpNode * e2)
-	: BinaryExpNode(l, c, e1, e2){ }
+	: ArithmeticExpNode(l, c, e1, e2){ }
 	void unparse(std::ostream& out, int indent) override;
 };
 
-class MinusNode : public BinaryExpNode{
+class MinusNode : public ArithmeticExpNode{
 public:
 	MinusNode(size_t l, size_t c, ExpNode * e1, ExpNode * e2)
-	: BinaryExpNode(l, c, e1, e2){ }
+	: ArithmeticExpNode(l, c, e1, e2){ }
 	void unparse(std::ostream& out, int indent) override;
 };
 
-class TimesNode : public BinaryExpNode{
+class TimesNode : public ArithmeticExpNode{
 public:
 	TimesNode(size_t l, size_t c, ExpNode * e1In, ExpNode * e2In)
-	: BinaryExpNode(l, c, e1In, e2In){ }
+	: ArithmeticExpNode(l, c, e1In, e2In){ }
 	void unparse(std::ostream& out, int indent) override;
 };
 
-class DivideNode : public BinaryExpNode{
+class DivideNode : public ArithmeticExpNode{
 public:
 	DivideNode(size_t lIn, size_t cIn, ExpNode * e1, ExpNode * e2)
-	: BinaryExpNode(lIn, cIn, e1, e2){ }
+	: ArithmeticExpNode(lIn, cIn, e1, e2){ }
 	void unparse(std::ostream& out, int indent) override;
 };
 
@@ -352,7 +360,7 @@ public:
 
 class LessNode : public BinaryExpNode{
 public:
-	LessNode(size_t lineIn, size_t colIn, 
+	LessNode(size_t lineIn, size_t colIn,
 		ExpNode * exp1, ExpNode * exp2)
 	: BinaryExpNode(lineIn, colIn, exp1, exp2){ }
 	void unparse(std::ostream& out, int indent) override;
@@ -367,7 +375,7 @@ public:
 
 class GreaterNode : public BinaryExpNode{
 public:
-	GreaterNode(size_t lineIn, size_t colIn, 
+	GreaterNode(size_t lineIn, size_t colIn,
 		ExpNode * exp1, ExpNode * exp2)
 	: BinaryExpNode(lineIn, colIn, exp1, exp2){ }
 	void unparse(std::ostream& out, int indent) override;
@@ -382,7 +390,7 @@ public:
 
 class UnaryExpNode : public ExpNode {
 public:
-	UnaryExpNode(size_t lIn, size_t cIn, ExpNode * expIn) 
+	UnaryExpNode(size_t lIn, size_t cIn, ExpNode * expIn)
 	: ExpNode(lIn, cIn){
 		this->myExp = expIn;
 	}
@@ -412,8 +420,8 @@ class VoidTypeNode : public TypeNode{
 public:
 	VoidTypeNode(size_t l, size_t c) : TypeNode(l, c){}
 	void unparse(std::ostream& out, int indent) override;
-	virtual DataType * getType() override { 
-		return BasicType::VOID(); 
+	virtual DataType * getType() override {
+		return BasicType::VOID();
 	}
 };
 
@@ -511,6 +519,7 @@ public:
 	}
 	void unparse(std::ostream& out, int indent) override;
 	bool nameAnalysis(SymbolTable * symTab) override;
+	virtual void typeAnalysis(TypeAnalysis *) override;
 };
 
 class FalseNode : public ExpNode{
@@ -521,6 +530,7 @@ public:
 	}
 	void unparse(std::ostream& out, int indent) override;
 	bool nameAnalysis(SymbolTable * symTab) override;
+	virtual void typeAnalysis(TypeAnalysis *) override;
 };
 
 class CallStmtNode : public StmtNode{
@@ -536,4 +546,3 @@ private:
 } //End namespace crona
 
 #endif
-

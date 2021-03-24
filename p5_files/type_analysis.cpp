@@ -9,10 +9,10 @@ namespace crona{
 
 TypeAnalysis * TypeAnalysis::build(NameAnalysis * nameAnalysis){
 	//To emphasize that type analysis depends on name analysis
-	// being complete, a name analysis must be supplied for 
+	// being complete, a name analysis must be supplied for
 	// type analysis to be performed.
 	TypeAnalysis * typeAnalysis = new TypeAnalysis();
-	auto ast = nameAnalysis->ast;	
+	auto ast = nameAnalysis->ast;
 	typeAnalysis->ast = ast;
 
 	ast->typeAnalysis(typeAnalysis);
@@ -36,7 +36,7 @@ void ProgramNode::typeAnalysis(TypeAnalysis * ta){
 
 	//The type of the program node will never
 	// be needed. We can just set it to VOID
-	//(Alternatively, we could make our type 
+	//(Alternatively, we could make our type
 	// be error if the DeclListNode is an error)
 	ta->nodeType(this, BasicType::produce(VOID));
 }
@@ -45,8 +45,8 @@ void FnDeclNode::typeAnalysis(TypeAnalysis * ta){
 
 	//HINT: you might want to change the signature for
 	// typeAnalysis on FnBodyNode to take a second
-	// argument which is the type of the current 
-	// function. This will help you to know at a 
+	// argument which is the type of the current
+	// function. This will help you to know at a
 	// return statement whether the return type matches
 	// the current function
 
@@ -64,7 +64,7 @@ void StmtNode::typeAnalysis(TypeAnalysis * ta){
 void AssignStmtNode::typeAnalysis(TypeAnalysis * ta){
 	myExp->typeAnalysis(ta);
 
-	//It can be a bit of a pain to write 
+	//It can be a bit of a pain to write
 	// "const DataType *" everywhere, so here
 	// the use of auto is used instead to tell the
 	// compiler to figure out what the subType variable
@@ -85,7 +85,7 @@ void ExpNode::typeAnalysis(TypeAnalysis * ta){
 }
 
 void AssignExpNode::typeAnalysis(TypeAnalysis * ta){
-	//TODO: Note that this function is incomplete. 
+	//TODO: Note that this function is incomplete.
 	// and needs additional code
 
 	//Do typeAnalysis on the subexpressions
@@ -95,7 +95,7 @@ void AssignExpNode::typeAnalysis(TypeAnalysis * ta){
 	const DataType * tgtType = ta->nodeType(myDst);
 	const DataType * srcType = ta->nodeType(mySrc);
 
-	//While incomplete, this gives you one case for 
+	//While incomplete, this gives you one case for
 	// assignment: if the types are exactly the same
 	// it is usually ok to do the assignment. One
 	// exception is that if both types are function
@@ -104,7 +104,7 @@ void AssignExpNode::typeAnalysis(TypeAnalysis * ta){
 		ta->nodeType(this, tgtType);
 		return;
 	}
-	
+
 	//Some functions are already defined for you to
 	// report type errors. Note that these functions
 	// also tell the typeAnalysis object that the
@@ -119,12 +119,34 @@ void AssignExpNode::typeAnalysis(TypeAnalysis * ta){
 	ta->nodeType(this, ErrorType::produce());
 }
 
+void BinaryExpNode::typeAnalysis(TypeAnalysis * ta){
+	TODO("Override me in the subclass");
+}
+
+void ArithmeticExpNode::typeAnalysis(TypeAnalysis * ta){
+	myExp1->typeAnalysis(ta);
+	myExp2->typeAnalysis(ta);
+
+	const DataType * myExp1Type = ta->nodeType(myExp1);
+	const DataType * myExp2Type = ta->nodeType(myExp2);
+	IntLitNode * intNode = new IntLitNode(0, 0, 0);
+	intNode->typeAnalysis(ta);
+	const DataType * intType = ta->nodeType(intNode);
+
+	if (myExp1Type == myExp2Type && myExp1Type->getString() == "int"){
+		ta->nodeType(this, myExp1Type);
+		return;
+	}
+	ta->errMathOpd(this->line(), this->col());
+	ta->nodeType(this, ErrorType::produce());
+}
+
 void DeclNode::typeAnalysis(TypeAnalysis * ta){
 	TODO("Override me in the subclass");
 }
 
 void VarDeclNode::typeAnalysis(TypeAnalysis * ta){
-	// VarDecls always pass type analysis, since they 
+	// VarDecls always pass type analysis, since they
 	// are never used in an expression. You may choose
 	// to type them void (like this), as discussed in class
 	ta->nodeType(this, BasicType::produce(VOID));
@@ -141,6 +163,18 @@ void IntLitNode::typeAnalysis(TypeAnalysis * ta){
 	// IntLits never fail their type analysis and always
 	// yield the type INT
 	ta->nodeType(this, BasicType::produce(INT));
+}
+
+void TrueNode::typeAnalysis(TypeAnalysis * ta){
+	// IntLits never fail their type analysis and always
+	// yield the type INT
+	ta->nodeType(this, BasicType::produce(BOOL));
+}
+
+void FalseNode::typeAnalysis(TypeAnalysis * ta){
+	// IntLits never fail their type analysis and always
+	// yield the type INT
+	ta->nodeType(this, BasicType::produce(BOOL));
 }
 
 }

@@ -2,4 +2,8 @@ a:int;
 b:bool;
 fn:void(){
 	a = b;
+	b = true + true;
+	b = true - false;
+	b = true * false;
+	b = false / true;
 }

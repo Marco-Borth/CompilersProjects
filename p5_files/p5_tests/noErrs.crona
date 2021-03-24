@@ -1,4 +1,10 @@
 fn:int(){
 	a:int;
 	a = 4;
+	b:int;
+	c: bool;
+	b = 2 + 5;
+	b = a + 5;
+	a = a * 10;
+	a = a / (b - 2);
 }
