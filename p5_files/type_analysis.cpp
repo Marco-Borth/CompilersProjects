@@ -80,6 +80,31 @@ void AssignStmtNode::typeAnalysis(TypeAnalysis * ta){
 	}
 }
 
+void WriteStmtNode::typeAnalysis(TypeAnalysis * ta){
+	mySrc->typeAnalysis(ta); //Sets an entry in the Type Hash Table nodeToType
+	const DataType * tgtType = ta->nodeType(mySrc); //Retrieves the DataType in the hash table
+	if (tgtType->getString() != "void") {
+		ta->nodeType(this, tgtType);
+	 	return;
+	}
+	ta->errWriteVoid(this->line(), this->col()); //Outputs error message if we try to write a void value.
+
+	//It can be a bit of a pain to write
+	// "const DataType *" everywhere, so here
+	// the use of auto is used instead to tell the
+	// compiler to figure out what the subType variable
+	// should be
+	auto subType = ta->nodeType(mySrc);
+
+	// As error returns null if subType is NOT an error type
+	// otherwise, it returns the subType itself
+	if (subType->asError()){
+		ta->nodeType(this, subType);
+	} else {
+		ta->nodeType(this, BasicType::produce(VOID));
+	}
+}
+
 void IfStmtNode::typeAnalysis(TypeAnalysis * ta){
 	myCond->typeAnalysis(ta);
 
@@ -185,16 +210,6 @@ void AssignExpNode::typeAnalysis(TypeAnalysis * ta){
 	// type must be done
 	ta->nodeType(this, ErrorType::produce());
 }
-
-void WriteStmtNode::typeAnalysis(TypeAnalysis * ta){
-	// mySrc->typeAnalysis(ta); //Sets an entry in the Type Hash Table nodeToType
-	// const DataType * tgtType = ta->nodeType(mySrc); //Retrieves the DataType in the hash table
-	// if (tgtType->getString() != "void")
-	// {
-	// 	ta->nodeType(this, tgtType);
-	// 	return;
-	// }
-	// ta->errWriteVoid(this->line(), this->col()); //Outputs error message if we try to write a void value.
 
 void BinaryExpNode::typeAnalysis(TypeAnalysis * ta){
 	TODO("Override me in the subclass");
@@ -302,7 +317,6 @@ void IntLitNode::typeAnalysis(TypeAnalysis * ta){
 }
 
 void TrueNode::typeAnalysis(TypeAnalysis * ta){
-
 	// TrueNodes never fail their type analysis and always
 	// yield the type BOOl
 	ta->nodeType(this, BasicType::produce(BOOL));
