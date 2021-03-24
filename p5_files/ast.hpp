@@ -244,6 +244,7 @@ public:
 	  myBodyTrue(bodyTrueIn), myBodyFalse(bodyFalseIn) { }
 	void unparse(std::ostream& out, int indent) override;
 	bool nameAnalysis(SymbolTable * symTab) override;
+	virtual void typeAnalysis(TypeAnalysis *) override;
 private:
 	ExpNode * myCond;
 	std::list<StmtNode *> * myBodyTrue;
@@ -331,68 +332,75 @@ public:
 	void unparse(std::ostream& out, int indent) override;
 };
 
-class AndNode : public BinaryExpNode{
+class LogicalExpNode : public BinaryExpNode{
 public:
-	AndNode(size_t l, size_t c, ExpNode * e1, ExpNode * e2)
-	: BinaryExpNode(l, c, e1, e2){ }
-	void unparse(std::ostream& out, int indent) override;
-};
-
-class OrNode : public BinaryExpNode{
-public:
-	OrNode(size_t l, size_t c, ExpNode * e1, ExpNode * e2)
-	: BinaryExpNode(l, c, e1, e2){ }
-	void unparse(std::ostream& out, int indent) override;
-};
-
-class ComparisonExpNode : public BinaryExpNode{
-public:
-	ComparisonExpNode(size_t lIn, size_t cIn, ExpNode * lhs, ExpNode * rhs)
+	LogicalExpNode(size_t lIn, size_t cIn, ExpNode * lhs, ExpNode * rhs)
 	: BinaryExpNode(lIn, cIn, lhs, rhs) { }
 	virtual void typeAnalysis(TypeAnalysis *) override;
 };
 
-class EqualsNode : public ComparisonExpNode{
+class AndNode : public LogicalExpNode{
+public:
+	AndNode(size_t l, size_t c, ExpNode * e1, ExpNode * e2)
+	: LogicalExpNode(l, c, e1, e2){ }
+	void unparse(std::ostream& out, int indent) override;
+};
+
+class OrNode : public LogicalExpNode{
+public:
+	OrNode(size_t l, size_t c, ExpNode * e1, ExpNode * e2)
+	: LogicalExpNode(l, c, e1, e2){ }
+	void unparse(std::ostream& out, int indent) override;
+};
+
+class RelationalExpNode : public BinaryExpNode{
+public:
+	RelationalExpNode(size_t lIn, size_t cIn, ExpNode * lhs, ExpNode * rhs)
+	: BinaryExpNode(lIn, cIn, lhs, rhs) { }
+	virtual void typeAnalysis(TypeAnalysis *) override;
+};
+
+class EqualsNode : public RelationalExpNode{
 public:
 	EqualsNode(size_t l, size_t c, ExpNode * e1, ExpNode * e2)
-	: ComparisonExpNode(l, c, e1, e2){ }
+	: RelationalExpNode(l, c, e1, e2){ }
 	void unparse(std::ostream& out, int indent) override;
 };
 
-class NotEqualsNode : public ComparisonExpNode{
+class NotEqualsNode : public RelationalExpNode{
 public:
 	NotEqualsNode(size_t l, size_t c, ExpNode * e1, ExpNode * e2)
-	: ComparisonExpNode(l, c, e1, e2){ }
+	: RelationalExpNode(l, c, e1, e2){ }
 	void unparse(std::ostream& out, int indent) override;
 };
 
-class LessNode : public ComparisonExpNode{
+class LessNode : public RelationalExpNode{
 public:
 	LessNode(size_t lineIn, size_t colIn,
 		ExpNode * exp1, ExpNode * exp2)
-	: ComparisonExpNode(lineIn, colIn, exp1, exp2){ }
+	: RelationalExpNode(lineIn, colIn, exp1, exp2){ }
 	void unparse(std::ostream& out, int indent) override;
 };
 
-class LessEqNode : public ComparisonExpNode{
+class LessEqNode : public RelationalExpNode{
 public:
 	LessEqNode(size_t l, size_t c, ExpNode * e1, ExpNode * e2)
-	: ComparisonExpNode(l, c, e1, e2){ }
+	: RelationalExpNode(l, c, e1, e2){ }
 	void unparse(std::ostream& out, int indent) override;
 };
 
-class GreaterNode : public ComparisonExpNode{
+class GreaterNode : public RelationalExpNode{
 public:
 	GreaterNode(size_t lineIn, size_t colIn,
 		ExpNode * exp1, ExpNode * exp2)
-	: ComparisonExpNode(lineIn, colIn, exp1, exp2){ }
+	: RelationalExpNode(lineIn, colIn, exp1, exp2){ }
 	void unparse(std::ostream& out, int indent) override;
 };
 
-class GreaterEqNode : public ComparisonExpNode{
+class GreaterEqNode : public RelationalExpNode{
 public:
 	GreaterEqNode(size_t l, size_t c, ExpNode * e1, ExpNode * e2)
-	: ComparisonExpNode(l, c, e1, e2){ }
+	: RelationalExpNode(l, c, e1, e2){ }
 	void unparse(std::ostream& out, int indent) override;
 };
 
@@ -414,6 +422,7 @@ public:
 	: UnaryExpNode(l, c, exp){ }
 	void unparse(std::ostream& out, int indent) override;
 	bool nameAnalysis(SymbolTable * symTab) override;
+	virtual void typeAnalysis(TypeAnalysis *) override;
 };
 
 class NotNode : public UnaryExpNode{
@@ -422,6 +431,7 @@ public:
 	: UnaryExpNode(lIn, cIn, exp){ }
 	void unparse(std::ostream& out, int indent) override;
 	bool nameAnalysis(SymbolTable * symTab) override;
+	virtual void typeAnalysis(TypeAnalysis *) override;
 };
 
 class VoidTypeNode : public TypeNode{
@@ -467,7 +477,6 @@ private:
 	size_t myLen;
 	TypeNode * myBase;
 };
-
 
 class AssignExpNode : public ExpNode{
 public:
