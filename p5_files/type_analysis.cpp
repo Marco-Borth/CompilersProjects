@@ -519,34 +519,34 @@ void NegNode::typeAnalysis(TypeAnalysis * ta){
 void DeclNode::typeAnalysis(TypeAnalysis * ta){
 	TODO("Override me in the subclass");
 }
-
-void PostDecStmtNode::typeAnalysis(TypeAnalysis * ta){
-	myLVal->typeAnalysis(ta);
-	const DataType * myLValType = ta->nodeType(myLVal);
-
-	if (myLValType->getString() == "int")
-	{
-		ta->nodeType(this, myLValType);
-		return;
-	}
-	ta->errMathOpd(this->line(), this->col());
-	ta->nodeType(this, ErrorType::produce());
-
-}
-
-void PostIncStmtNode::typeAnalysis(TypeAnalysis * ta){
-	myLVal->typeAnalysis(ta);
-	const DataType * myLValType = ta->nodeType(myLVal);
-
-	if (myLValType->getString() == "int")
-	{
-		ta->nodeType(this, myLValType);
-		return;
-	}
-	ta->errMathOpd(this->line(), this->col());
-	ta->nodeType(this, ErrorType::produce());
-
-}
+//Ignore for now. Already declared above.
+// void PostDecStmtNode::typeAnalysis(TypeAnalysis * ta){
+// 	myLVal->typeAnalysis(ta);
+// 	const DataType * myLValType = ta->nodeType(myLVal);
+//
+// 	if (myLValType->getString() == "int")
+// 	{
+// 		ta->nodeType(this, myLValType);
+// 		return;
+// 	}
+// 	ta->errMathOpd(this->line(), this->col());
+// 	ta->nodeType(this, ErrorType::produce());
+//
+// }
+//
+// void PostIncStmtNode::typeAnalysis(TypeAnalysis * ta){
+// 	myLVal->typeAnalysis(ta);
+// 	const DataType * myLValType = ta->nodeType(myLVal);
+//
+// 	if (myLValType->getString() == "int")
+// 	{
+// 		ta->nodeType(this, myLValType);
+// 		return;
+// 	}
+// 	ta->errMathOpd(this->line(), this->col());
+// 	ta->nodeType(this, ErrorType::produce());
+//
+// }
 
 void VarDeclNode::typeAnalysis(TypeAnalysis * ta){
 	// VarDecls always pass type analysis, since they
