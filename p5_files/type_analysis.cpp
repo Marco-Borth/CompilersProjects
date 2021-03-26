@@ -80,21 +80,15 @@ void AssignStmtNode::typeAnalysis(TypeAnalysis * ta){
 	}
 }
 
-void WriteStmtNode::typeAnalysis(TypeAnalysis * ta){
-	mySrc->typeAnalysis(ta); //Sets an entry in the Type Hash Table nodeToType
-	const DataType * tgtType = ta->nodeType(mySrc); //Retrieves the DataType in the hash table
-	if (tgtType->getString() != "void") {
-		ta->nodeType(this, tgtType);
-	 	return;
-	}
-	ta->errWriteVoid(this->line(), this->col()); //Outputs error message if we try to write a void value.
+void CallStmtNode::typeAnalysis(TypeAnalysis * ta){
+	myCallExp->typeAnalysis(ta);
 
 	//It can be a bit of a pain to write
 	// "const DataType *" everywhere, so here
 	// the use of auto is used instead to tell the
 	// compiler to figure out what the subType variable
 	// should be
-	auto subType = ta->nodeType(mySrc);
+	auto subType = ta->nodeType(myCallExp);
 
 	// As error returns null if subType is NOT an error type
 	// otherwise, it returns the subType itself
@@ -175,6 +169,185 @@ void IfElseStmtNode::typeAnalysis(TypeAnalysis * ta){
 	}
 }
 
+void WhileStmtNode::typeAnalysis(TypeAnalysis * ta){
+	myCond->typeAnalysis(ta);
+
+	const DataType * condType = ta->nodeType(myCond);
+
+	if(condType->getString() == "bool") {
+		for (auto stmt : *myBody){
+			stmt->typeAnalysis(ta);
+		}
+		ta->nodeType(this, condType);
+		return;
+	} else {
+		ta->errWhileCond(this->line(), this->col());
+		ta->nodeType(this, ErrorType::produce());
+	}
+
+	//It can be a bit of a pain to write
+	// "const DataType *" everywhere, so here
+	// the use of auto is used instead to tell the
+	// compiler to figure out what the subType variable
+	// should be
+	auto subType = ta->nodeType(myCond);
+
+	// As error returns null if subType is NOT an error type
+	// otherwise, it returns the subType itself
+	if (subType->asError()){
+		ta->nodeType(this, subType);
+	} else {
+		ta->nodeType(this, BasicType::produce(VOID));
+	}
+}
+
+void WriteStmtNode::typeAnalysis(TypeAnalysis * ta){
+	mySrc->typeAnalysis(ta); //Sets an entry in the Type Hash Table nodeToType
+	const DataType * tgtType = ta->nodeType(mySrc); //Retrieves the DataType in the hash table
+	if (tgtType->getString() != "void" || !(tgtType->isArray()) ) {
+		ta->nodeType(this, tgtType);
+	 	return;
+	} else if(tgtType->getString() == "void"){
+		ta->errWriteVoid(this->line(), this->col()); //Outputs error message if we try to write a void value.
+	} else {
+		ta->errWriteArray(this->line(), this->col()); //Outputs error message if we try to write a void value.
+	}
+
+	size_t found = tgtType->getString().find("->");
+  if (found != string::npos) {
+		ta->errWriteFn(this->line(), this->col()); //Outputs error message if we try to write a void value.
+	}
+
+
+	//It can be a bit of a pain to write
+	// "const DataType *" everywhere, so here
+	// the use of auto is used instead to tell the
+	// compiler to figure out what the subType variable
+	// should be
+	auto subType = ta->nodeType(mySrc);
+
+	// As error returns null if subType is NOT an error type
+	// otherwise, it returns the subType itself
+	if (subType->asError()){
+		ta->nodeType(this, subType);
+	} else {
+		ta->nodeType(this, BasicType::produce(VOID));
+	}
+}
+
+void ReadStmtNode::typeAnalysis(TypeAnalysis * ta){
+	myDst->typeAnalysis(ta); //Sets an entry in the Type Hash Table nodeToType
+	const DataType * tgtType = ta->nodeType(myDst); //Retrieves the DataType in the hash table
+	size_t found = tgtType->getString().find("->");
+  if (found != string::npos) {
+		ta->errReadFn(this->line(), this->col()); //Outputs error message if we try to write a void value.
+	} else {
+		ta->nodeType(this, tgtType);
+	 	return;
+	}
+
+	//It can be a bit of a pain to write
+	// "const DataType *" everywhere, so here
+	// the use of auto is used instead to tell the
+	// compiler to figure out what the subType variable
+	// should be
+	auto subType = ta->nodeType(myDst);
+
+	// As error returns null if subType is NOT an error type
+	// otherwise, it returns the subType itself
+	if (subType->asError()){
+		ta->nodeType(this, subType);
+	} else {
+		ta->nodeType(this, BasicType::produce(VOID));
+	}
+}
+
+/*
+void ReturnStmtNode::typeAnalysis(TypeAnalysis * ta){
+	myExp->typeAnalysis(ta); //Sets an entry in the Type Hash Table nodeToType
+	const DataType * tgtType = ta->nodeType(myExp); //Retrieves the DataType in the hash table
+	if (tgtType->getString() != "void" || !(tgtType->isArray()) ) {
+		ta->nodeType(this, tgtType);
+	 	return;
+	} else if(tgtType->getString() == "void"){
+		ta->errWriteVoid(this->line(), this->col()); //Outputs error message if we try to write a void value.
+	} else {
+		ta->errWriteArray(this->line(), this->col()); //Outputs error message if we try to write a void value.
+	}
+
+	size_t found = tgtType->getString().find("->");
+  if (found != string::npos) {
+		ta->errWriteFn(this->line(), this->col()); //Outputs error message if we try to write a void value.
+	}
+
+
+	//It can be a bit of a pain to write
+	// "const DataType *" everywhere, so here
+	// the use of auto is used instead to tell the
+	// compiler to figure out what the subType variable
+	// should be
+	auto subType = ta->nodeType(myExp);
+
+	// As error returns null if subType is NOT an error type
+	// otherwise, it returns the subType itself
+	if (subType->asError()){
+		ta->nodeType(this, subType);
+	} else {
+		ta->nodeType(this, BasicType::produce(VOID));
+	}
+}
+*/
+
+void PostDecStmtNode::typeAnalysis(TypeAnalysis * ta){
+	myLVal->typeAnalysis(ta); //Sets an entry in the Type Hash Table nodeToType
+	const DataType * tgtType = ta->nodeType(myLVal); //Retrieves the DataType in the hash table
+	if (tgtType->getString() != "void" && tgtType->getString() != "bool") {
+		ta->nodeType(this, tgtType);
+	 	return;
+	}
+	ta->errMathOpd(this->line(), this->col()); //Outputs error message if we try to write a void value.
+
+	//It can be a bit of a pain to write
+	// "const DataType *" everywhere, so here
+	// the use of auto is used instead to tell the
+	// compiler to figure out what the subType variable
+	// should be
+	auto subType = ta->nodeType(myLVal);
+
+	// As error returns null if subType is NOT an error type
+	// otherwise, it returns the subType itself
+	if (subType->asError()){
+		ta->nodeType(this, subType);
+	} else {
+		ta->nodeType(this, BasicType::produce(VOID));
+	}
+}
+
+void PostIncStmtNode::typeAnalysis(TypeAnalysis * ta){
+	myLVal->typeAnalysis(ta); //Sets an entry in the Type Hash Table nodeToType
+	const DataType * tgtType = ta->nodeType(myLVal); //Retrieves the DataType in the hash table
+	if (tgtType->getString() != "void" && tgtType->getString() != "bool") {
+		ta->nodeType(this, tgtType);
+	 	return;
+	}
+	ta->errMathOpd(this->line(), this->col()); //Outputs error message if we try to write a void value.
+
+	//It can be a bit of a pain to write
+	// "const DataType *" everywhere, so here
+	// the use of auto is used instead to tell the
+	// compiler to figure out what the subType variable
+	// should be
+	auto subType = ta->nodeType(myLVal);
+
+	// As error returns null if subType is NOT an error type
+	// otherwise, it returns the subType itself
+	if (subType->asError()){
+		ta->nodeType(this, subType);
+	} else {
+		ta->nodeType(this, BasicType::produce(VOID));
+	}
+}
+
 void ExpNode::typeAnalysis(TypeAnalysis * ta){
 	TODO("Override me in the subclass");
 }
@@ -213,6 +386,54 @@ void AssignExpNode::typeAnalysis(TypeAnalysis * ta){
 	// type must be done
 	ta->nodeType(this, ErrorType::produce());
 }
+
+/*
+void CallExpNode::typeAnalysis(TypeAnalysis * ta){
+	//TODO: Note that this function is incomplete.
+	// and needs additional code
+
+	//Do typeAnalysis on the subexpressions
+	myID->typeAnalysis(ta);
+	mySrc->typeAnalysis(ta);
+
+	const DataType * tgtType = ta->nodeType(myDst);
+	const DataType * srcType = ta->nodeType(mySrc);
+
+	//While incomplete, this gives you one case for
+	// assignment: if the types are exactly the same
+	// it is usually ok to do the assignment. One
+	// exception is that if both types are function
+	// names, it should fail type analysis
+	if (tgtType == srcType){
+		ta->nodeType(this, tgtType);
+		return;
+	}
+
+	if(condType->getString() == "bool") {
+		for (auto stmt : *myBody){
+			stmt->typeAnalysis(ta);
+		}
+		ta->nodeType(this, condType);
+		return;
+	} else {
+		ta->errWhileCond(this->line(), this->col());
+		ta->nodeType(this, ErrorType::produce());
+	}
+
+	//Some functions are already defined for you to
+	// report type errors. Note that these functions
+	// also tell the typeAnalysis object that the
+	// analysis has failed, meaning that main.cpp
+	// will print "Type check failed" at the end
+	ta->errAssignOpr(this->line(), this->col());
+
+
+	//Note that reporting an error does not set the
+	// type of the current node, so setting the node
+	// type must be done
+	ta->nodeType(this, ErrorType::produce());
+}
+*/
 
 void BinaryExpNode::typeAnalysis(TypeAnalysis * ta){
 	TODO("Override me in the subclass");

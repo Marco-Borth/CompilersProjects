@@ -3,6 +3,7 @@ fn:int(){
 	a = 4;
 	b:int;
 	c: bool;
+	c = true;
 	a--;
 	a++;
 	d : string;
@@ -13,8 +14,12 @@ fn:int(){
 	a = a / (b - 2);
 	b = -b;
 
-	if(a == b){}
-	if(a != b){}
+	if(a == b){
+		write c;
+	}
+	if(a != b){
+		write a;
+	}
 
 	if(a > b){}
 	if(a <= b){}
@@ -22,8 +27,12 @@ fn:int(){
 	if(a >= b){}
 	if(a < b){}
 
-	if(true){}
-	else{}
+	if(true){
+		write a;
+	}
+	else{
+		write b;
+	}
 	if(false){}
 	else{}
 
@@ -32,4 +41,10 @@ fn:int(){
 	if(!true){}
 
 	write a;
+	read c;
+
+	while(havoc){
+		a--;
+		b++;
+	}
 }
