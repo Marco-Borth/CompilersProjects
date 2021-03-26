@@ -261,8 +261,8 @@ void ReadStmtNode::typeAnalysis(TypeAnalysis * ta){
 
 /*
 void ReturnStmtNode::typeAnalysis(TypeAnalysis * ta){
-	mySrc->typeAnalysis(ta); //Sets an entry in the Type Hash Table nodeToType
-	const DataType * tgtType = ta->nodeType(mySrc); //Retrieves the DataType in the hash table
+	myExp->typeAnalysis(ta); //Sets an entry in the Type Hash Table nodeToType
+	const DataType * tgtType = ta->nodeType(myExp); //Retrieves the DataType in the hash table
 	if (tgtType->getString() != "void" || !(tgtType->isArray()) ) {
 		ta->nodeType(this, tgtType);
 	 	return;
@@ -283,7 +283,7 @@ void ReturnStmtNode::typeAnalysis(TypeAnalysis * ta){
 	// the use of auto is used instead to tell the
 	// compiler to figure out what the subType variable
 	// should be
-	auto subType = ta->nodeType(mySrc);
+	auto subType = ta->nodeType(myExp);
 
 	// As error returns null if subType is NOT an error type
 	// otherwise, it returns the subType itself

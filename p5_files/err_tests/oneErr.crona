@@ -27,6 +27,6 @@ fn:void(){
 	if(1 || 0){}
 	if(!0){}
 
-	write fn();
 	write arr;
+	write fn();
 }
