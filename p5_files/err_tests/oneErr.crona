@@ -7,6 +7,7 @@ fn:void(){
 	b = true * false;
 	b = false / true;
 	b = -false;
+	arr : int array[10];
 
 	if(a == b){}
 	if(a != b){}
@@ -25,4 +26,7 @@ fn:void(){
 	if(1 && 1){}
 	if(1 || 0){}
 	if(!0){}
+
+	write fn();
+	write arr;
 }
