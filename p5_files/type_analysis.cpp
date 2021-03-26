@@ -105,6 +105,9 @@ void WriteStmtNode::typeAnalysis(TypeAnalysis * ta){
 	}
 }
 
+
+
+
 void IfStmtNode::typeAnalysis(TypeAnalysis * ta){
 	myCond->typeAnalysis(ta);
 
@@ -296,6 +299,34 @@ void DeclNode::typeAnalysis(TypeAnalysis * ta){
 	TODO("Override me in the subclass");
 }
 
+void PostDecStmtNode::typeAnalysis(TypeAnalysis * ta){
+	myLVal->typeAnalysis(ta);
+	const DataType * myLValType = ta->nodeType(myLVal);
+
+	if (myLValType->getString() == "int")
+	{
+		ta->nodeType(this, myLValType);
+		return;
+	}
+	ta->errMathOpd(this->line(), this->col());
+	ta->nodeType(this, ErrorType::produce());
+
+}
+
+void PostIncStmtNode::typeAnalysis(TypeAnalysis * ta){
+	myLVal->typeAnalysis(ta);
+	const DataType * myLValType = ta->nodeType(myLVal);
+
+	if (myLValType->getString() == "int")
+	{
+		ta->nodeType(this, myLValType);
+		return;
+	}
+	ta->errMathOpd(this->line(), this->col());
+	ta->nodeType(this, ErrorType::produce());
+
+}
+
 void VarDeclNode::typeAnalysis(TypeAnalysis * ta){
 	// VarDecls always pass type analysis, since they
 	// are never used in an expression. You may choose
@@ -314,6 +345,10 @@ void IntLitNode::typeAnalysis(TypeAnalysis * ta){
 	// IntLits never fail their type analysis and always
 	// yield the type INT
 	ta->nodeType(this, BasicType::produce(INT));
+}
+
+void StrLitNode::typeAnalysis(TypeAnalysis * ta){
+	ta->nodeType(this, ArrayType::produce(BasicType::produce(BYTE),0));
 }
 
 void TrueNode::typeAnalysis(TypeAnalysis * ta){
