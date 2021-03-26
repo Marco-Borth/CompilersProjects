@@ -4,6 +4,10 @@ fn:int(){
 	b:int;
 	c: bool;
 	c = true;
+	a--;
+	a++;
+	d : string;
+	d = "this";
 	b = 2 + 5;
 	b = a + 5;
 	a = a * 10;
