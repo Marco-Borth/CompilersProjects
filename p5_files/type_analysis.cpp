@@ -67,7 +67,7 @@ void CallExpNode::typeAnalysis(TypeAnalysis * ta){
 	//Do typeAnalysis on the subexpressions
 	myID->typeAnalysis(ta);
 
-	const DataType * tgtType = ta->nodeType(myID);
+	const DataType * IDType = ta->nodeType(myID);
 
 	//While incomplete, this gives you one case for
 	// assignment: if the types are exactly the same
@@ -75,9 +75,21 @@ void CallExpNode::typeAnalysis(TypeAnalysis * ta){
 	// exception is that if both types are function
 	// names, it should fail type analysis
 
-	if(!tgtType->isArray()) {
-		ta->nodeType(this, tgtType);
-		return;
+	if(IDType->isFunction()) {
+		std::size_t argsSize = myArgs->size();
+		if(argsSize == IDType->getSize()) {
+			/*
+			for (auto arg : *myArgs) {
+				myArgs->typeAnalysis(ta);
+				const DataType * argsType = ta->nodeType(myID);
+				if()
+			}
+			*/
+			ta->nodeType(this, tgtType);
+			return;
+		} else {
+			ta->errArgCount(this->line(), this->col());
+		}
 	} else {
 		ta->errCallee(this->line(), this->col());
 	}
