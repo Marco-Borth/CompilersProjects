@@ -44,40 +44,41 @@ public:
 	virtual bool isBool() const { return false; }
 	virtual bool isByte() const { return false; }
 	virtual bool isArray() const { return false; }
+	virtual bool isFunction() const { return false; } 
 	virtual bool validVarType() const = 0 ;
 	virtual size_t getSize() const = 0;
 protected:
 };
 
-//This DataType subclass is the superclass for all crona types. 
-// Note that there is exactly one instance of this 
+//This DataType subclass is the superclass for all crona types.
+// Note that there is exactly one instance of this
 class ErrorType : public DataType{
 public:
 	static ErrorType * produce(){
-		//Note: this static member will only ever be initialized 
+		//Note: this static member will only ever be initialized
 		// ONCE, no matter how many times the function is called.
 		// That means there will only ever be 1 instance of errorType
 		// in the entire codebase.
 		static ErrorType * error = new ErrorType();
-		
+
 		return error;
 	}
 	virtual const ErrorType * asError() const override { return this; }
-	virtual std::string getString() const override { 
+	virtual std::string getString() const override {
 		return "ERROR";
 	}
 	virtual bool validVarType() const override { return false; }
 	virtual size_t getSize() const override { return 0; }
 private:
-	ErrorType(){ 
-		/* private constructor, can only 
+	ErrorType(){
+		/* private constructor, can only
 		be called from produce */
 	}
 	size_t line;
 	size_t col;
 };
 
-//DataType subclass for all scalar types 
+//DataType subclass for all scalar types
 class BasicType : public DataType{
 public:
 	static BasicType * VOID(){
@@ -101,9 +102,9 @@ public:
 	// down: rather than having a distinct type for every base
 	// INT (for example), only one is constructed and kept in
 	// the flyweights list. That type is then re-used anywhere
-	// it's needed. 
+	// it's needed.
 
-	//Note the use of the static function declaration, which 
+	//Note the use of the static function declaration, which
 	// means that no instance of BasicType is needed to call
 	// the function.
 	static BasicType * produce(BaseType base){
@@ -137,15 +138,15 @@ public:
 	bool isBool() const override {
 		return myBaseType == BaseType::BOOL;
 	}
-	virtual bool isVoid() const override { 
-		return myBaseType == BaseType::VOID; 
+	virtual bool isVoid() const override {
+		return myBaseType == BaseType::VOID;
 	}
 	virtual bool validVarType() const override {
 		return !isVoid();
 	}
 	virtual BaseType getBaseType() const { return myBaseType; }
 	virtual std::string getString() const override;
-	virtual size_t getSize() const override { 
+	virtual size_t getSize() const override {
 		if (isBool()){ return 1; }
 		else if (isByte()){ return 1; }
 		else if (isVoid()){ return 8; }
@@ -153,7 +154,7 @@ public:
 		else { return 0; }
 	}
 private:
-	BasicType(BaseType base) 
+	BasicType(BaseType base)
 	: myBaseType(base){ }
 	BaseType myBaseType;
 };
@@ -193,14 +194,14 @@ public:
 	virtual bool validVarType() const override {
 		return !myBasicType->isVoid();
 	}
-	bool isArray() const override { return true; } 
+	bool isArray() const override { return true; }
 	const ArrayType * asArray() const override { return this; }
 	int getLength(){ return myLength; }
-	size_t getSize() const override { 
+	size_t getSize() const override {
 		const size_t lonLength = static_cast<size_t>(myLength);
-		return lonLength * myBasicType->getSize(); 
+		return lonLength * myBasicType->getSize();
 	}
-	
+
 private:
 	ArrayType(const BasicType * basicType, int length)
 	: myBasicType(basicType), myLength(length){
@@ -211,10 +212,10 @@ private:
 };
 
 //DataType subclass to represent the type of a function. It will
-// have a list of argument types and a return type. 
+// have a list of argument types and a return type.
 class FnType : public DataType{
 public:
-	FnType(const std::list<const DataType *>* formalsIn, const DataType * retTypeIn) 
+	FnType(const std::list<const DataType *>* formalsIn, const DataType * retTypeIn)
 	: DataType(),
 	  myFormalTypes(formalsIn),
 	  myRetType(retTypeIn)
@@ -232,6 +233,7 @@ public:
 		result += myRetType->getString();
 		return result;
 	}
+	bool isFunction() const override { return true; }
 	virtual const FnType * asFn() const override { return this; }
 
 	const DataType * getReturnType() const {
