@@ -1,0 +1,11 @@
+a:int;
+b:bool;
+arr : int array[10];
+fn:void(){
+	write arr;
+	write c;
+}
+
+newFunc : bool() {
+	return 10;
+}
