@@ -51,9 +51,63 @@ void FnDeclNode::typeAnalysis(TypeAnalysis * ta){
 	// the current function
 
 	//Note: this function may need extra code
-
 	for (auto stmt : *myBody){
-		stmt->typeAnalysis(ta);
+		if(!stmt->isReturnStmt()){
+			stmt->typeAnalysis(ta);
+		} else {
+			//const DataType * returnType = nullptr;
+			//if(getRetTypeNode() )
+			//returnType = ta->nodeType(this, BasicType::produce(BOOL))//FnType::FnType(getFormals(),getRetTypeNode()));
+			stmt->returnTypeAnalysis(ta, getRetTypeNode()->getType());
+		}
+	}
+}
+
+void ReturnStmtNode::returnTypeAnalysis(TypeAnalysis * ta, DataType * returnType){
+	if(myExp == nullptr) {
+		ta->errRetEmpty(this->line(), this->col());
+	} else {
+		myExp->typeAnalysis(ta); //Sets an entry in the Type Hash Table nodeToType
+		const DataType * tgtType = ta->nodeType(myExp); //Retrieves the DataType in the hash table
+
+		size_t found = returnType->getString().find("->void");
+	  if (found != string::npos) {
+			ta->extraRetValue(this->line(), this->col()); //Outputs error message if we try to write a void value.
+		} else {
+			if (tgtType->getString() == returnType->getString()) {
+				ta->nodeType(this, tgtType);
+			 	return;
+			} else {
+				ta->errRetWrong(this->line(), this->col());
+			}
+		}
+		/*
+		if (returnType->getString() != "->void") {
+			if (tgtType->getString() == returnType->getString()) {
+				ta->nodeType(this, tgtType);
+				return;
+			} else {
+				ta->errRetWrong(this->line(), this->col());
+			}
+		} else {
+			ta->extraRetValue(this->line(), this->col()); //Outputs error message if we try to write a void value.
+		}
+		*/
+	}
+
+	//It can be a bit of a pain to write
+	// "const DataType *" everywhere, so here
+	// the use of auto is used instead to tell the
+	// compiler to figure out what the subType variable
+	// should be
+	auto subType = ta->nodeType(myExp);
+
+	// As error returns null if subType is NOT an error type
+	// otherwise, it returns the subType itself
+	if (subType->asError()){
+		ta->nodeType(this, subType);
+	} else {
+		ta->nodeType(this, BasicType::produce(VOID));
 	}
 }
 
@@ -98,9 +152,6 @@ void CallStmtNode::typeAnalysis(TypeAnalysis * ta){
 		ta->nodeType(this, BasicType::produce(VOID));
 	}
 }
-
-
-
 
 void IfStmtNode::typeAnalysis(TypeAnalysis * ta){
 	myCond->typeAnalysis(ta);
@@ -204,20 +255,21 @@ void WhileStmtNode::typeAnalysis(TypeAnalysis * ta){
 void WriteStmtNode::typeAnalysis(TypeAnalysis * ta){
 	mySrc->typeAnalysis(ta); //Sets an entry in the Type Hash Table nodeToType
 	const DataType * tgtType = ta->nodeType(mySrc); //Retrieves the DataType in the hash table
-	if (tgtType->getString() != "void" || !(tgtType->isArray()) ) {
-		ta->nodeType(this, tgtType);
-	 	return;
-	} else if(tgtType->getString() == "void"){
-		ta->errWriteVoid(this->line(), this->col()); //Outputs error message if we try to write a void value.
+	if (tgtType->getString() != "void") {
+		if (!(tgtType->isArray())) {
+			ta->nodeType(this, tgtType);
+		 	return;
+		} else {
+			ta->errWriteArray(this->line(), this->col());
+		}
 	} else {
-		ta->errWriteArray(this->line(), this->col()); //Outputs error message if we try to write a void value.
+		ta->errWriteVoid(this->line(), this->col()); //Outputs error message if we try to write a void value.
 	}
 
 	size_t found = tgtType->getString().find("->");
   if (found != string::npos) {
 		ta->errWriteFn(this->line(), this->col()); //Outputs error message if we try to write a void value.
 	}
-
 
 	//It can be a bit of a pain to write
 	// "const DataType *" everywhere, so here
@@ -261,42 +313,6 @@ void ReadStmtNode::typeAnalysis(TypeAnalysis * ta){
 		ta->nodeType(this, BasicType::produce(VOID));
 	}
 }
-
-/*
-void ReturnStmtNode::typeAnalysis(TypeAnalysis * ta){
-	myExp->typeAnalysis(ta); //Sets an entry in the Type Hash Table nodeToType
-	const DataType * tgtType = ta->nodeType(myExp); //Retrieves the DataType in the hash table
-	if (tgtType->getString() != "void" || !(tgtType->isArray()) ) {
-		ta->nodeType(this, tgtType);
-	 	return;
-	} else if(tgtType->getString() == "void"){
-		ta->errWriteVoid(this->line(), this->col()); //Outputs error message if we try to write a void value.
-	} else {
-		ta->errWriteArray(this->line(), this->col()); //Outputs error message if we try to write a void value.
-	}
-
-	size_t found = tgtType->getString().find("->");
-  if (found != string::npos) {
-		ta->errWriteFn(this->line(), this->col()); //Outputs error message if we try to write a void value.
-	}
-
-
-	//It can be a bit of a pain to write
-	// "const DataType *" everywhere, so here
-	// the use of auto is used instead to tell the
-	// compiler to figure out what the subType variable
-	// should be
-	auto subType = ta->nodeType(myExp);
-
-	// As error returns null if subType is NOT an error type
-	// otherwise, it returns the subType itself
-	if (subType->asError()){
-		ta->nodeType(this, subType);
-	} else {
-		ta->nodeType(this, BasicType::produce(VOID));
-	}
-}
-*/
 
 void PostDecStmtNode::typeAnalysis(TypeAnalysis * ta){
 	myLVal->typeAnalysis(ta); //Sets an entry in the Type Hash Table nodeToType
@@ -519,34 +535,6 @@ void NegNode::typeAnalysis(TypeAnalysis * ta){
 void DeclNode::typeAnalysis(TypeAnalysis * ta){
 	TODO("Override me in the subclass");
 }
-//Ignore for now. Already declared above.
-// void PostDecStmtNode::typeAnalysis(TypeAnalysis * ta){
-// 	myLVal->typeAnalysis(ta);
-// 	const DataType * myLValType = ta->nodeType(myLVal);
-//
-// 	if (myLValType->getString() == "int")
-// 	{
-// 		ta->nodeType(this, myLValType);
-// 		return;
-// 	}
-// 	ta->errMathOpd(this->line(), this->col());
-// 	ta->nodeType(this, ErrorType::produce());
-//
-// }
-//
-// void PostIncStmtNode::typeAnalysis(TypeAnalysis * ta){
-// 	myLVal->typeAnalysis(ta);
-// 	const DataType * myLValType = ta->nodeType(myLVal);
-//
-// 	if (myLValType->getString() == "int")
-// 	{
-// 		ta->nodeType(this, myLValType);
-// 		return;
-// 	}
-// 	ta->errMathOpd(this->line(), this->col());
-// 	ta->nodeType(this, ErrorType::produce());
-//
-// }
 
 void VarDeclNode::typeAnalysis(TypeAnalysis * ta){
 	// VarDecls always pass type analysis, since they

@@ -47,4 +47,6 @@ fn:int(){
 		a--;
 		b++;
 	}
+
+	return a;
 }
