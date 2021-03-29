@@ -29,4 +29,15 @@ fn:void(){
 	write fn;
 	write 5 + true;
 	read fn;
+
+	write(a[2]);
+	write(arr[true]);
+}
+
+newFunc : bool() {
+	return 10;
+}
+
+otherFunc : void() {
+ return;
 }

@@ -95,6 +95,7 @@ public:
 	: LValNode(l, c), myBase(id), myOffset(offset){ }
 	void unparse(std::ostream& out, int indent) override;
 	virtual bool nameAnalysis(SymbolTable * symTab) override;
+	virtual void typeAnalysis(TypeAnalysis *) override;
 private:
 	IDNode * myBase;
 	ExpNode * myOffset;
