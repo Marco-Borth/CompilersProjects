@@ -115,6 +115,8 @@ public:
 	StmtNode(size_t lIn, size_t cIn) : ASTNode(lIn, cIn){ }
 	virtual void unparse(std::ostream& out, int indent) override = 0;
 	virtual void typeAnalysis(TypeAnalysis *);
+	virtual bool isReturnStmt() { return false; }
+	virtual void returnTypeAnalysis(TypeAnalysis *, DataType *) {}
 };
 
 class DeclNode : public StmtNode{
@@ -274,7 +276,9 @@ public:
 	: StmtNode(l, c), myExp(exp){ }
 	void unparse(std::ostream& out, int indent) override;
 	bool nameAnalysis(SymbolTable * symTab) override;
-	//virtual void typeAnalysis(TypeAnalysis *) override;
+	bool isReturnStmt() override { return true; }
+	void typeAnalysis(TypeAnalysis *) override {};
+	void returnTypeAnalysis(TypeAnalysis *, DataType *) override;
 private:
 	ExpNode * myExp;
 };
@@ -287,7 +291,7 @@ public:
 	void unparse(std::ostream& out, int indent) override;
 	void unparseNested(std::ostream& out) override;
 	bool nameAnalysis(SymbolTable * symTab) override;
-	//virtual void typeAnalysis(TypeAnalysis *) override;
+	virtual void typeAnalysis(TypeAnalysis *) override;
 private:
 	IDNode * myID;
 	std::list<ExpNode *> * myArgs;
