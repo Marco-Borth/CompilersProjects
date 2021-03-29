@@ -28,4 +28,5 @@ fn:void(){
 	if(!0){}
 
 	write arr;
+	read fn;
 }

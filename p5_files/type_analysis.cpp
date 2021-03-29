@@ -63,6 +63,41 @@ void FnDeclNode::typeAnalysis(TypeAnalysis * ta){
 	}
 }
 
+void CallExpNode::typeAnalysis(TypeAnalysis * ta){
+	//TODO: Note that this function is incomplete.
+	// and needs additional code
+
+	//Do typeAnalysis on the subexpressions
+	myID->typeAnalysis(ta);
+
+	const DataType * tgtType = ta->nodeType(myID);
+
+	//While incomplete, this gives you one case for
+	// assignment: if the types are exactly the same
+	// it is usually ok to do the assignment. One
+	// exception is that if both types are function
+	// names, it should fail type analysis
+
+	if(!tgtType->isArray()) {
+		ta->nodeType(this, tgtType);
+		return;
+	} else {
+		ta->errCallee(this->line(), this->col());
+	}
+
+	//Some functions are already defined for you to
+	// report type errors. Note that these functions
+	// also tell the typeAnalysis object that the
+	// analysis has failed, meaning that main.cpp
+	// will print "Type check failed" at the end
+
+
+	//Note that reporting an error does not set the
+	// type of the current node, so setting the node
+	// type must be done
+	ta->nodeType(this, ErrorType::produce());
+}
+
 void ReturnStmtNode::returnTypeAnalysis(TypeAnalysis * ta, DataType * returnType){
 	if(myExp == nullptr) {
 		ta->errRetEmpty(this->line(), this->col());
@@ -95,20 +130,7 @@ void ReturnStmtNode::returnTypeAnalysis(TypeAnalysis * ta, DataType * returnType
 		*/
 	}
 
-	//It can be a bit of a pain to write
-	// "const DataType *" everywhere, so here
-	// the use of auto is used instead to tell the
-	// compiler to figure out what the subType variable
-	// should be
-	auto subType = ta->nodeType(myExp);
-
-	// As error returns null if subType is NOT an error type
-	// otherwise, it returns the subType itself
-	if (subType->asError()){
-		ta->nodeType(this, subType);
-	} else {
-		ta->nodeType(this, BasicType::produce(VOID));
-	}
+	ta->nodeType(this, ErrorType::produce());
 }
 
 void StmtNode::typeAnalysis(TypeAnalysis * ta){
@@ -402,54 +424,6 @@ void AssignExpNode::typeAnalysis(TypeAnalysis * ta){
 	// type must be done
 	ta->nodeType(this, ErrorType::produce());
 }
-
-/*
-void CallExpNode::typeAnalysis(TypeAnalysis * ta){
-	//TODO: Note that this function is incomplete.
-	// and needs additional code
-
-	//Do typeAnalysis on the subexpressions
-	myID->typeAnalysis(ta);
-	mySrc->typeAnalysis(ta);
-
-	const DataType * tgtType = ta->nodeType(myDst);
-	const DataType * srcType = ta->nodeType(mySrc);
-
-	//While incomplete, this gives you one case for
-	// assignment: if the types are exactly the same
-	// it is usually ok to do the assignment. One
-	// exception is that if both types are function
-	// names, it should fail type analysis
-	if (tgtType == srcType){
-		ta->nodeType(this, tgtType);
-		return;
-	}
-
-	if(condType->getString() == "bool") {
-		for (auto stmt : *myBody){
-			stmt->typeAnalysis(ta);
-		}
-		ta->nodeType(this, condType);
-		return;
-	} else {
-		ta->errWhileCond(this->line(), this->col());
-		ta->nodeType(this, ErrorType::produce());
-	}
-
-	//Some functions are already defined for you to
-	// report type errors. Note that these functions
-	// also tell the typeAnalysis object that the
-	// analysis has failed, meaning that main.cpp
-	// will print "Type check failed" at the end
-	ta->errAssignOpr(this->line(), this->col());
-
-
-	//Note that reporting an error does not set the
-	// type of the current node, so setting the node
-	// type must be done
-	ta->nodeType(this, ErrorType::produce());
-}
-*/
 
 void BinaryExpNode::typeAnalysis(TypeAnalysis * ta){
 	TODO("Override me in the subclass");
