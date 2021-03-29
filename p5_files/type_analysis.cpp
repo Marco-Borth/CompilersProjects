@@ -277,20 +277,21 @@ void WhileStmtNode::typeAnalysis(TypeAnalysis * ta){
 void WriteStmtNode::typeAnalysis(TypeAnalysis * ta){
 	mySrc->typeAnalysis(ta); //Sets an entry in the Type Hash Table nodeToType
 	const DataType * tgtType = ta->nodeType(mySrc); //Retrieves the DataType in the hash table
-	if (tgtType->getString() != "void") {
-		if (!(tgtType->isArray())) {
-			ta->nodeType(this, tgtType);
-		 	return;
-		} else {
-			ta->errWriteArray(this->line(), this->col());
-		}
-	} else {
-		ta->errWriteVoid(this->line(), this->col()); //Outputs error message if we try to write a void value.
-	}
 
 	size_t found = tgtType->getString().find("->");
   if (found != string::npos) {
 		ta->errWriteFn(this->line(), this->col()); //Outputs error message if we try to write a void value.
+	} else {
+		if (tgtType->getString() != "void") {
+			if (!(tgtType->isArray())) {
+				ta->nodeType(this, tgtType);
+			 	return;
+			} else {
+				ta->errWriteArray(this->line(), this->col());
+			}
+		} else {
+			ta->errWriteVoid(this->line(), this->col()); //Outputs error message if we try to write a void value.
+		}
 	}
 
 	//It can be a bit of a pain to write
