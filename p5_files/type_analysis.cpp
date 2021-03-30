@@ -394,46 +394,46 @@ void ExpNode::typeAnalysis(TypeAnalysis * ta){
 }
 
 void AssignExpNode::typeAnalysis(TypeAnalysis * ta){
-	//TODO: Note that this function is incomplete.
-	// and needs additional code
-
-	//Do typeAnalysis on the subexpressions
 	myDst->typeAnalysis(ta);
 	mySrc->typeAnalysis(ta);
 
 	const DataType * tgtType = ta->nodeType(myDst);
 	const DataType * srcType = ta->nodeType(mySrc);
-
-	if(srcType->isFunction()) {
+	if (srcType->isFunction()){
 		const FnType * fnType = srcType->asFn();
 		srcType = fnType->getReturnType();
 	}
-
-	//While incomplete, this gives you one case for
-	// assignment: if the types are exactly the same
+ 	// if the types are exactly the same
 	// it is usually ok to do the assignment. One
 	// exception is that if both types are function
 	// names, it should fail type analysis
-
-
-
-	if (tgtType == srcType){
-		ta->nodeType(this, tgtType);
-		return;
+	if (tgtType->getString() == srcType->getString()){ //If tgtType was a function then it would auto fail due to it being a different type and thus would have a different output for getString().
+		if (srcType->getString() == "void")
+		{
+			ta->errAssignOpd(this->line(), this->col());
+			ta->nodeType(this, ErrorType::produce());
+		}
+		else
+		{
+			ta->nodeType(this, tgtType);
+			return;
+		}
 	}
+	else
+	{
+		//Some functions are already defined for you to
+		// report type errors. Note that these functions
+		// also tell the typeAnalysis object that the
+		// analysis has failed, meaning that main.cpp
+		// will print "Type check failed" at the end
+		ta->errAssignOpr(this->line(), this->col());
 
-	//Some functions are already defined for you to
-	// report type errors. Note that these functions
-	// also tell the typeAnalysis object that the
-	// analysis has failed, meaning that main.cpp
-	// will print "Type check failed" at the end
-	ta->errAssignOpr(this->line(), this->col());
 
-
-	//Note that reporting an error does not set the
-	// type of the current node, so setting the node
-	// type must be done
-	ta->nodeType(this, ErrorType::produce());
+		//Note that reporting an error does not set the
+		// type of the current node, so setting the node
+		// type must be done
+		ta->nodeType(this, ErrorType::produce());
+	}
 }
 
 void BinaryExpNode::typeAnalysis(TypeAnalysis * ta){
