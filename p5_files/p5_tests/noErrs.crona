@@ -18,9 +18,8 @@ fn:int(){
 	a++;
 	d : string;
 	d = "this";
-	fn2(4, 5);
+	//fn2(4, 5);
 	b = a;
-	b = fn3(5);
 	b = 2 + 5;
 	b = a + 5;
 	a = a * 10;
@@ -62,9 +61,8 @@ fn:int(){
 	}
 
 	return a;
-	fn();
+	//fn();
 
 	arr : int array[10];
 	read arr[2];
 }
-

@@ -17,6 +17,7 @@ TypeAnalysis * TypeAnalysis::build(NameAnalysis * nameAnalysis){
 
 	ast->typeAnalysis(typeAnalysis);
 	if (typeAnalysis->hasError){
+		typeAnalysis->errAnalysisFail();
 		return nullptr;
 	}
 
@@ -69,36 +70,39 @@ void CallExpNode::typeAnalysis(TypeAnalysis * ta){
 
 	const DataType * IDType = ta->nodeType(myID);
 
+	size_t found = IDType->getString().find("->");
+  if (found != string::npos) {
+		if (myArgs->size() == IDType->getSize()) {
+			ta->nodeType(this, IDType);
+			return;
+		} else {
+			ta->errArgCount(this->line(), myID->col());
+		}
+	} else {
+		ta->errCallee(this->line(), myID->col());
+	}
+
 	//While incomplete, this gives you one case for
 	// assignment: if the types are exactly the same
 	// it is usually ok to do the assignment. One
 	// exception is that if both types are function
 	// names, it should fail type analysis
 
-	if(IDType->isFunction()) {
-		std::size_t argsSize = myArgs->size();
-		if(argsSize == IDType->getSize()) {
-			if(myArgs != nullptr) {
-				/*
-				for (auto args : *myArgs) {
-					args->typeAnalysis(ta);
-					const DataType * argType = ta->nodeType(args);
-					std::string formal = argType->getString();
-					size_t found = IDType->getString().find(formal);
-					if (found != string::npos) {
-						ta->errArgMatch(this->line(), this->col()); //Outputs error message if we try to write a void.
-					}
-				}
-				*/
+	/*
+	if(myArgs != nullptr) {
+		for (auto args : *myArgs) {
+			args->typeAnalysis(ta);
+			const DataType * argType = ta->nodeType(args);
+			std::string formal = argType->getString();
+			size_t found = IDType->getString().find(formal);
+			if (found != string::npos) {
+				ta->errArgMatch(this->line(), this->col()); //Outputs error message if we try to write a void.
 			}
-			ta->nodeType(this, IDType);
-			return;
-		} else {
-			ta->errArgCount(this->line(), this->col());
 		}
-	} else {
-		ta->errCallee(this->line(), this->col());
 	}
+	*/
+	//const FnType * fnType = IDType->asFn();
+	//const DataType * returnType = fnType->getReturnType();
 
 	//Some functions are already defined for you to
 	// report type errors. Note that these functions
@@ -114,20 +118,20 @@ void CallExpNode::typeAnalysis(TypeAnalysis * ta){
 }
 
 void ReturnStmtNode::returnTypeAnalysis(TypeAnalysis * ta, DataType * returnType){
-	if(myExp == nullptr) {
+	if(myExp == nullptr && returnType->getString() != "void") {
 		ta->errRetEmpty(this->line(), this->col());
 	} else {
 		myExp->typeAnalysis(ta); //Sets an entry in the Type Hash Table nodeToType
 		const DataType * tgtType = ta->nodeType(myExp); //Retrieves the DataType in the hash table
 
 		if (returnType->getString() == "void") {
-			ta->extraRetValue(this->line(), this->col()); //Outputs error message if we try to write a void value.
+			ta->extraRetValue(this->line(), myExp->col()); //Outputs error message if we try to write a void value.
 		} else {
 			if (tgtType->getString() == returnType->getString()) {
 				ta->nodeType(this, tgtType);
 				return;
 			} else {
-				ta->errRetWrong(this->line(), this->col());
+				ta->errRetWrong(this->line(), myExp->col());
 			}
 		}
 	}
@@ -189,7 +193,7 @@ void IfStmtNode::typeAnalysis(TypeAnalysis * ta){
 		ta->nodeType(this, condType);
 		return;
 	} else {
-		ta->errIfCond(this->line(), this->col());
+		ta->errIfCond(this->line(), myCond->col());
 		ta->nodeType(this, ErrorType::produce());
 	}
 
@@ -224,7 +228,7 @@ void IfElseStmtNode::typeAnalysis(TypeAnalysis * ta){
 		ta->nodeType(this, condType);
 		return;
 	} else {
-		ta->errIfCond(this->line(), this->col());
+		ta->errIfCond(this->line(), myCond->col());
 		ta->nodeType(this, ErrorType::produce());
 	}
 
@@ -256,7 +260,7 @@ void WhileStmtNode::typeAnalysis(TypeAnalysis * ta){
 		ta->nodeType(this, condType);
 		return;
 	} else {
-		ta->errWhileCond(this->line(), this->col());
+		ta->errWhileCond(this->line(), myCond->col());
 		ta->nodeType(this, ErrorType::produce());
 	}
 
@@ -281,19 +285,20 @@ void WriteStmtNode::typeAnalysis(TypeAnalysis * ta){
 	const DataType * tgtType = ta->nodeType(mySrc); //Retrieves the DataType in the hash table
 
   if (tgtType->isFunction()) {
-		ta->errWriteFn(this->line(), this->col()); //Outputs error message if we try to write a function.
+		ta->errWriteFn(this->line(), mySrc->col()); //Outputs error message if we try to write a function.
 	} else {
-		if (tgtType->isArray()) {
-			ta->errWriteArray(this->line(), this->col()); //Outputs error message if we try to write an array.
+		if (tgtType->getString() == "void") {
+			ta->errWriteVoid(this->line(), mySrc->col()); //Outputs error message if we try to write a void.
 		} else {
-			ta->nodeType(this, tgtType);
-			return;
-		}
-	}
+			if (tgtType->isArray()) {
+				ta->errWriteArray(this->line(), mySrc->col()); //Outputs error message if we try to write an array.
+			} else {
+				ta->nodeType(this, tgtType);
+				return;
+			}
 
-	size_t found = tgtType->getString().find("void");
-	if (found != string::npos) {
-		ta->errWriteVoid(this->line(), this->col()); //Outputs error message if we try to write a void.
+		}
+
 	}
 
 	//It can be a bit of a pain to write
@@ -317,7 +322,7 @@ void ReadStmtNode::typeAnalysis(TypeAnalysis * ta){
 	const DataType * tgtType = ta->nodeType(myDst); //Retrieves the DataType in the hash table
 	size_t found = tgtType->getString().find("->");
   if (found != string::npos) {
-		ta->errReadFn(this->line(), this->col()); //Outputs error message if we try to write a void value.
+		ta->errReadFn(this->line(), myDst->col()); //Outputs error message if we try to write a void value.
 	} else {
 		ta->nodeType(this, tgtType);
 	 	return;
@@ -399,11 +404,9 @@ void AssignExpNode::typeAnalysis(TypeAnalysis * ta){
 
 	const DataType * tgtType = ta->nodeType(myDst);
 	const DataType * srcType = ta->nodeType(mySrc);
-	if (srcType->isFunction()){
-		const FnType * fnType = srcType->asFn();
-		srcType = fnType->getReturnType();
-	}
- 	// if the types are exactly the same
+
+	//While incomplete, this gives you one case for
+	// assignment: if the types are exactly the same
 	// it is usually ok to do the assignment. One
 	// exception is that if both types are function
 	// names, it should fail type analysis
@@ -447,17 +450,46 @@ void ArithmeticExpNode::typeAnalysis(TypeAnalysis * ta){
 	const DataType * myExp1Type = ta->nodeType(myExp1);
 	const DataType * myExp2Type = ta->nodeType(myExp2);
 
-	if (myExp1Type == myExp2Type &&
-			myExp1Type->getString() == "int" &&
-			myExp2Type->getString() == "int"){
+	if (myExp1Type->getString() == "int" && myExp2Type->getString() == "int") {
 		ta->nodeType(this, myExp1Type);
 		return;
 	}
-	ta->errMathOpd(this->line(), this->col());
+
+	if(myExp1Type->getString() != "int"){
+		ta->errMathOpd(this->line(), myExp1->col());
+	}
+
+	if(myExp2Type->getString() != "int"){
+		ta->errMathOpd(this->line(), myExp2->col());
+	}
+
 	ta->nodeType(this, ErrorType::produce());
 }
 
 void RelationalExpNode::typeAnalysis(TypeAnalysis * ta){
+	myExp1->typeAnalysis(ta);
+	myExp2->typeAnalysis(ta);
+
+	const DataType * myExp1Type = ta->nodeType(myExp1);
+	const DataType * myExp2Type = ta->nodeType(myExp2);
+
+	if (myExp1Type->getString() == "int" && myExp2Type->getString() == "int") {
+		ta->nodeType(this, BasicType::produce(BOOL));
+		return;
+	}
+
+	if(myExp1Type->getString() != "int"){
+		ta->errRelOpd(this->line(), myExp1->col());
+	}
+
+	if(myExp2Type->getString() != "int"){
+		ta->errRelOpd(this->line(), myExp2->col());
+	}
+
+	ta->nodeType(this, ErrorType::produce());
+}
+
+void EquivalenceExpNode::typeAnalysis(TypeAnalysis * ta){
 	myExp1->typeAnalysis(ta);
 	myExp2->typeAnalysis(ta);
 
@@ -469,8 +501,9 @@ void RelationalExpNode::typeAnalysis(TypeAnalysis * ta){
 			myExp2Type->getString() == "int"){
 		ta->nodeType(this, BasicType::produce(BOOL));
 		return;
+	} else {
+		ta->errEqOpr(this->line(), this->col());
 	}
-	ta->errRelOpd(this->line(), this->col());
 	ta->nodeType(this, ErrorType::produce());
 }
 
@@ -481,13 +514,19 @@ void LogicalExpNode::typeAnalysis(TypeAnalysis * ta){
 	const DataType * myExp1Type = ta->nodeType(myExp1);
 	const DataType * myExp2Type = ta->nodeType(myExp2);
 
-	if (myExp1Type == myExp2Type &&
-			myExp1Type->getString() == "bool" &&
-			myExp2Type->getString() == "bool"){
+	if (myExp1Type->getString() == "bool" && myExp2Type->getString() == "bool") {
 		ta->nodeType(this, myExp1Type);
 		return;
 	}
-	ta->errLogicOpd(this->line(), this->col());
+
+	if(myExp1Type->getString() != "bool") {
+		ta->errLogicOpd(this->line(), myExp1->col());
+	}
+
+	if(myExp2Type->getString() != "bool") {
+		ta->errLogicOpd(this->line(), myExp2->col());
+	}
+
 	ta->nodeType(this, ErrorType::produce());
 }
 
@@ -500,7 +539,7 @@ void NotNode::typeAnalysis(TypeAnalysis * ta){
 		ta->nodeType(this, myExpType);
 		return;
 	}
-	ta->errLogicOpd(this->line(), this->col());
+	ta->errLogicOpd(this->line(), myExp->col());
 	ta->nodeType(this, ErrorType::produce());
 }
 
@@ -513,7 +552,7 @@ void NegNode::typeAnalysis(TypeAnalysis * ta){
 		ta->nodeType(this, myExpType);
 		return;
 	}
-	ta->errMathOpd(this->line(), this->col());
+	ta->errMathOpd(this->line(), myExp->col());
 	ta->nodeType(this, ErrorType::produce());
 }
 
@@ -540,10 +579,10 @@ void IndexNode::typeAnalysis(TypeAnalysis * ta){
 			ta->nodeType(this, myIDType);
 			return;
 		} else {
-			ta->errArrayIndex(this->line(), this->col());
+			ta->errArrayIndex(this->line(), myOffset->col());
 		}
 	} else {
-		ta->errArrayID(this->line(), this->col());
+		ta->errArrayID(this->line(), myBase->col());
 	}
 	ta->nodeType(this, ErrorType::produce());
 }

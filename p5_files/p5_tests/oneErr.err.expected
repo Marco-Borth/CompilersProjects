@@ -1,0 +1,39 @@
+FATAL [4,4]: Invalid assignment operation
+FATAL [5,8]: Arithmetic operator applied to invalid operand
+FATAL [5,15]: Arithmetic operator applied to invalid operand
+FATAL [6,8]: Arithmetic operator applied to invalid operand
+FATAL [6,15]: Arithmetic operator applied to invalid operand
+FATAL [7,8]: Arithmetic operator applied to invalid operand
+FATAL [7,15]: Arithmetic operator applied to invalid operand
+FATAL [8,8]: Arithmetic operator applied to invalid operand
+FATAL [8,16]: Arithmetic operator applied to invalid operand
+FATAL [9,9]: Arithmetic operator applied to invalid operand
+FATAL [12,10]: Invalid equality operation
+FATAL [13,10]: Invalid equality operation
+FATAL [14,12]: Relational operator applied to non-numeric operand
+FATAL [15,13]: Relational operator applied to non-numeric operand
+FATAL [16,13]: Relational operator applied to non-numeric operand
+FATAL [17,12]: Relational operator applied to non-numeric operand
+FATAL [19,8]: Logical operator applied to non-bool operand
+FATAL [19,13]: Logical operator applied to non-bool operand
+FATAL [20,8]: Logical operator applied to non-bool operand
+FATAL [20,13]: Logical operator applied to non-bool operand
+FATAL [21,9]: Logical operator applied to non-bool operand
+FATAL [23,5]: Non-bool expression used as an if condition
+FATAL [25,5]: Non-bool expression used as an if condition
+FATAL [26,8]: Non-bool expression used as a while condition
+FATAL [28,8]: Attempt to write array
+FATAL [29,8]: Attempt to output a function
+FATAL [30,12]: Arithmetic operator applied to invalid operand
+FATAL [31,7]: Attempt to read a function
+FATAL [33,8]: Attempt to index a non-array
+FATAL [34,12]: Bad index type
+FATAL [35,2]: Attempt to call a non-function
+FATAL [39,9]: Bad return value
+FATAL [40,2]: Missing return value
+FATAL [44,8]: Attempt to write void
+FATAL [46,9]: Return with a value in void function
+FATAL [51,2]: Attempt to call a non-function
+FATAL [52,2]: Function call with wrong number of args
+FATAL [53,12]: Type of actual does not match type of formal
+Type Analysis Failed

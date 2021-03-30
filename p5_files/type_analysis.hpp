@@ -10,7 +10,7 @@ class NameAnalysis;
 namespace crona{
 
 // An instance of this class will be passed over the entire
-// AST. Rather than attaching types to each node, the 
+// AST. Rather than attaching types to each node, the
 // TypeAnalysis class contains a map from each ASTNode to it's
 // DataType. Thus, instead of attaching a type field to most nodes,
 // one can instead map the node to it's type, or lookup the node
@@ -31,7 +31,7 @@ public:
 	//The type analysis has an instance variable to say whether
 	// the analysis failed or not. Setting this variable is much
 	// less of a pain than passing a boolean all the way up to the
-	// root during the TypeAnalysis pass. 
+	// root during the TypeAnalysis pass.
 	bool passed(){
 		return !hasError;
 	}
@@ -44,10 +44,10 @@ public:
 		return currentFnType;
 	}
 
-	
-	//Set the type of a node. Note that the function name is 
+
+	//Set the type of a node. Note that the function name is
 	// overloaded: this 2-argument nodeType puts a value into the
-	// map with a given type. 
+	// map with a given type.
 	void nodeType(const ASTNode * node, const DataType * type){
 		nodeToType[node] = type;
 	}
@@ -64,8 +64,13 @@ public:
 		return nodeToType[node];
 	}
 
-	//The following functions all report and error and 
-	// tell the object that the analysis has failed. 
+	//The following functions all report and error and
+	// tell the object that the analysis has failed.
+	void errAnalysisFail(){
+		Report::fatal(0, 0,
+			"Type Analysis Failed");
+	}
+
 	void errWriteFn(size_t line, size_t col){
 		hasError = true;
 		Report::fatal(line, col,
@@ -73,13 +78,13 @@ public:
 	}
 	void errWriteVoid(size_t line, size_t col){
 		hasError = true;
-		Report::fatal(line, col, 
+		Report::fatal(line, col,
 			"Attempt to output void");
 	}
 	void errWriteArray(size_t line, size_t col){
 		hasError = true;
 		Report::fatal(line, col,
-			"Attempt to output array");
+			"Attempt to write array");
 	}
 	void errReadFn(size_t line, size_t col){
 		hasError = true;
@@ -100,29 +105,29 @@ public:
 	}
 	void errArgMatch(size_t line, size_t col){
 		hasError = true;
-		Report::fatal(line, col, 
+		Report::fatal(line, col,
 			"Type of actual does not match"
 			" type of formal");
 	}
 	void errRetEmpty(size_t line, size_t col){
 		hasError = true;
-		Report::fatal(line, col, 
+		Report::fatal(line, col,
 			"Missing return value");
 	}
 	void extraRetValue(size_t line, size_t col){
 		hasError = true;
-		Report::fatal(line, col, 
+		Report::fatal(line, col,
 			"Return with a value in void"
 			" function");
 	}
 	void errRetWrong(size_t line, size_t col){
 		hasError = true;
-		Report::fatal(line, col, 
+		Report::fatal(line, col,
 			"Bad return value");
 	}
 	void errMathOpd(size_t line, size_t col){
 		hasError = true;
-		Report::fatal(line, col, 
+		Report::fatal(line, col,
 			"Arithmetic operator applied"
 			" to invalid operand");
 	}
@@ -140,7 +145,7 @@ public:
 	}
 	void errIfCond(size_t line, size_t col){
 		hasError = true;
-		Report::fatal(line, col, 
+		Report::fatal(line, col,
 			"Non-bool expression used as"
 			" an if condition");
 	}
@@ -152,22 +157,22 @@ public:
 	}
 	void errEqOpd(size_t line, size_t col){
 		hasError = true;
-		Report::fatal(line, col, 
+		Report::fatal(line, col,
 			"Invalid equality operand");
 	}
 	void errEqOpr(size_t line, size_t col){
 		hasError = true;
-		Report::fatal(line, col, 
+		Report::fatal(line, col,
 			"Invalid equality operation");
 	}
 	void errAssignOpd(size_t line, size_t col){
 		hasError = true;
-		Report::fatal(line, col, 
+		Report::fatal(line, col,
 			"Invalid assignment operand");
 	}
 	void errAssignOpr(size_t line, size_t col){
 		hasError = true;
-		Report::fatal(line, col, 
+		Report::fatal(line, col,
 			"Invalid assignment operation");
 	}
 	void errArrayID(size_t line, size_t col){
