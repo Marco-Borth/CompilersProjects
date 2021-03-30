@@ -40,18 +40,18 @@ newFunc : bool() {
 	return;
 }
 
+paramFunc : bool(x : int){}
+
 otherFunc : void() {
  write otherFunc();
  write newFunc();
  return otherFunc();
- return;
-}
-
-paramFunc: int(x : bool) {
-	a();
-	paramFunc(true, false);
-	paramFunc(2);
-	paramFunc(true);
-	b = newFunc();
-	write (b == newFunc());
+ a();
+ b();
+ paramFunc(true, false);
+ paramFunc(1);
+ paramFunc(true);
+ b = newFunc();
+ switch : bool;
+ write (switch == paramFunc(5));
 }

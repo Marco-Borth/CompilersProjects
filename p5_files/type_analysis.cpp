@@ -17,6 +17,7 @@ TypeAnalysis * TypeAnalysis::build(NameAnalysis * nameAnalysis){
 
 	ast->typeAnalysis(typeAnalysis);
 	if (typeAnalysis->hasError){
+		//typeAnalysis->errAnalysisFail();
 		return nullptr;
 	}
 
@@ -68,52 +69,43 @@ void CallExpNode::typeAnalysis(TypeAnalysis * ta){
 	myID->typeAnalysis(ta);
 
 	const DataType * IDType = ta->nodeType(myID);
+	const FnType * fnType = IDType->asFn();
 
-	size_t found = IDType->getString().find("->");
-  if (found != string::npos) {
-		if (myArgs->size() == IDType->getSize()) {
-			ta->nodeType(this, IDType);
+	size_t argListsize = myArgs->size();
+	if(IDType->isFunction()) {
+		/*
+		if (fnType->getFormalTypes()->size() == 0) {
+			const DataType * returnType = fnType->getReturnType();
+			ta->nodeType(this, returnType);
 			return;
-		} else {
-			if(myArgs != nullptr) {
-				for (auto args : *myArgs) {
-					args->typeAnalysis(ta);
-					const DataType * argType = ta->nodeType(args);
-					std::string formal = argType->getString();
-					size_t found = IDType->getString().find(formal);
-					if (found != string::npos) {
-						ta->errArgMatch(this->line(), this->col()); //Outputs error message if we try to write a void.
-					}
+		} else
+		*/
+		const std::list<const DataType *> * formalsList = fnType->getFormalTypes();
+		if (argListsize == formalsList->size()) {
+			bool argsPassed = true;
+			int index = 1;
+			for (auto args : *myArgs) {
+				args->typeAnalysis(ta);
+				const DataType * argType = ta->nodeType(args);
+				if (argType->getString() != formalsList->front()->getString()){
+					ta->errArgMatch(this->line(), args->col()); //Outputs error message if we try to write a void.
+					argsPassed = false;
 				}
+				std::advance(formalsList,1);
 			}
+
+			if(argsPassed) {
+				//const DataType * returnType = ;
+				ta->nodeType(this, fnType->getReturnType());
+				return;
+			}
+		} else {
 			ta->errArgCount(this->line(), this->col());
 		}
 	} else {
 		ta->errCallee(this->line(), this->col());
 	}
 
-	//While incomplete, this gives you one case for
-	// assignment: if the types are exactly the same
-	// it is usually ok to do the assignment. One
-	// exception is that if both types are function
-	// names, it should fail type analysis
-
-	/*
-
-	*/
-	//const FnType * fnType = IDType->asFn();
-	//const DataType * returnType = fnType->getReturnType();
-
-	//Some functions are already defined for you to
-	// report type errors. Note that these functions
-	// also tell the typeAnalysis object that the
-	// analysis has failed, meaning that main.cpp
-	// will print "Type check failed" at the end
-
-
-	//Note that reporting an error does not set the
-	// type of the current node, so setting the node
-	// type must be done
 	ta->nodeType(this, ErrorType::produce());
 }
 
@@ -164,21 +156,6 @@ void AssignStmtNode::typeAnalysis(TypeAnalysis * ta){
 
 void CallStmtNode::typeAnalysis(TypeAnalysis * ta){
 	myCallExp->typeAnalysis(ta);
-
-	//It can be a bit of a pain to write
-	// "const DataType *" everywhere, so here
-	// the use of auto is used instead to tell the
-	// compiler to figure out what the subType variable
-	// should be
-	auto subType = ta->nodeType(myCallExp);
-
-	// As error returns null if subType is NOT an error type
-	// otherwise, it returns the subType itself
-	if (subType->asError()){
-		ta->nodeType(this, subType);
-	} else {
-		ta->nodeType(this, BasicType::produce(VOID));
-	}
 }
 
 void IfStmtNode::typeAnalysis(TypeAnalysis * ta){
@@ -496,9 +473,7 @@ void EquivalenceExpNode::typeAnalysis(TypeAnalysis * ta){
 	const DataType * myExp1Type = ta->nodeType(myExp1);
 	const DataType * myExp2Type = ta->nodeType(myExp2);
 
-	if (myExp1Type == myExp2Type &&
-			myExp1Type->getString() == "int" &&
-			myExp2Type->getString() == "int"){
+	if (myExp1Type == myExp2Type) {
 		ta->nodeType(this, BasicType::produce(BOOL));
 		return;
 	} else {
