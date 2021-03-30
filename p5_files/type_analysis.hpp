@@ -67,8 +67,7 @@ public:
 	//The following functions all report and error and
 	// tell the object that the analysis has failed.
 	void errAnalysisFail(){
-		Report::fatal(0, 0,
-			"Type Analysis Failed");
+		InternalError("Type Analysis Failed");
 	}
 
 	void errWriteFn(size_t line, size_t col){
@@ -79,7 +78,7 @@ public:
 	void errWriteVoid(size_t line, size_t col){
 		hasError = true;
 		Report::fatal(line, col,
-			"Attempt to output void");
+			"Attempt to write void");
 	}
 	void errWriteArray(size_t line, size_t col){
 		hasError = true;

@@ -31,9 +31,10 @@ FATAL [34,12]: Bad index type
 FATAL [35,2]: Attempt to call a non-function
 FATAL [39,9]: Bad return value
 FATAL [40,2]: Missing return value
-FATAL [44,8]: Attempt to write void
-FATAL [46,9]: Return with a value in void function
-FATAL [51,2]: Attempt to call a non-function
-FATAL [52,2]: Function call with wrong number of args
+FATAL [46,8]: Attempt to write void
+FATAL [48,9]: Return with a value in void function
+FATAL [49,2]: Attempt to call a non-function
+FATAL [50,2]: Attempt to call a non-function
+FATAL [51,2]: Function call with wrong number of args
 FATAL [53,12]: Type of actual does not match type of formal
 Type Analysis Failed

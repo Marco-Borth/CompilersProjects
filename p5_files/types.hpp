@@ -234,7 +234,7 @@ public:
 		return result;
 	}
 	bool isFunction() const override { return true; }
-	virtual const FnType * asFn() const override { return this; }
+	const FnType * asFn() const override { return this; }
 
 	const DataType * getReturnType() const {
 		return myRetType;

@@ -61,7 +61,7 @@ fn:int(){
 	}
 
 	return a;
-	//fn();
+	fn();
 
 	arr : int array[10];
 	read arr[2];
