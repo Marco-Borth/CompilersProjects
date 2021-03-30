@@ -17,6 +17,7 @@ TypeAnalysis * TypeAnalysis::build(NameAnalysis * nameAnalysis){
 
 	ast->typeAnalysis(typeAnalysis);
 	if (typeAnalysis->hasError){
+		typeAnalysis->errAnalysisFail();
 		return nullptr;
 	}
 
@@ -69,30 +70,10 @@ void CallExpNode::typeAnalysis(TypeAnalysis * ta){
 
 	const DataType * IDType = ta->nodeType(myID);
 
-	//While incomplete, this gives you one case for
-	// assignment: if the types are exactly the same
-	// it is usually ok to do the assignment. One
-	// exception is that if both types are function
-	// names, it should fail type analysis
-
-	if(IDType->isFunction()) {
-		if(myArgs->size() == IDType->getSize()) {
-			/*
-			if(myArgs != nullptr) {
-				for (auto args : *myArgs) {
-					args->typeAnalysis(ta);
-					const DataType * argType = ta->nodeType(args);
-					std::string formal = argType->getString();
-					size_t found = IDType->getString().find(formal);
-					if (found != string::npos) {
-						ta->errArgMatch(this->line(), this->col()); //Outputs error message if we try to write a void.
-					}
-				}
-			}
-			*/
-			const FnType * fnType = IDType->asFn();
-			const DataType * returnType = fnType->getReturnType();
-			ta->nodeType(this, returnType);
+	size_t found = IDType->getString().find("->");
+  if (found != string::npos) {
+		if (myArgs->size() == IDType->getSize()) {
+			ta->nodeType(this, IDType);
 			return;
 		} else {
 			ta->errArgCount(this->line(), myID->col());
@@ -100,6 +81,28 @@ void CallExpNode::typeAnalysis(TypeAnalysis * ta){
 	} else {
 		ta->errCallee(this->line(), myID->col());
 	}
+
+	//While incomplete, this gives you one case for
+	// assignment: if the types are exactly the same
+	// it is usually ok to do the assignment. One
+	// exception is that if both types are function
+	// names, it should fail type analysis
+
+	/*
+	if(myArgs != nullptr) {
+		for (auto args : *myArgs) {
+			args->typeAnalysis(ta);
+			const DataType * argType = ta->nodeType(args);
+			std::string formal = argType->getString();
+			size_t found = IDType->getString().find(formal);
+			if (found != string::npos) {
+				ta->errArgMatch(this->line(), this->col()); //Outputs error message if we try to write a void.
+			}
+		}
+	}
+	*/
+	//const FnType * fnType = IDType->asFn();
+	//const DataType * returnType = fnType->getReturnType();
 
 	//Some functions are already defined for you to
 	// report type errors. Note that these functions
@@ -284,15 +287,18 @@ void WriteStmtNode::typeAnalysis(TypeAnalysis * ta){
   if (tgtType->isFunction()) {
 		ta->errWriteFn(this->line(), mySrc->col()); //Outputs error message if we try to write a function.
 	} else {
-		if (tgtType->isArray()) {
-			ta->errWriteArray(this->line(), mySrc->col()); //Outputs error message if we try to write an array.
+		if (tgtType->getString() == "void") {
+			ta->errWriteVoid(this->line(), mySrc->col()); //Outputs error message if we try to write a void.
 		} else {
-			if (tgtType->getString() == "void") {
-				ta->errWriteVoid(this->line(), mySrc->col()); //Outputs error message if we try to write a void.
-			} else {}
-			ta->nodeType(this, tgtType);
-			return;
+			if (tgtType->isArray()) {
+				ta->errWriteArray(this->line(), mySrc->col()); //Outputs error message if we try to write an array.
+			} else {
+				ta->nodeType(this, tgtType);
+				return;
+			}
+
 		}
+
 	}
 
 	//It can be a bit of a pain to write
