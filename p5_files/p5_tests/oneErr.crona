@@ -37,10 +37,10 @@ fn:void(){
 
 newFunc : bool() {
 	return 10;
+	return;
 }
 
 otherFunc : void() {
- return;
  write otherFunc();
  write newFunc();
  return otherFunc();
@@ -53,4 +53,5 @@ paramFunc: int(x : bool) {
 	paramFunc(2);
 	paramFunc(true);
 	b = newFunc();
+	write (b == newFunc());
 }

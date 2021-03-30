@@ -365,25 +365,32 @@ public:
 	void unparse(std::ostream& out, int indent) override;
 };
 
+class EquivalenceExpNode : public BinaryExpNode{
+public:
+	EquivalenceExpNode(size_t lIn, size_t cIn, ExpNode * lhs, ExpNode * rhs)
+	: BinaryExpNode(lIn, cIn, lhs, rhs) { }
+	virtual void typeAnalysis(TypeAnalysis *) override;
+};
+
+class EqualsNode : public EquivalenceExpNode{
+public:
+	EqualsNode(size_t l, size_t c, ExpNode * e1, ExpNode * e2)
+	: EquivalenceExpNode(l, c, e1, e2){ }
+	void unparse(std::ostream& out, int indent) override;
+};
+
+class NotEqualsNode : public EquivalenceExpNode{
+public:
+	NotEqualsNode(size_t l, size_t c, ExpNode * e1, ExpNode * e2)
+	: EquivalenceExpNode(l, c, e1, e2){ }
+	void unparse(std::ostream& out, int indent) override;
+};
+
 class RelationalExpNode : public BinaryExpNode{
 public:
 	RelationalExpNode(size_t lIn, size_t cIn, ExpNode * lhs, ExpNode * rhs)
 	: BinaryExpNode(lIn, cIn, lhs, rhs) { }
 	virtual void typeAnalysis(TypeAnalysis *) override;
-};
-
-class EqualsNode : public RelationalExpNode{
-public:
-	EqualsNode(size_t l, size_t c, ExpNode * e1, ExpNode * e2)
-	: RelationalExpNode(l, c, e1, e2){ }
-	void unparse(std::ostream& out, int indent) override;
-};
-
-class NotEqualsNode : public RelationalExpNode{
-public:
-	NotEqualsNode(size_t l, size_t c, ExpNode * e1, ExpNode * e2)
-	: RelationalExpNode(l, c, e1, e2){ }
-	void unparse(std::ostream& out, int indent) override;
 };
 
 class LessNode : public RelationalExpNode{
