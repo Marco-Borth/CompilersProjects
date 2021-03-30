@@ -78,14 +78,18 @@ void CallExpNode::typeAnalysis(TypeAnalysis * ta){
 	if(IDType->isFunction()) {
 		std::size_t argsSize = myArgs->size();
 		if(argsSize == IDType->getSize()) {
-			/*
-			for (auto arg : *myArgs) {
-				myArgs->typeAnalysis(ta);
-				const DataType * argsType = ta->nodeType(myID);
-				if()
+			if(myArgs != nullptr) {
+				for (auto args : *myArgs) {
+					args->typeAnalysis(ta);
+					const DataType * argType = ta->nodeType(args);
+					std::string formal = argType->getString();
+					size_t found = IDType->getString().find(formal);
+					if (found != string::npos) {
+						ta->errArgMatch(this->line(), this->col()); //Outputs error message if we try to write a void.
+					}
+				}
 			}
-			*/
-			ta->nodeType(this, tgtType);
+			ta->nodeType(this, IDType);
 			return;
 		} else {
 			ta->errArgCount(this->line(), this->col());
@@ -274,20 +278,20 @@ void WriteStmtNode::typeAnalysis(TypeAnalysis * ta){
 	mySrc->typeAnalysis(ta); //Sets an entry in the Type Hash Table nodeToType
 	const DataType * tgtType = ta->nodeType(mySrc); //Retrieves the DataType in the hash table
 
-	size_t found = tgtType->getString().find("->");
-  if (found != string::npos) {
-		ta->errWriteFn(this->line(), this->col()); //Outputs error message if we try to write a void value.
+  if (tgtType->isFunction()) {
+		ta->errWriteFn(this->line(), this->col()); //Outputs error message if we try to write a function.
 	} else {
-		if (tgtType->getString() != "void") {
-			if (!(tgtType->isArray())) {
-				ta->nodeType(this, tgtType);
-			 	return;
-			} else {
-				ta->errWriteArray(this->line(), this->col());
-			}
+		if (tgtType->isArray()) {
+			ta->errWriteArray(this->line(), this->col()); //Outputs error message if we try to write an array.
 		} else {
-			ta->errWriteVoid(this->line(), this->col()); //Outputs error message if we try to write a void value.
+			ta->nodeType(this, tgtType);
+			return;
 		}
+	}
+
+	size_t found = tgtType->getString().find("void");
+	if (found != string::npos) {
+		ta->errWriteVoid(this->line(), this->col()); //Outputs error message if we try to write a void.
 	}
 
 	//It can be a bit of a pain to write
