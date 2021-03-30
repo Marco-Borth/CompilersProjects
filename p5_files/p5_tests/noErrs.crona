@@ -1,3 +1,13 @@
+fn2 : void (a : int, b : int){
+	a++;
+}
+
+fn3 : int (a : int){
+	a++;
+	return a;
+}
+
+
 fn:int(){
 	a:int;
 	a = 4;
@@ -8,6 +18,9 @@ fn:int(){
 	a++;
 	d : string;
 	d = "this";
+	fn2(4, 5);
+	b = a;
+	b = fn3(5);
 	b = 2 + 5;
 	b = a + 5;
 	a = a * 10;
@@ -54,3 +67,4 @@ fn:int(){
 	arr : int array[10];
 	read arr[2];
 }
+
