@@ -17,7 +17,6 @@ TypeAnalysis * TypeAnalysis::build(NameAnalysis * nameAnalysis){
 
 	ast->typeAnalysis(typeAnalysis);
 	if (typeAnalysis->hasError){
-		typeAnalysis->errAnalysisFail();
 		return nullptr;
 	}
 
@@ -76,10 +75,21 @@ void CallExpNode::typeAnalysis(TypeAnalysis * ta){
 			ta->nodeType(this, IDType);
 			return;
 		} else {
-			ta->errArgCount(this->line(), myID->col());
+			if(myArgs != nullptr) {
+				for (auto args : *myArgs) {
+					args->typeAnalysis(ta);
+					const DataType * argType = ta->nodeType(args);
+					std::string formal = argType->getString();
+					size_t found = IDType->getString().find(formal);
+					if (found != string::npos) {
+						ta->errArgMatch(this->line(), this->col()); //Outputs error message if we try to write a void.
+					}
+				}
+			}
+			ta->errArgCount(this->line(), this->col());
 		}
 	} else {
-		ta->errCallee(this->line(), myID->col());
+		ta->errCallee(this->line(), this->col());
 	}
 
 	//While incomplete, this gives you one case for
@@ -89,17 +99,7 @@ void CallExpNode::typeAnalysis(TypeAnalysis * ta){
 	// names, it should fail type analysis
 
 	/*
-	if(myArgs != nullptr) {
-		for (auto args : *myArgs) {
-			args->typeAnalysis(ta);
-			const DataType * argType = ta->nodeType(args);
-			std::string formal = argType->getString();
-			size_t found = IDType->getString().find(formal);
-			if (found != string::npos) {
-				ta->errArgMatch(this->line(), this->col()); //Outputs error message if we try to write a void.
-			}
-		}
-	}
+
 	*/
 	//const FnType * fnType = IDType->asFn();
 	//const DataType * returnType = fnType->getReturnType();
