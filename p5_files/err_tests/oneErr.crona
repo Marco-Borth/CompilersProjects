@@ -52,4 +52,5 @@ paramFunc: int(x : bool) {
 	paramFunc(true, false);
 	paramFunc(2);
 	paramFunc(true);
+	b = newFunc();
 }
