@@ -404,11 +404,19 @@ void AssignExpNode::typeAnalysis(TypeAnalysis * ta){
 	const DataType * tgtType = ta->nodeType(myDst);
 	const DataType * srcType = ta->nodeType(mySrc);
 
+	if(srcType->isFunction()) {
+		const FnType * fnType = srcType->asFn();
+		srcType = fnType->getReturnType();
+	}
+
 	//While incomplete, this gives you one case for
 	// assignment: if the types are exactly the same
 	// it is usually ok to do the assignment. One
 	// exception is that if both types are function
 	// names, it should fail type analysis
+
+
+
 	if (tgtType == srcType){
 		ta->nodeType(this, tgtType);
 		return;
