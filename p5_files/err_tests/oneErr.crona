@@ -43,4 +43,13 @@ otherFunc : void() {
  return;
  write otherFunc();
  write newFunc();
+ return otherFunc();
+ return;
+}
+
+paramFunc: int(x : bool) {
+	a();
+	paramFunc(true, false);
+	paramFunc(2);
+	paramFunc(true);
 }

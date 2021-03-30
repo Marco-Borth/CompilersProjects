@@ -44,7 +44,7 @@ public:
 	virtual bool isBool() const { return false; }
 	virtual bool isByte() const { return false; }
 	virtual bool isArray() const { return false; }
-	virtual bool isFunction() const { return false; } 
+	virtual bool isFunction() const { return false; }
 	virtual bool validVarType() const = 0 ;
 	virtual size_t getSize() const = 0;
 protected:
@@ -243,7 +243,7 @@ public:
 		return myFormalTypes;
 	}
 	virtual bool validVarType() const override { return false; }
-	virtual size_t getSize() const override { return 0; }
+	virtual size_t getSize() const override { return myFormalTypes->size(); }
 private:
 	const std::list<const DataType *> * myFormalTypes;
 	const DataType * myRetType;

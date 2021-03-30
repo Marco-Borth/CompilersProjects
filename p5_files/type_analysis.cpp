@@ -78,13 +78,17 @@ void CallExpNode::typeAnalysis(TypeAnalysis * ta){
 	if(IDType->isFunction()) {
 		std::size_t argsSize = myArgs->size();
 		if(argsSize == IDType->getSize()) {
-			/*
-			for (auto arg : *myArgs) {
-				myArgs->typeAnalysis(ta);
-				const DataType * argsType = ta->nodeType(myID);
-				if()
+			if(myArgs != nullptr) {
+				for (auto args : *myArgs) {
+					args->typeAnalysis(ta);
+					const DataType * argType = ta->nodeType(args);
+					std::string formal = argType->getString();
+					size_t found = IDType->getString().find(formal);
+					if (found != string::npos) {
+						ta->errArgMatch(this->line(), this->col()); //Outputs error message if we try to write a void.
+					}
+				}
 			}
-			*/
 			ta->nodeType(this, IDType);
 			return;
 		} else {
