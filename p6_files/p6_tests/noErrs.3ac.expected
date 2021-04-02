@@ -1,8 +1,11 @@
 [BEGIN GLOBALS]
 [END GLOBALS]
 [BEGIN fn LOCALS]
-a (local)
+a (local var of 8 bytes)
+tmp0 (tmp var of 8 bytes)
 [END fn LOCALS]
-enter fn
-a := 4
-lbl_0: leave fn
+fun_fn:     enter fn
+            [tmp0] := 4
+            [a] := [tmp0]
+lbl_0:      leave fn
+
