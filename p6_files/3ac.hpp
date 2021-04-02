@@ -6,6 +6,7 @@
 #include <map>
 #include <set>
 #include <string.h>
+#include <stdexcept>
 #include "symbol_table.hpp"
 #include "types.hpp"
 
@@ -63,7 +64,7 @@ public:
 private:
 	//Private Constructor
 	SymOpd(SemSymbol * sym, size_t width)
-	: Opd(width), mySym(sym) {} 
+	: Opd(width), mySym(sym) {}
 	SemSymbol * mySym;
 	friend class Procedure;
 	friend class IRProgram;
@@ -74,7 +75,7 @@ public:
 	LitOpd(std::string valIn, size_t width)
 	: Opd(width), val(valIn){ }
 	virtual std::string valString() override { return val; }
-	virtual std::string locString() override { 
+	virtual std::string locString() override {
 		throw InternalError("Tried to get location of a constant");
 	}
 private:
@@ -84,7 +85,7 @@ private:
 
 class AuxOpd : public Opd{
 public:
-	AuxOpd(std::string nameIn, size_t width) 
+	AuxOpd(std::string nameIn, size_t width)
 	: Opd(width), name(nameIn) { }
 	std::string valString() override{
 		return "[" + getName() + "]";
@@ -163,7 +164,7 @@ private:
 };
 
 class AssignQuad : public Quad{
-	
+
 public:
 	AssignQuad(Opd * dstIn, Opd * srcIn);
 	std::string repr() override;
@@ -307,7 +308,7 @@ public:
 	AuxOpd * makeTmp(size_t width);
 	AddrOpd * makeAddrOpd(size_t width);
 
-	std::string toString(bool verbose=false); 
+	std::string toString(bool verbose=false);
 	std::string getName();
 
 	crona::Label * getLeaveLabel();
@@ -318,8 +319,8 @@ private:
 
 	IRProgram * myProg;
 	std::map<SemSymbol *, SymOpd *> locals;
-	std::list<AuxOpd *> temps; 
-	std::list<SymOpd *> formals; 
+	std::list<AuxOpd *> temps;
+	std::list<SymOpd *> formals;
 	std::list<AddrOpd *> addrOpds;
 	std::list<Quad *> * bodyQuads;
 	std::string myName;
@@ -346,11 +347,11 @@ private:
 	TypeAnalysis * ta;
 	size_t max_label = 0;
 	size_t str_idx = 0;
-	std::list<Procedure *> * procs; 
+	std::list<Procedure *> * procs;
 	HashMap<AddrOpd *, std::string> strings;
 	std::map<SemSymbol *, SymOpd *> globals;
 };
 
 }
 
-#endif 
+#endif
