@@ -41,7 +41,7 @@ public:
 	}
 	virtual bool nameAnalysis(SymbolTable *) = 0;
 	//Note that there is no ASTNode::typeAnalysis. To allow
-	// for different type signatures, type analysis is 
+	// for different type signatures, type analysis is
 	// implemented as needed in various subclasses
 private:
 	size_t l;
@@ -76,9 +76,9 @@ public:
 	LValNode(size_t lIn, size_t cIn) : ExpNode(lIn, cIn){}
 	void unparse(std::ostream& out, int indent) override = 0;
 	void unparseNested(std::ostream& out) override;
-	void attachSymbol(SemSymbol * symbolIn) { } 
+	void attachSymbol(SemSymbol * symbolIn) { }
 	bool nameAnalysis(SymbolTable * symTab) override { return false; }
-	virtual void typeAnalysis(TypeAnalysis *) override {; } 
+	virtual void typeAnalysis(TypeAnalysis *) override {; }
 	virtual Opd * flatten(Procedure * proc) override;
 };
 
@@ -156,7 +156,7 @@ private:
 
 class FormalDeclNode : public VarDeclNode{
 public:
-	FormalDeclNode(size_t lIn, size_t cIn, TypeNode * type, IDNode * id) 
+	FormalDeclNode(size_t lIn, size_t cIn, TypeNode * type, IDNode * id)
 	: VarDeclNode(lIn, cIn, type, id){ }
 	void unparse(std::ostream& out, int indent) override;
 	virtual void to3AC(Procedure * proc) override;
@@ -165,11 +165,11 @@ public:
 
 class FnDeclNode : public DeclNode{
 public:
-	FnDeclNode(size_t lIn, size_t cIn, 
+	FnDeclNode(size_t lIn, size_t cIn,
 	  IDNode * idIn, TypeNode * retTypeIn,
 	  std::list<FormalDeclNode *> * formalsIn,
 	  std::list<StmtNode *> * bodyIn)
-	: DeclNode(lIn, cIn), 
+	: DeclNode(lIn, cIn),
 	  myID(idIn), myRetType(retTypeIn),
 	  myFormals(formalsIn), myBody(bodyIn){ }
 	IDNode * ID() const { return myID; }
@@ -180,8 +180,8 @@ public:
 	virtual bool nameAnalysis(SymbolTable * symTab) override;
 	virtual void typeAnalysis(TypeAnalysis *) override;
 	void to3AC(IRProgram * prog) override;
-	void to3AC(Procedure * prog) override;
-	virtual TypeNode * getRetTypeNode() { 
+	void to3AC(Procedure * proc) override;
+	virtual TypeNode * getRetTypeNode() {
 		return myRetType;
 	}
 private:
@@ -267,7 +267,7 @@ private:
 
 class IfElseStmtNode : public StmtNode{
 public:
-	IfElseStmtNode(size_t l, size_t c, ExpNode * condIn, 
+	IfElseStmtNode(size_t l, size_t c, ExpNode * condIn,
 	  std::list<StmtNode *> * bodyTrueIn,
 	  std::list<StmtNode *> * bodyFalseIn)
 	: StmtNode(l, c), myCond(condIn),
@@ -284,7 +284,7 @@ private:
 
 class WhileStmtNode : public StmtNode{
 public:
-	WhileStmtNode(size_t l, size_t c, ExpNode * condIn, 
+	WhileStmtNode(size_t l, size_t c, ExpNode * condIn,
 	  std::list<StmtNode *> * bodyIn)
 	: StmtNode(l, c), myCond(condIn), myBody(bodyIn){ }
 	void unparse(std::ostream& out, int indent) override;
@@ -402,7 +402,7 @@ public:
 	void unparse(std::ostream& out, int indent) override;
 	virtual void typeAnalysis(TypeAnalysis *) override;
 	virtual Opd * flatten(Procedure * prog) override;
-	
+
 };
 
 class NotEqualsNode : public BinaryExpNode{
@@ -412,12 +412,12 @@ public:
 	void unparse(std::ostream& out, int indent) override;
 	virtual void typeAnalysis(TypeAnalysis *) override;
 	virtual Opd * flatten(Procedure * prog) override;
-	
+
 };
 
 class LessNode : public BinaryExpNode{
 public:
-	LessNode(size_t lineIn, size_t colIn, 
+	LessNode(size_t lineIn, size_t colIn,
 		ExpNode * exp1, ExpNode * exp2)
 	: BinaryExpNode(lineIn, colIn, exp1, exp2){ }
 	void unparse(std::ostream& out, int indent) override;
@@ -436,7 +436,7 @@ public:
 
 class GreaterNode : public BinaryExpNode{
 public:
-	GreaterNode(size_t lineIn, size_t colIn, 
+	GreaterNode(size_t lineIn, size_t colIn,
 		ExpNode * exp1, ExpNode * exp2)
 	: BinaryExpNode(lineIn, colIn, exp1, exp2){ }
 	void unparse(std::ostream& out, int indent) override;
@@ -455,7 +455,7 @@ public:
 
 class UnaryExpNode : public ExpNode {
 public:
-	UnaryExpNode(size_t lIn, size_t cIn, ExpNode * expIn) 
+	UnaryExpNode(size_t lIn, size_t cIn, ExpNode * expIn)
 	: ExpNode(lIn, cIn){
 		this->myExp = expIn;
 	}
@@ -491,8 +491,8 @@ class VoidTypeNode : public TypeNode{
 public:
 	VoidTypeNode(size_t l, size_t c) : TypeNode(l, c){}
 	void unparse(std::ostream& out, int indent) override;
-	virtual DataType * getType()override { 
-		return BasicType::VOID(); 
+	virtual DataType * getType()override {
+		return BasicType::VOID();
 	}
 };
 
@@ -521,9 +521,9 @@ class ArrayTypeNode : public TypeNode{
 public:
 	ArrayTypeNode(size_t l, size_t c, TypeNode * base, size_t len): TypeNode(l, c), myLen(len), myBase(base){}
 	void unparse(std::ostream& out, int indent) override;
-	virtual DataType * getType() override { 
+	virtual DataType * getType() override {
 		const BasicType * t = myBase->getType()->asBasic();
-		return ArrayType::produce(t, myLen); 
+		return ArrayType::produce(t, myLen);
 	}
 private:
 	size_t myLen;
@@ -643,4 +643,3 @@ private:
 } //End namespace crona
 
 #endif
-

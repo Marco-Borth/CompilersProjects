@@ -11,12 +11,13 @@ IRProgram * ProgramNode::to3AC(TypeAnalysis * ta){
 }
 
 void FnDeclNode::to3AC(IRProgram * prog){
-	TODO(Implement me)
+	Procedure* newProc = prog->makeProc(myID->getName()); //Create a new procedure and push
+	//it to the list of procedures
 }
 
 void FnDeclNode::to3AC(Procedure * proc){
 	//This never needs to be implemented,
-	// the function only exists because of 
+	// the function only exists because of
 	// inheritance needs (A function declaration
 	// never occurs within another function)
 	throw new InternalError("FnDecl at a local scope");
@@ -24,8 +25,8 @@ void FnDeclNode::to3AC(Procedure * proc){
 
 void FormalDeclNode::to3AC(IRProgram * prog){
 	//This never needs to be implemented,
-	// the function only exists because of 
-	// inheritance needs (A formal never 
+	// the function only exists because of
+	// inheritance needs (A formal never
 	// occurs at global scope)
 	throw new InternalError("Formal at a global scope");
 }
@@ -188,7 +189,7 @@ void VarDeclNode::to3AC(IRProgram * prog){
 	if (sym == nullptr){
 		throw new InternalError("null sym");
 	}
-	
+
 	prog->gatherGlobal(sym);
 }
 
@@ -197,7 +198,7 @@ Opd * IndexNode::flatten(Procedure * proc){
 }
 
 //We only get to this node if we are in a stmt
-// context (DeclNodes protect descent) 
+// context (DeclNodes protect descent)
 Opd * IDNode::flatten(Procedure * proc){
 	TODO(Implement me)
 }
