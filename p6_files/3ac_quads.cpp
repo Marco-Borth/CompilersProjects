@@ -74,7 +74,7 @@ std::string LeaveQuad::repr(){
 
 std::string AssignQuad::repr(){
 	return dst->valString() + " := " + src->valString();
-	
+
 }
 
 AssignQuad::AssignQuad(Opd * dstIn, Opd * srcIn): dst(dstIn), src(srcIn){
@@ -91,44 +91,43 @@ BinOpQuad::BinOpQuad(Opd * dstIn, BinOp oprIn, Opd * src1In, Opd * src2In)
 
 std::string BinOpQuad::oprString(BinOp opr){
 	switch(opr){
-	case ADD8: return "ADD8";  
-	case ADD64: return "ADD64";  
-	case SUB8: return "SUB8";  
-	case SUB64: return "SUB64";  
-	case DIV8: return "DIV8";  
-	case DIV64: return "DIV64";  
-	case MULT8: return "MULT8";  
-	case MULT64: return "MULT64";  
-	case OR8: return "OR8";  
-	case AND8: return "AND8";  
-	case EQ8: return "EQ8";  
-	case EQ64: return "EQ64";  
-	case NEQ8: return "NEQ8";  
-	case NEQ64: return "NEQ64";  
-	case LT8: return "LT8";  
-	case LT64: return "LT64";  
-	case GT8: return "GT8";  
-	case GT64: return "GT64";  
-	case LTE8: return "LTE8";  
-	case LTE64: return "LTE64";  
-	case GTE8: return "GTE8";  
-	case GTE64: return "GTE64";  
-		
-	} 
-
+	case ADD8: return "ADD8";
+	case ADD64: return "ADD64";
+	case SUB8: return "SUB8";
+	case SUB64: return "SUB64";
+	case DIV8: return "DIV8";
+	case DIV64: return "DIV64";
+	case MULT8: return "MULT8";
+	case MULT64: return "MULT64";
+	case OR8: return "OR8";
+	case AND8: return "AND8";
+	case EQ8: return "EQ8";
+	case EQ64: return "EQ64";
+	case NEQ8: return "NEQ8";
+	case NEQ64: return "NEQ64";
+	case LT8: return "LT8";
+	case LT64: return "LT64";
+	case GT8: return "GT8";
+	case GT64: return "GT64";
+	case LTE8: return "LTE8";
+	case LTE64: return "LTE64";
+	case GTE8: return "GTE8";
+	case GTE64: return "GTE64";
+	default: throw(std::runtime_error("Invalid operator passed to oprString funct"));
+	}
 }
 
 std::string BinOpQuad::repr(){
 	std::string opString;
 	return dst->valString()
-		+ " := " 
+		+ " := "
 		+ src1->valString()
 		+ " " + BinOpQuad::oprString(opr) + " "
 		+ src2->valString();
 }
 
 UnaryOpQuad::UnaryOpQuad(Opd * dstIn, UnaryOp opIn, Opd * srcIn)
-: dst(dstIn), op(opIn), src(srcIn) { 
+: dst(dstIn), op(opIn), src(srcIn) {
 	assert(dstIn != nullptr);
 	assert(srcIn != nullptr);
 }
@@ -142,7 +141,7 @@ std::string UnaryOpQuad::repr(){
 	case NOT8:
 		opString = "NOT8 ";
 	}
-	return dst->valString() + " := " 
+	return dst->valString() + " := "
 		+ opString
 		+ src->valString();
 }
@@ -153,7 +152,7 @@ std::string HavocQuad::repr(){
 	return "HAVOC " + myDst->valString();
 }
 
-WriteQuad::WriteQuad(Opd * opd, const DataType * type) 
+WriteQuad::WriteQuad(Opd * opd, const DataType * type)
 : myArg(opd), myType(type){ }
 
 std::string WriteQuad::repr(){
@@ -175,7 +174,7 @@ std::string JmpQuad::repr(){
 	return "goto " + tgt->toString();
 }
 
-JmpIfQuad::JmpIfQuad(Opd * cndIn, Label * tgtIn) 
+JmpIfQuad::JmpIfQuad(Opd * cndIn, Label * tgtIn)
 : Quad(), cnd(cndIn), tgt(tgtIn){ }
 
 std::string JmpIfQuad::repr(){
@@ -198,37 +197,37 @@ GetRetQuad::GetRetQuad(Opd * opdIn)
 
 std::string GetRetQuad::repr(){
 	std::string res = "";
-	res += "getret " + opd->valString(); 
+	res += "getret " + opd->valString();
 	return res;
 }
 
-SetArgQuad::SetArgQuad(size_t indexIn, Opd * opdIn) 
+SetArgQuad::SetArgQuad(size_t indexIn, Opd * opdIn)
 : index(indexIn), opd(opdIn){
 }
 
 std::string SetArgQuad::repr(){
 	std::string res = "";
-	res += "setarg " + std::to_string(index) + " " + opd->valString(); 
+	res += "setarg " + std::to_string(index) + " " + opd->valString();
 	return res;
 }
 
-GetArgQuad::GetArgQuad(size_t indexIn, Opd * opdIn) 
+GetArgQuad::GetArgQuad(size_t indexIn, Opd * opdIn)
 : index(indexIn), opd(opdIn){
 }
 
 std::string GetArgQuad::repr(){
 	std::string res = "";
-	res += "getarg " + std::to_string(index) + " " + opd->valString(); 
+	res += "getarg " + std::to_string(index) + " " + opd->valString();
 	return res;
 }
 
-SetRetQuad::SetRetQuad(Opd * opdIn) 
+SetRetQuad::SetRetQuad(Opd * opdIn)
 : opd(opdIn){
 }
 
 std::string SetRetQuad::repr(){
 	std::string res = "";
-	res += "setret " + opd->valString(); 
+	res += "setret " + opd->valString();
 	return res;
 }
 
