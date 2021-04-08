@@ -1,11 +1,83 @@
 [BEGIN GLOBALS]
+ant
+bailey
+brenda
+q
+str_1 "qwop"
+str_0 "asdf"
 [END GLOBALS]
 [BEGIN fn LOCALS]
-a (local var of 8 bytes)
-tmp0 (tmp var of 8 bytes)
+z (formal arg of 8)
 [END fn LOCALS]
 fun_fn:     enter fn
-            [tmp0] := 4
-            [a] := [tmp0]
+            getarg 1 [z]
 lbl_0:      leave fn
-
+[BEGIN main LOCALS]
+c (formal arg of 8)
+a (local var of 8 bytes)
+b (local var of 8 bytes)
+e (local var of 1 bytes)
+d (local var of 1 bytes)
+tmp0 (tmp var of 8 bytes)
+tmp1 (tmp var of 8 bytes)
+tmp2 (tmp var of 1 bytes)
+tmp3 (tmp var of 1 bytes)
+[END main LOCALS]
+main:       enter main
+            getarg 1 [c]
+            [a] := 543653
+            [b] := 25532
+            [tmp0] := [a] DIV64 [b]
+            [a] := [tmp0]
+            [tmp1] := [a] ADD64 [b]
+            [a] := [tmp1]
+            [tmp2] := [e] MULT8 [d]
+            [e] := [tmp2]
+            [tmp3] := [e] SUB8 [d]
+            [e] := [tmp3]
+lbl_1:      leave main
+[BEGIN master LOCALS]
+b (local var of 1 bytes)
+msg (local var of 0 bytes)
+[END master LOCALS]
+fun_master: enter master
+            [b] := 1
+            [ant] := 1000
+            WRITE [str_0]
+            READ [ant]
+            IFZ [b] GOTO lbl_3
+lbl_3:      nop
+            IFZ [b] GOTO lbl_4
+            [ant] := 3000
+            goto lbl_5
+lbl_4:      nop
+            [msg] := [str_1]
+lbl_5:      nop
+            setret [b]
+            goto lbl_2
+lbl_2:      leave master
+[BEGIN see LOCALS]
+arr (local var of 14976 bytes)
+barr (local var of 10 bytes)
+biscut (local var of 50 bytes)
+tmp0 (tmp var of 8 bytes)
+tmp1 (tmp var of 8 bytes)
+loc2 (tmp loc of 8 bytes)
+loc3 (tmp loc of 1 bytes)
+loc4 (tmp loc of 1 bytes)
+[END see LOCALS]
+fun_see:    enter see
+lbl_7:      nop
+            IFZ [brenda] GOTO lbl_8
+            [ant] := 500
+            goto lbl_7
+lbl_8:      nop
+            [tmp0] := 234
+            [tmp1] := 111 MULT64 8
+            loc2 := arr ADD64 [tmp1]
+            [loc2] := [tmp0]
+            loc3 := barr ADD64 5
+            [loc3] := 1
+            loc4 := biscut ADD64 10
+            [loc4] := 50
+lbl_6:      leave see
