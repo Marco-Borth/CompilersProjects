@@ -1,4 +1,5 @@
-fn:int(){
+q : int;
+fn:int(z:int){
 	a:int;
 	b:bool;
 
@@ -6,5 +7,6 @@ fn:int(){
 
 main : void (c : int)
 {
-	fn();
+	//c = 5;
+	//fn();
 }
