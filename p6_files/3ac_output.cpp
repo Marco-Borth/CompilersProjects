@@ -94,7 +94,7 @@ Opd * LValNode::flatten(Procedure * proc){
 }
 
 Opd * CallExpNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	//TODO(Implement me)
 }
 
 Opd * ByteToIntNode::flatten(Procedure * proc){
@@ -234,7 +234,6 @@ Opd * GreaterEqNode::flatten(Procedure * proc){
 }
 
 void AssignStmtNode::to3AC(Procedure * proc){
-	//TODO(Implement me)
 	myExp->flatten(proc);
 }
 
@@ -323,6 +322,7 @@ void WhileStmtNode::to3AC(Procedure * proc){
 
 void CallStmtNode::to3AC(Procedure * proc){
 	//TODO(Implement me)
+	myExp->flatten(proc);
 }
 
 void ReturnStmtNode::to3AC(Procedure * proc){
@@ -352,7 +352,25 @@ void VarDeclNode::to3AC(IRProgram * prog){
 }
 
 Opd * IndexNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	//TODO(Implement me)
+
+	Opd * dst = nullptr;
+	Opd * opd1 = myBase->flatten(proc);
+	Opd * opd2 = myOffset->flatten(proc);
+	BinOp opr = ADD64;
+	if (opd1->getWidth() == 1)
+	{
+		dst = proc->makeTmp(1);
+	}
+	else
+	{
+		dst = proc->makeTmp(8);
+	}
+	BinOpQuad* myBinOp = new BinOpQuad (dst, opr, opd1, opd2);
+	proc->addQuad(myBinOp);
+	//return (dst);
+	SymOpd* my_Opd = proc->getSymOpd(myBase->getSymbol());
+	return my_Opd;
 }
 
 //We only get to this node if we are in a stmt

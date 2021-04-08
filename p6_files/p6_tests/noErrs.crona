@@ -46,4 +46,9 @@ see:int(){
 	while(brenda){
 		ant = 500;
 	}
+
+	barr:bool array[10];
+	barr[5] = true;
+	biscut:byte array[50];
+	biscut[10] = 50;
 }
