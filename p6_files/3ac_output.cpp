@@ -176,7 +176,10 @@ void ReadStmtNode::to3AC(Procedure * proc){
 }
 
 void WriteStmtNode::to3AC(Procedure * proc){
-	TODO(Implement me)
+	//TODO(Implement me)
+	Opd* my_Opd = mySrc->flatten(proc);
+	WriteQuad * wrt = new WriteQuad(my_Opd, proc->getProg()->nodeType(mySrc));
+	proc->addQuad(wrt);
 }
 
 void IfStmtNode::to3AC(Procedure * proc){
@@ -196,8 +199,8 @@ void CallStmtNode::to3AC(Procedure * proc){
 }
 
 void ReturnStmtNode::to3AC(Procedure * proc){
-	Opd* my_symOpd = myExp->flatten(proc);
-	SetRetQuad * setRet = new SetRetQuad(my_symOpd);
+	Opd* my_Opd = myExp->flatten(proc);
+	SetRetQuad * setRet = new SetRetQuad(my_Opd);
 	proc->addQuad(setRet);
 	JmpQuad * jmp = new JmpQuad(proc->getLeaveLabel());
 	proc->addQuad(jmp);

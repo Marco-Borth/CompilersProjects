@@ -20,8 +20,9 @@ main : void (c : int) {
 
 master:bool(){
 	b:bool;
-
+	msg:string;
 	b = true;
 
+	write "asdf";
 	return false;
 }
