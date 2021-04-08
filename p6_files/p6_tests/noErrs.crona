@@ -1,11 +1,10 @@
 fn:int(){
 	a:int;
-	a = 4;
-	a = 1;
-	a = 0;
-	a = 699;
 	b:bool;
-	b = true;
-	b = false;
-	b = havoc;
+
+}
+
+main : void (c : int)
+{
+	fn();
 }

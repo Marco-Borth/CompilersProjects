@@ -12,7 +12,21 @@ IRProgram * ProgramNode::to3AC(TypeAnalysis * ta){
 
 void FnDeclNode::to3AC(IRProgram * prog){
 	Procedure* newProc = prog->makeProc(myID->getName()); //Create a new procedure and push
-	//it to the list of procedures
+	//it to the list of procedures.
+	size_t iter =1;
+	std::list<FormalDeclNode *> * formals_list = getFormals();
+	for (std::list<FormalDeclNode *>::iterator it = formals_list->begin(); it!=formals_list->end(); ++it)
+	{
+		(*it)->to3AC(newProc);
+		SymOpd* my_symOpd = newProc->getSymOpd((*it)->ID()->getSymbol());
+		GetArgQuad* my_ArgQuad = new GetArgQuad(iter, my_symOpd);
+		newProc->addQuad(my_ArgQuad);
+		iter++;
+	}
+	// for (std::list<StmtNode *>::iterator it = myBody->begin(); it!=myBody->end(); ++it)
+	// {
+	// 	(*it)->to3AC(newProc);
+	// }
 }
 
 void FnDeclNode::to3AC(Procedure * proc){
@@ -32,7 +46,7 @@ void FormalDeclNode::to3AC(IRProgram * prog){
 }
 
 void FormalDeclNode::to3AC(Procedure * proc){
-	TODO(Implement me)
+	proc->gatherFormal(ID()->getSymbol());
 }
 
 Opd * IntLitNode::flatten(Procedure * proc){
@@ -65,7 +79,11 @@ Opd * FalseNode::flatten(Procedure * proc){
 }
 
 Opd * AssignExpNode::flatten(Procedure * proc){
+	// AssignQuad * assign = new AssignQuad(myDst->flatten(proc), mySrc->flatten(proc)); //Returns the two operands of assign exp and inserts them into the quad.
+	// proc->addQuad(assign); //Add the quad to the list of stmts.
+	// return(myDst->flatten(proc)); //Returns either myDst or mySrc. I don't know which specific item to return.
 	TODO(Implement me)
+
 }
 
 Opd * LValNode::flatten(Procedure * proc){
@@ -138,6 +156,7 @@ Opd * GreaterEqNode::flatten(Procedure * proc){
 
 void AssignStmtNode::to3AC(Procedure * proc){
 	TODO(Implement me)
+	// proc->gatherLocal(myExp->flatten(proc);
 }
 
 void PostIncStmtNode::to3AC(Procedure * proc){
@@ -200,6 +219,7 @@ Opd * IndexNode::flatten(Procedure * proc){
 //We only get to this node if we are in a stmt
 // context (DeclNodes protect descent)
 Opd * IDNode::flatten(Procedure * proc){
+	// return (proc->getSymOpd(mySymbol));
 	TODO(Implement me)
 }
 
