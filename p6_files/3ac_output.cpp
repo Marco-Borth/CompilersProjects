@@ -23,10 +23,9 @@ void FnDeclNode::to3AC(IRProgram * prog){
 		newProc->addQuad(my_ArgQuad);
 		iter++;
 	}
-
 	for (std::list<StmtNode *>::iterator it = myBody->begin(); it!=myBody->end(); ++it)
 	{
-	 	(*it)->to3AC(newProc);
+		(*it)->to3AC(newProc);
 	}
 }
 
@@ -84,10 +83,9 @@ Opd * FalseNode::flatten(Procedure * proc){
 }
 
 Opd * AssignExpNode::flatten(Procedure * proc){
-	// AssignQuad * assign = new AssignQuad(myDst->flatten(proc), mySrc->flatten(proc)); //Returns the two operands of assign exp and inserts them into the quad.
-	// proc->addQuad(assign); //Add the quad to the list of stmts.
-	// return(myDst->flatten(proc)); //Returns either myDst or mySrc. I don't know which specific item to return.
-	TODO(Implement me)
+	AssignQuad * my_AssignQuad = new AssignQuad(myDst->flatten(proc), mySrc->flatten(proc)); //Returns the two operands of assign exp and inserts them into the quad.
+	proc->addQuad(my_AssignQuad); //Add the quad to the list of stmts.
+	return(myDst->flatten(proc)); //Returns either myDst or mySrc. I don't know which specific item to return.
 }
 
 Opd * LValNode::flatten(Procedure * proc){
@@ -111,19 +109,95 @@ Opd * NotNode::flatten(Procedure * proc){
 }
 
 Opd * PlusNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	Opd * dst;
+	Opd * opd1 = myExp1->flatten(proc);
+	Opd * opd2 = myExp2->flatten(proc);
+	BinOp opr;
+	if (opd1->getWidth() == opd2->getWidth())
+	{
+		if (opd1->getWidth() == 1)
+		{
+			dst = proc->makeTmp(1);
+			opr = ADD8;
+		}
+		else
+		{
+			dst = proc->makeTmp(8);
+			opr = ADD64;
+		}
+	}
+	BinOpQuad* myBinOp = new BinOpQuad (dst, opr, opd1, opd2);
+	proc->addQuad(myBinOp);
+	return (dst);
 }
 
 Opd * MinusNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	Opd * dst;
+	Opd * opd1 = myExp1->flatten(proc);
+	Opd * opd2 = myExp2->flatten(proc);
+	BinOp opr;
+	if (opd1->getWidth() == opd2->getWidth())
+	{
+		if (opd1->getWidth() == 1)
+		{
+			dst = proc->makeTmp(1);
+			opr = SUB8;
+		}
+		else
+		{
+			dst = proc->makeTmp(8);
+			opr = SUB64;
+		}
+	}
+	BinOpQuad* myBinOp = new BinOpQuad (dst, opr, opd1, opd2);
+	proc->addQuad(myBinOp);
+	return (dst);
 }
 
 Opd * TimesNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	Opd * dst;
+	Opd * opd1 = myExp1->flatten(proc);
+	Opd * opd2 = myExp2->flatten(proc);
+	BinOp opr;
+	if (opd1->getWidth() == opd2->getWidth())
+	{
+		if (opd1->getWidth() == 1)
+		{
+			dst = proc->makeTmp(1);
+			opr = MULT8;
+		}
+		else
+		{
+			dst = proc->makeTmp(8);
+			opr = MULT64;
+		}
+	}
+	BinOpQuad* myBinOp = new BinOpQuad (dst, opr, opd1, opd2);
+	proc->addQuad(myBinOp);
+	return (dst);
 }
 
 Opd * DivideNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	Opd * dst;
+	Opd * opd1 = myExp1->flatten(proc);
+	Opd * opd2 = myExp2->flatten(proc);
+	BinOp opr;
+	if (opd1->getWidth() == opd2->getWidth())
+	{
+		if (opd1->getWidth() == 1)
+		{
+			dst = proc->makeTmp(1);
+			opr = DIV8;
+		}
+		else
+		{
+			dst = proc->makeTmp(8);
+			opr = DIV64;
+		}
+	}
+	BinOpQuad* myBinOp = new BinOpQuad (dst, opr, opd1, opd2);
+	proc->addQuad(myBinOp);
+	return (dst);
 }
 
 Opd * AndNode::flatten(Procedure * proc){
@@ -160,7 +234,7 @@ Opd * GreaterEqNode::flatten(Procedure * proc){
 
 void AssignStmtNode::to3AC(Procedure * proc){
 	//TODO(Implement me)
-	// proc->gatherLocal(myExp->flatten(proc);
+	myExp->flatten(proc);
 }
 
 void PostIncStmtNode::to3AC(Procedure * proc){

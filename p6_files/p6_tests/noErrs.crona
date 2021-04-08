@@ -1,21 +1,18 @@
-ant : int;
-c : bool;
-bailey : byte;
+q : int;
+fn:int(z:int){
 
-fn:int(){
-	a:int;
-	b:bool;
-
-	b = true;
-	b = false;
-	b = havoc;
-
-	return a;
 }
 
 main : void (c : int) {
-	b:bool;
-	fn();
+	a : int;
+	a = 543653;
+	b : int;
+	b = 25532;
+	a = a/b;
+
+	e : byte;
+	d : byte;
+	e = e/d;
 }
 
 master:bool(){
