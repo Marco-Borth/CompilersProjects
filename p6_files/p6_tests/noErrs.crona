@@ -42,4 +42,8 @@ master:bool(){
 	return b;
 }
 
-see:int(){}
+see:int(){
+	while(brenda){
+		ant = 500;
+	}
+}

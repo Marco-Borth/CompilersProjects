@@ -73,6 +73,7 @@ Opd * HavocNode::flatten(Procedure * proc){
 Opd * TrueNode::flatten(Procedure * proc){
 	//TODO(Implement me)
 	//const DataType * type = proc->getProg()->nodeType(this);
+	Opd * dst = proc->makeTmp(1);
 	return new LitOpd("1", 1);
 }
 
@@ -299,7 +300,25 @@ void IfElseStmtNode::to3AC(Procedure * proc){
 }
 
 void WhileStmtNode::to3AC(Procedure * proc){
-	TODO(Implement me)
+	//TODO(Implement me)
+	Label * iterate = proc->makeLabel();
+	NopQuad * nope = new NopQuad();
+	proc->addQuad(nope);
+
+	Opd* my_Opd = myCond->flatten(proc);
+	JmpIfQuad * cond = new JmpIfQuad(my_Opd, proc->makeLabel());
+	proc->addQuad(cond);
+
+	for (std::list<StmtNode *>::iterator it = myBody->begin(); it!=myBody->end(); ++it)
+	{
+		(*it)->to3AC(proc);
+	}
+
+	JmpQuad* otherCond = new JmpQuad(iterate);
+	proc->addQuad(otherCond);
+
+	nope = new NopQuad();
+	proc->addQuad(nope);
 }
 
 void CallStmtNode::to3AC(Procedure * proc){
