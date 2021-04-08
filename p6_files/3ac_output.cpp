@@ -184,11 +184,44 @@ void WriteStmtNode::to3AC(Procedure * proc){
 }
 
 void IfStmtNode::to3AC(Procedure * proc){
-	TODO(Implement me)
+	//TODO(Implement me)
+	Opd* my_Opd = myCond->flatten(proc);
+	JmpIfQuad * cond = new JmpIfQuad(my_Opd, proc->makeLabel());
+	proc->addQuad(cond);
+
+	for (std::list<StmtNode *>::iterator it = myBody->begin(); it!=myBody->end(); ++it)
+	{
+		(*it)->to3AC(proc);
+	}
+
+	NopQuad * nope = new NopQuad();
+	proc->addQuad(nope);
 }
 
 void IfElseStmtNode::to3AC(Procedure * proc){
-	TODO(Implement me)
+	//TODO(Implement me)
+	Opd* my_Opd = myCond->flatten(proc);
+	JmpIfQuad * cond = new JmpIfQuad(my_Opd, proc->makeLabel());
+	proc->addQuad(cond);
+
+	for (std::list<StmtNode *>::iterator it = myBodyTrue->begin(); it!=myBodyTrue->end(); ++it)
+	{
+		(*it)->to3AC(proc);
+	}
+
+	NopQuad * nope = new NopQuad();
+	proc->addQuad(nope);
+
+	JmpQuad* otherCond = new JmpQuad(proc->makeLabel());
+	proc->addQuad(otherCond);
+
+	for (std::list<StmtNode *>::iterator it = myBodyFalse->begin(); it!=myBodyFalse->end(); ++it)
+	{
+		(*it)->to3AC(proc);
+	}
+
+	nope = new NopQuad();
+	proc->addQuad(nope);
 }
 
 void WhileStmtNode::to3AC(Procedure * proc){

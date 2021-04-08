@@ -26,5 +26,17 @@ master:bool(){
 
 	write "asdf";
 	read ant;
+
+	if(b){}
+
+	if(b){
+		ant = 30;
+	}
+	else {
+		msg = "qwop";
+	}
+
 	return b;
 }
+
+see:int(){}
