@@ -23,10 +23,11 @@ void FnDeclNode::to3AC(IRProgram * prog){
 		newProc->addQuad(my_ArgQuad);
 		iter++;
 	}
-	// for (std::list<StmtNode *>::iterator it = myBody->begin(); it!=myBody->end(); ++it)
-	// {
-	// 	(*it)->to3AC(newProc);
-	// }
+
+	for (std::list<StmtNode *>::iterator it = myBody->begin(); it!=myBody->end(); ++it)
+	{
+	 	(*it)->to3AC(newProc);
+	}
 }
 
 void FnDeclNode::to3AC(Procedure * proc){
@@ -83,7 +84,6 @@ Opd * AssignExpNode::flatten(Procedure * proc){
 	// proc->addQuad(assign); //Add the quad to the list of stmts.
 	// return(myDst->flatten(proc)); //Returns either myDst or mySrc. I don't know which specific item to return.
 	TODO(Implement me)
-
 }
 
 Opd * LValNode::flatten(Procedure * proc){
@@ -155,7 +155,7 @@ Opd * GreaterEqNode::flatten(Procedure * proc){
 }
 
 void AssignStmtNode::to3AC(Procedure * proc){
-	TODO(Implement me)
+	//TODO(Implement me)
 	// proc->gatherLocal(myExp->flatten(proc);
 }
 
@@ -188,11 +188,15 @@ void WhileStmtNode::to3AC(Procedure * proc){
 }
 
 void CallStmtNode::to3AC(Procedure * proc){
-	TODO(Implement me)
+	//TODO(Implement me)
 }
 
 void ReturnStmtNode::to3AC(Procedure * proc){
-	TODO(Implement me)
+	Opd* my_symOpd = myExp->flatten(proc);
+	SetRetQuad * setRet = new SetRetQuad(my_symOpd);
+	proc->addQuad(setRet);
+	JmpQuad * jmp = new JmpQuad(proc->getLeaveLabel());
+	proc->addQuad(jmp);
 }
 
 void VarDeclNode::to3AC(Procedure * proc){
@@ -200,6 +204,7 @@ void VarDeclNode::to3AC(Procedure * proc){
 	if (sym == nullptr){
 		throw new InternalError("null sym");
 	}
+
 	proc->gatherLocal(sym);
 }
 
@@ -219,8 +224,8 @@ Opd * IndexNode::flatten(Procedure * proc){
 //We only get to this node if we are in a stmt
 // context (DeclNodes protect descent)
 Opd * IDNode::flatten(Procedure * proc){
-	// return (proc->getSymOpd(mySymbol));
-	TODO(Implement me)
+	SymOpd* my_Opd = proc->getSymOpd(getSymbol());
+	return my_Opd;
 }
 
 }
