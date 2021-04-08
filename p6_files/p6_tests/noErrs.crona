@@ -1,3 +1,7 @@
+ant : int;
+c : bool;
+bailey : byte;
+
 fn:int(){
 	a:int;
 	a = 4;
@@ -8,4 +12,6 @@ fn:int(){
 	b = true;
 	b = false;
 	b = havoc;
+
+	return a;
 }

@@ -174,6 +174,8 @@ void CallStmtNode::to3AC(Procedure * proc){
 
 void ReturnStmtNode::to3AC(Procedure * proc){
 	TODO(Implement me)
+	//Opd * dst = proc;
+	//SetRetQuad * setRet = new SetRetQuad(dst);
 }
 
 void VarDeclNode::to3AC(Procedure * proc){
@@ -181,7 +183,10 @@ void VarDeclNode::to3AC(Procedure * proc){
 	if (sym == nullptr){
 		throw new InternalError("null sym");
 	}
+
 	proc->gatherLocal(sym);
+	//Procedure(prog,)
+	//proc->toString(true);
 }
 
 void VarDeclNode::to3AC(IRProgram * prog){
@@ -191,6 +196,12 @@ void VarDeclNode::to3AC(IRProgram * prog){
 	}
 
 	prog->gatherGlobal(sym);
+	//prog->globalSyms();
+	//prog->makeProc(sym->getName());
+	//prog->getProcs()->back()->gatherLocal(sym);
+	//prog->insertGlobal(sym);
+	//mymap.insert();
+	//prog->toString(true);
 }
 
 Opd * IndexNode::flatten(Procedure * proc){
