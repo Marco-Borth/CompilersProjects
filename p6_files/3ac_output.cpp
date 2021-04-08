@@ -205,11 +205,15 @@ void WhileStmtNode::to3AC(Procedure * proc){
 }
 
 void CallStmtNode::to3AC(Procedure * proc){
-	TODO(Implement me)
+	//TODO(Implement me)
 }
 
 void ReturnStmtNode::to3AC(Procedure * proc){
-	TODO(Implement me)
+	Opd* my_symOpd = myExp->flatten(proc);
+	SetRetQuad * setRet = new SetRetQuad(my_symOpd);
+	proc->addQuad(setRet);
+	JmpQuad * jmp = new JmpQuad(proc->getLeaveLabel());
+	proc->addQuad(jmp);
 }
 
 void VarDeclNode::to3AC(Procedure * proc){
@@ -217,6 +221,7 @@ void VarDeclNode::to3AC(Procedure * proc){
 	if (sym == nullptr){
 		throw new InternalError("null sym");
 	}
+
 	proc->gatherLocal(sym);
 }
 
@@ -236,8 +241,8 @@ Opd * IndexNode::flatten(Procedure * proc){
 //We only get to this node if we are in a stmt
 // context (DeclNodes protect descent)
 Opd * IDNode::flatten(Procedure * proc){
-	// return (proc->getSymOpd(mySymbol));
-	TODO(Implement me)
+	SymOpd* my_Opd = proc->getSymOpd(getSymbol());
+	return my_Opd;
 }
 
 }

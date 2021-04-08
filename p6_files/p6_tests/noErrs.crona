@@ -3,10 +3,22 @@ fn:int(z:int){
 	a:int;
 	b:bool;
 
+	b = true;
+	b = false;
+	b = havoc;
+
+	return a;
 }
 
-main : void (c : int)
-{
-	//c = 5;
-	//fn();
+main : void (c : int) {
+	b:bool;
+	fn();
+}
+
+master:bool(){
+	b:bool;
+
+	b = true;
+
+	return b;
 }
