@@ -4,14 +4,24 @@ bailey : byte;
 
 fn:int(){
 	a:int;
-	a = 4;
-	a = 1;
-	a = 0;
-	a = 699;
 	b:bool;
+
 	b = true;
 	b = false;
 	b = havoc;
 
 	return a;
+}
+
+main : void (c : int) {
+	b:bool;
+	fn();
+}
+
+master:bool(){
+	b:bool;
+
+	b = true;
+
+	return b;
 }
