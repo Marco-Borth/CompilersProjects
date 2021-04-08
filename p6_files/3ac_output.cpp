@@ -109,10 +109,10 @@ Opd * NotNode::flatten(Procedure * proc){
 }
 
 Opd * PlusNode::flatten(Procedure * proc){
-	Opd * dst;
+	Opd * dst = nullptr;
 	Opd * opd1 = myExp1->flatten(proc);
 	Opd * opd2 = myExp2->flatten(proc);
-	BinOp opr;
+	BinOp opr = FAIL64;
 	if (opd1->getWidth() == opd2->getWidth())
 	{
 		if (opd1->getWidth() == 1)
@@ -132,10 +132,10 @@ Opd * PlusNode::flatten(Procedure * proc){
 }
 
 Opd * MinusNode::flatten(Procedure * proc){
-	Opd * dst;
+	Opd * dst = nullptr;
 	Opd * opd1 = myExp1->flatten(proc);
 	Opd * opd2 = myExp2->flatten(proc);
-	BinOp opr;
+	BinOp opr = FAIL64;
 	if (opd1->getWidth() == opd2->getWidth())
 	{
 		if (opd1->getWidth() == 1)
@@ -155,10 +155,10 @@ Opd * MinusNode::flatten(Procedure * proc){
 }
 
 Opd * TimesNode::flatten(Procedure * proc){
-	Opd * dst;
+	Opd * dst = nullptr;
 	Opd * opd1 = myExp1->flatten(proc);
 	Opd * opd2 = myExp2->flatten(proc);
-	BinOp opr;
+	BinOp opr = FAIL64;
 	if (opd1->getWidth() == opd2->getWidth())
 	{
 		if (opd1->getWidth() == 1)
@@ -178,10 +178,10 @@ Opd * TimesNode::flatten(Procedure * proc){
 }
 
 Opd * DivideNode::flatten(Procedure * proc){
-	Opd * dst;
+	Opd * dst = nullptr;
 	Opd * opd1 = myExp1->flatten(proc);
 	Opd * opd2 = myExp2->flatten(proc);
-	BinOp opr;
+	BinOp opr = FAIL64;
 	if (opd1->getWidth() == opd2->getWidth())
 	{
 		if (opd1->getWidth() == 1)

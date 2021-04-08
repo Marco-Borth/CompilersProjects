@@ -1,3 +1,7 @@
+ant : int;
+bailey : byte;
+brenda : bool;
+
 q : int;
 fn:int(z:int){
 
@@ -8,18 +12,20 @@ main : void (c : int) {
 	a = 543653;
 	b : int;
 	b = 25532;
-	a = a/b;
+	a = a / b;
+	a = a + b;
 
 	e : byte;
 	d : byte;
-	e = e/d;
+	e = e * d;
+	e = e - d;
 }
 
 master:bool(){
 	b:bool;
 	msg:string;
 	b = true;
-	ant = 10;
+	ant = 1000;
 
 	write "asdf";
 	read ant;
@@ -27,7 +33,7 @@ master:bool(){
 	if(b){}
 
 	if(b){
-		ant = 30;
+		ant = 3000;
 	}
 	else {
 		msg = "qwop";
