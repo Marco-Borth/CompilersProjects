@@ -128,15 +128,72 @@ Opd * PlusNode::flatten(Procedure * proc){
 }
 
 Opd * MinusNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	Opd * dst;
+	Opd * opd1 = myExp1->flatten(proc);
+	Opd * opd2 = myExp2->flatten(proc);
+	BinOp opr;
+	if (opd1->getWidth() == opd2->getWidth())
+	{
+		if (opd1->getWidth() == 1)
+		{
+			dst = proc->makeTmp(1);
+			opr = SUB8;
+		}
+		else
+		{
+			dst = proc->makeTmp(8);
+			opr = SUB64;
+		}
+	}
+	BinOpQuad* myBinOp = new BinOpQuad (dst, opr, opd1, opd2);
+	proc->addQuad(myBinOp);
+	return (dst);
 }
 
 Opd * TimesNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	Opd * dst;
+	Opd * opd1 = myExp1->flatten(proc);
+	Opd * opd2 = myExp2->flatten(proc);
+	BinOp opr;
+	if (opd1->getWidth() == opd2->getWidth())
+	{
+		if (opd1->getWidth() == 1)
+		{
+			dst = proc->makeTmp(1);
+			opr = MULT8;
+		}
+		else
+		{
+			dst = proc->makeTmp(8);
+			opr = MULT64;
+		}
+	}
+	BinOpQuad* myBinOp = new BinOpQuad (dst, opr, opd1, opd2);
+	proc->addQuad(myBinOp);
+	return (dst);
 }
 
 Opd * DivideNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	Opd * dst;
+	Opd * opd1 = myExp1->flatten(proc);
+	Opd * opd2 = myExp2->flatten(proc);
+	BinOp opr;
+	if (opd1->getWidth() == opd2->getWidth())
+	{
+		if (opd1->getWidth() == 1)
+		{
+			dst = proc->makeTmp(1);
+			opr = DIV8;
+		}
+		else
+		{
+			dst = proc->makeTmp(8);
+			opr = DIV64;
+		}
+	}
+	BinOpQuad* myBinOp = new BinOpQuad (dst, opr, opd1, opd2);
+	proc->addQuad(myBinOp);
+	return (dst);
 }
 
 Opd * AndNode::flatten(Procedure * proc){
