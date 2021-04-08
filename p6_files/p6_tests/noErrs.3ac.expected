@@ -3,8 +3,8 @@ ant
 bailey
 brenda
 q
-str_1 "qwop"
-str_0 "asdf"
+str_1 "asdf"
+str_0 "qwop"
 [END GLOBALS]
 [BEGIN fn LOCALS]
 z (formal arg of 8)
@@ -43,7 +43,6 @@ msg (local var of 0 bytes)
 fun_master: enter master
             [b] := 1
             [ant] := 1000
-            WRITE [str_0]
             READ [ant]
             IFZ [b] GOTO lbl_3
 lbl_3:      nop
@@ -51,20 +50,31 @@ lbl_3:      nop
             [ant] := 3000
             goto lbl_5
 lbl_4:      nop
-            [msg] := [str_1]
+            [msg] := [str_0]
 lbl_5:      nop
             setret [b]
             goto lbl_2
 lbl_2:      leave master
 [BEGIN see LOCALS]
-arr (local var of 14976 bytes)
 barr (local var of 10 bytes)
 biscut (local var of 50 bytes)
-tmp0 (tmp var of 8 bytes)
-tmp1 (tmp var of 8 bytes)
-loc2 (tmp loc of 8 bytes)
-loc3 (tmp loc of 1 bytes)
-loc4 (tmp loc of 1 bytes)
+msg (local var of 0 bytes)
+b (local var of 1 bytes)
+c (local var of 1 bytes)
+a (local var of 1 bytes)
+d (local var of 1 bytes)
+x (local var of 8 bytes)
+y (local var of 8 bytes)
+tmp2 (tmp var of 1 bytes)
+tmp3 (tmp var of 1 bytes)
+tmp4 (tmp var of 1 bytes)
+tmp5 (tmp var of 1 bytes)
+tmp6 (tmp var of 8 bytes)
+tmp7 (tmp var of 1 bytes)
+tmp8 (tmp var of 1 bytes)
+tmp9 (tmp var of 8 bytes)
+loc0 (tmp loc of 1 bytes)
+loc1 (tmp loc of 1 bytes)
 [END see LOCALS]
 fun_see:    enter see
 lbl_7:      nop
@@ -72,12 +82,42 @@ lbl_7:      nop
             [ant] := 500
             goto lbl_7
 lbl_8:      nop
-            [tmp0] := 234
-            [tmp1] := 111 MULT64 8
-            loc2 := arr ADD64 [tmp1]
-            [loc2] := [tmp0]
-            loc3 := barr ADD64 5
-            [loc3] := 1
-            loc4 := biscut ADD64 10
-            [loc4] := 50
+            loc0 := barr ADD64 5
+            [loc0] := 1
+            loc1 := biscut ADD64 10
+            [loc1] := 50
+            [msg] := [str_1]
+            [b] := 1
+            [c] := 1
+            [a] := 10
+            [d] := 20
+            [x] := 1000
+            [y] := 2000
+            [tmp2] := [b] AND8 [c]
+            IFZ [tmp2] GOTO lbl_9
+lbl_9:      nop
+            [tmp3] := [b] OR8 [c]
+            IFZ [tmp3] GOTO lbl_10
+lbl_10:     nop
+            WRITE [msg]
+            [tmp4] := [a] EQ8 [d]
+            IFZ [tmp4] GOTO lbl_11
+lbl_11:     nop
+            [tmp5] := [b] EQ8 [c]
+            IFZ [tmp5] GOTO lbl_12
+lbl_12:     nop
+            [tmp6] := [x] EQ64 [y]
+            IFZ [tmp6] GOTO lbl_13
+lbl_13:     nop
+            WRITE [msg]
+            [tmp7] := [a] NEQ8 [d]
+            IFZ [tmp7] GOTO lbl_14
+lbl_14:     nop
+            [tmp8] := [b] NEQ8 [c]
+            IFZ [tmp8] GOTO lbl_15
+lbl_15:     nop
+            [tmp9] := [x] NEQ64 [y]
+            IFZ [tmp9] GOTO lbl_16
+lbl_16:     nop
+            WRITE [msg]
 lbl_6:      leave see

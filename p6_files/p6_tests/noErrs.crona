@@ -26,8 +26,6 @@ master:bool(){
 	msg:string;
 	b = true;
 	ant = 1000;
-
-	write "asdf";
 	read ant;
 
 	if(b){}
@@ -51,4 +49,34 @@ see:int(){
 	barr[5] = true;
 	biscut:byte array[50];
 	biscut[10] = 50;
+	msg:string;
+	msg = "asdf";
+
+	b:bool;
+	b = true;
+	c:bool;
+	c = true;
+	a:byte;
+	a = 10;
+	d:byte;
+	d = 20;
+	x:int;
+	x = 1000;
+	y:int;
+	y = 2000;
+
+	if(b && c){}
+	if(b || c){}
+	write msg;
+
+	if(a == d) { }
+	if(b == c) { }
+	if(x == y) { }
+	write msg;
+
+	if(a != d) { }
+	if(b != c) { }
+	if(x != y) { }
+	write msg;
+
 }

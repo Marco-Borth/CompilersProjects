@@ -33,7 +33,7 @@ std::string Procedure::toString(bool verbose){
 
 	res += "[BEGIN " + this->getName() + " LOCALS]\n";
 	for (const auto formal : this->formals){
-		res += formal->getName() + " (formal arg of " 
+		res += formal->getName() + " (formal arg of "
 			+ std::to_string(formal->getWidth()) + ")\n";
 			+ " bytes)\n";
 	}
@@ -99,18 +99,29 @@ SymOpd * Procedure::getSymOpd(SemSymbol * sym){
 	if (localFound != locals.end()){
 		return localFound->second;
 	}
-	
+
 	return this->getProg()->getGlobal(sym);
 }
 
 AuxOpd * Procedure::makeTmp(size_t width){
-	std::string name = "varTmp";
+	std::string name = "tmp";
 	name += std::to_string(maxTmp++);
 	AuxOpd * res = new AuxOpd(name, width);
 	temps.push_back(res);
 
 	return res;
 }
+
+/*
+SymOpd * Procedure::makeLoc(size_t width){
+	std::string name = "loc";
+	name += std::to_string(maxLoc++);
+	SymOpd * res = new SymOpd(name, width);
+	locals.push_back(res);
+
+	return res;
+}
+*/
 
 AddrOpd * Procedure::makeAddrOpd(size_t width){
 	std::string name = "addrTmp";
