@@ -72,11 +72,15 @@ Opd * HavocNode::flatten(Procedure * proc){
 }
 
 Opd * TrueNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	//TODO(Implement me)
+	//const DataType * type = proc->getProg()->nodeType(this);
+	return new LitOpd("1", 1);
 }
 
 Opd * FalseNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	//TODO(Implement me)
+	//const DataType * type = proc->getProg()->nodeType(this);
+	return new LitOpd("0", 1);
 }
 
 Opd * AssignExpNode::flatten(Procedure * proc){
