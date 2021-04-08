@@ -172,11 +172,12 @@ void PostDecStmtNode::to3AC(Procedure * proc){
 }
 
 void ReadStmtNode::to3AC(Procedure * proc){
-	TODO(Implement me)
+	Opd* my_Opd = myDst->flatten(proc);
+	ReadQuad * read = new ReadQuad(my_Opd, proc->getProg()->nodeType(myDst));
+	proc->addQuad(read);
 }
 
 void WriteStmtNode::to3AC(Procedure * proc){
-	//TODO(Implement me)
 	Opd* my_Opd = mySrc->flatten(proc);
 	WriteQuad * wrt = new WriteQuad(my_Opd, proc->getProg()->nodeType(mySrc));
 	proc->addQuad(wrt);

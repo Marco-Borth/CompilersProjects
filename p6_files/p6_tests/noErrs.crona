@@ -22,7 +22,9 @@ master:bool(){
 	b:bool;
 	msg:string;
 	b = true;
+	ant = 10;
 
 	write "asdf";
-	return false;
+	read ant;
+	return b;
 }
