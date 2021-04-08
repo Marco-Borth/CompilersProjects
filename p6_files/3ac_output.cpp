@@ -71,11 +71,15 @@ Opd * HavocNode::flatten(Procedure * proc){
 }
 
 Opd * TrueNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	//TODO(Implement me)
+	//const DataType * type = proc->getProg()->nodeType(this);
+	return new LitOpd("1", 1);
 }
 
 Opd * FalseNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	//TODO(Implement me)
+	//const DataType * type = proc->getProg()->nodeType(this);
+	return new LitOpd("0", 1);
 }
 
 Opd * AssignExpNode::flatten(Procedure * proc){
@@ -242,19 +246,56 @@ void PostDecStmtNode::to3AC(Procedure * proc){
 }
 
 void ReadStmtNode::to3AC(Procedure * proc){
-	TODO(Implement me)
+	Opd* my_Opd = myDst->flatten(proc);
+	ReadQuad * read = new ReadQuad(my_Opd, proc->getProg()->nodeType(myDst));
+	proc->addQuad(read);
 }
 
 void WriteStmtNode::to3AC(Procedure * proc){
-	TODO(Implement me)
+	Opd* my_Opd = mySrc->flatten(proc);
+	WriteQuad * wrt = new WriteQuad(my_Opd, proc->getProg()->nodeType(mySrc));
+	proc->addQuad(wrt);
 }
 
 void IfStmtNode::to3AC(Procedure * proc){
-	TODO(Implement me)
+	//TODO(Implement me)
+	Opd* my_Opd = myCond->flatten(proc);
+	JmpIfQuad * cond = new JmpIfQuad(my_Opd, proc->makeLabel());
+	proc->addQuad(cond);
+
+	for (std::list<StmtNode *>::iterator it = myBody->begin(); it!=myBody->end(); ++it)
+	{
+		(*it)->to3AC(proc);
+	}
+
+	NopQuad * nope = new NopQuad();
+	proc->addQuad(nope);
 }
 
 void IfElseStmtNode::to3AC(Procedure * proc){
-	TODO(Implement me)
+	//TODO(Implement me)
+	Opd* my_Opd = myCond->flatten(proc);
+	JmpIfQuad * cond = new JmpIfQuad(my_Opd, proc->makeLabel());
+	proc->addQuad(cond);
+
+	for (std::list<StmtNode *>::iterator it = myBodyTrue->begin(); it!=myBodyTrue->end(); ++it)
+	{
+		(*it)->to3AC(proc);
+	}
+
+	NopQuad * nope = new NopQuad();
+	proc->addQuad(nope);
+
+	JmpQuad* otherCond = new JmpQuad(proc->makeLabel());
+	proc->addQuad(otherCond);
+
+	for (std::list<StmtNode *>::iterator it = myBodyFalse->begin(); it!=myBodyFalse->end(); ++it)
+	{
+		(*it)->to3AC(proc);
+	}
+
+	nope = new NopQuad();
+	proc->addQuad(nope);
 }
 
 void WhileStmtNode::to3AC(Procedure * proc){
@@ -266,8 +307,8 @@ void CallStmtNode::to3AC(Procedure * proc){
 }
 
 void ReturnStmtNode::to3AC(Procedure * proc){
-	Opd* my_symOpd = myExp->flatten(proc);
-	SetRetQuad * setRet = new SetRetQuad(my_symOpd);
+	Opd* my_Opd = myExp->flatten(proc);
+	SetRetQuad * setRet = new SetRetQuad(my_Opd);
 	proc->addQuad(setRet);
 	JmpQuad * jmp = new JmpQuad(proc->getLeaveLabel());
 	proc->addQuad(jmp);

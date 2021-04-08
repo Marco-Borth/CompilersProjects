@@ -9,9 +9,31 @@ main : void (c : int) {
 	b : int;
 	b = 25532;
 	a = a/b;
-	
+
 	e : byte;
 	d : byte;
 	e = e/d;
 }
 
+master:bool(){
+	b:bool;
+	msg:string;
+	b = true;
+	ant = 10;
+
+	write "asdf";
+	read ant;
+
+	if(b){}
+
+	if(b){
+		ant = 30;
+	}
+	else {
+		msg = "qwop";
+	}
+
+	return b;
+}
+
+see:int(){}
