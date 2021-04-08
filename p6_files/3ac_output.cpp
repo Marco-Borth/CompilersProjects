@@ -73,7 +73,6 @@ Opd * HavocNode::flatten(Procedure * proc){
 Opd * TrueNode::flatten(Procedure * proc){
 	//TODO(Implement me)
 	//const DataType * type = proc->getProg()->nodeType(this);
-	Opd * dst = proc->makeTmp(1);
 	return new LitOpd("1", 1);
 }
 
