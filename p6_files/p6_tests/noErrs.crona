@@ -79,4 +79,28 @@ see:int(){
 	if(x != y) { }
 	write msg;
 
+	if(a > d) { }
+	if(x > y) { }
+	write msg;
+
+	if(a >= d) { }
+	if(x >= y) { }
+	write msg;
+
+	if(a < d) { }
+	if(x < y) { }
+	write msg;
+
+	if(a >= d) { }
+	if(x >= y) { }
+	write msg;
+
+	if(a <= d) { }
+	if(x <= y) { }
+	write msg;
+
+	if(!b) {
+		x = -(4500);
+	}
+	write msg;
 }

@@ -93,7 +93,7 @@ Opd * LValNode::flatten(Procedure * proc){
 }
 
 Opd * CallExpNode::flatten(Procedure * proc){
-	//TODO(Implement me)
+	TODO(Implement me)
 }
 
 Opd * ByteToIntNode::flatten(Procedure * proc){
@@ -101,11 +101,25 @@ Opd * ByteToIntNode::flatten(Procedure * proc){
 }
 
 Opd * NegNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	//TODO(Implement me)
+	Opd * dst = nullptr;
+	Opd * opd = myExp->flatten(proc);
+	UnaryOp opr = NEG64;
+	dst = proc->makeTmp(8);
+	UnaryOpQuad* myUnaryOp = new UnaryOpQuad(dst, opr, opd);
+	proc->addQuad(myUnaryOp);
+	return (dst);
 }
 
 Opd * NotNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	//TODO(Implement me)
+	Opd * dst = nullptr;
+	Opd * opd = myExp->flatten(proc);
+	UnaryOp opr = NOT8;
+	dst = proc->makeTmp(1);
+	UnaryOpQuad* myUnaryOp = new UnaryOpQuad(dst, opr, opd);
+	proc->addQuad(myUnaryOp);
+	return (dst);
 }
 
 Opd * PlusNode::flatten(Procedure * proc){
@@ -201,35 +215,185 @@ Opd * DivideNode::flatten(Procedure * proc){
 }
 
 Opd * AndNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	//TODO(Implement me)
+	Opd * dst = nullptr;
+	Opd * opd1 = myExp1->flatten(proc);
+	Opd * opd2 = myExp2->flatten(proc);
+	BinOp opr = FAIL64;
+	if (opd1->getWidth() == opd2->getWidth())
+	{
+		if (opd1->getWidth() == 1)
+		{
+			dst = proc->makeTmp(1);
+			opr = AND8;
+		}
+	}
+	BinOpQuad* myBinOp = new BinOpQuad (dst, opr, opd1, opd2);
+	proc->addQuad(myBinOp);
+	return (dst);
 }
 
 Opd * OrNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	//TODO(Implement me)
+	Opd * dst = nullptr;
+	Opd * opd1 = myExp1->flatten(proc);
+	Opd * opd2 = myExp2->flatten(proc);
+	BinOp opr = FAIL64;
+	if (opd1->getWidth() == opd2->getWidth())
+	{
+		if (opd1->getWidth() == 1)
+		{
+			dst = proc->makeTmp(1);
+			opr = OR8;
+		}
+	}
+	BinOpQuad* myBinOp = new BinOpQuad (dst, opr, opd1, opd2);
+	proc->addQuad(myBinOp);
+	return (dst);
 }
 
 Opd * EqualsNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	//TODO(Implement me)
+	Opd * dst = nullptr;
+	Opd * opd1 = myExp1->flatten(proc);
+	Opd * opd2 = myExp2->flatten(proc);
+	BinOp opr = FAIL64;
+	if (opd1->getWidth() == opd2->getWidth())
+	{
+		if (opd1->getWidth() == 1)
+		{
+			dst = proc->makeTmp(1);
+			opr = EQ8;
+		}
+		else
+		{
+			dst = proc->makeTmp(8);
+			opr = EQ64;
+		}
+	}
+	BinOpQuad* myBinOp = new BinOpQuad (dst, opr, opd1, opd2);
+	proc->addQuad(myBinOp);
+	return (dst);
 }
 
 Opd * NotEqualsNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	//TODO(Implement me)
+	Opd * dst = nullptr;
+	Opd * opd1 = myExp1->flatten(proc);
+	Opd * opd2 = myExp2->flatten(proc);
+	BinOp opr = FAIL64;
+	if (opd1->getWidth() == opd2->getWidth())
+	{
+		if (opd1->getWidth() == 1)
+		{
+			dst = proc->makeTmp(1);
+			opr = NEQ8;
+		}
+		else
+		{
+			dst = proc->makeTmp(8);
+			opr = NEQ64;
+		}
+	}
+	BinOpQuad* myBinOp = new BinOpQuad (dst, opr, opd1, opd2);
+	proc->addQuad(myBinOp);
+	return (dst);
 }
 
 Opd * LessNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	//TODO(Implement me)
+	Opd * dst = nullptr;
+	Opd * opd1 = myExp1->flatten(proc);
+	Opd * opd2 = myExp2->flatten(proc);
+	BinOp opr = FAIL64;
+	if (opd1->getWidth() == opd2->getWidth())
+	{
+		if (opd1->getWidth() == 1)
+		{
+			dst = proc->makeTmp(1);
+			opr = LT8;
+		}
+		else
+		{
+			dst = proc->makeTmp(8);
+			opr = LT64;
+		}
+	}
+	BinOpQuad* myBinOp = new BinOpQuad (dst, opr, opd1, opd2);
+	proc->addQuad(myBinOp);
+	return (dst);
 }
 
 Opd * GreaterNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	//TODO(Implement me)
+	Opd * dst = nullptr;
+	Opd * opd1 = myExp1->flatten(proc);
+	Opd * opd2 = myExp2->flatten(proc);
+	BinOp opr = FAIL64;
+	if (opd1->getWidth() == opd2->getWidth())
+	{
+		if (opd1->getWidth() == 1)
+		{
+			dst = proc->makeTmp(1);
+			opr = GT8;
+		}
+		else
+		{
+			dst = proc->makeTmp(8);
+			opr = GT64;
+		}
+	}
+	BinOpQuad* myBinOp = new BinOpQuad (dst, opr, opd1, opd2);
+	proc->addQuad(myBinOp);
+	return (dst);
 }
 
 Opd * LessEqNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	//TODO(Implement me)
+	Opd * dst = nullptr;
+	Opd * opd1 = myExp1->flatten(proc);
+	Opd * opd2 = myExp2->flatten(proc);
+	BinOp opr = FAIL64;
+	if (opd1->getWidth() == opd2->getWidth())
+	{
+		if (opd1->getWidth() == 1)
+		{
+			dst = proc->makeTmp(1);
+			opr = LTE8;
+		}
+		else
+		{
+			dst = proc->makeTmp(8);
+			opr = LTE64;
+		}
+	}
+	BinOpQuad* myBinOp = new BinOpQuad (dst, opr, opd1, opd2);
+	proc->addQuad(myBinOp);
+	return (dst);
 }
 
 Opd * GreaterEqNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	//TODO(Implement me)
+	Opd * dst = nullptr;
+	Opd * opd1 = myExp1->flatten(proc);
+	Opd * opd2 = myExp2->flatten(proc);
+	BinOp opr = FAIL64;
+	if (opd1->getWidth() == opd2->getWidth())
+	{
+		if (opd1->getWidth() == 1)
+		{
+			dst = proc->makeTmp(1);
+			opr = GT8;
+		}
+		else
+		{
+			dst = proc->makeTmp(8);
+			opr = GT64;
+		}
+	}
+	BinOpQuad* myBinOp = new BinOpQuad (dst, opr, opd1, opd2);
+	proc->addQuad(myBinOp);
+	return (dst);
 }
 
 void AssignStmtNode::to3AC(Procedure * proc){
@@ -320,8 +484,7 @@ void WhileStmtNode::to3AC(Procedure * proc){
 }
 
 void CallStmtNode::to3AC(Procedure * proc){
-	//TODO(Implement me)
-	myExp->flatten(proc);
+	myCallExp->flatten(proc);
 }
 
 void ReturnStmtNode::to3AC(Procedure * proc){
@@ -352,24 +515,16 @@ void VarDeclNode::to3AC(IRProgram * prog){
 
 Opd * IndexNode::flatten(Procedure * proc){
 	//TODO(Implement me)
-
-	Opd * dst = nullptr;
+	proc->gatherLocal(myBase->getSymbol());
+	SemSymbol * sym = myBase->getSymbol();
+	SymOpd * dst = nullptr;
 	Opd * opd1 = myBase->flatten(proc);
 	Opd * opd2 = myOffset->flatten(proc);
 	BinOp opr = ADD64;
-	if (opd1->getWidth() == 1)
-	{
-		dst = proc->makeTmp(1);
-	}
-	else
-	{
-		dst = proc->makeTmp(8);
-	}
+	dst = proc->getSymOpd(myBase->getSymbol());
 	BinOpQuad* myBinOp = new BinOpQuad (dst, opr, opd1, opd2);
 	proc->addQuad(myBinOp);
-	//return (dst);
-	SymOpd* my_Opd = proc->getSymOpd(myBase->getSymbol());
-	return my_Opd;
+	return dst;
 }
 
 //We only get to this node if we are in a stmt

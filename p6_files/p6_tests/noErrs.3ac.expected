@@ -73,6 +73,18 @@ tmp6 (tmp var of 8 bytes)
 tmp7 (tmp var of 1 bytes)
 tmp8 (tmp var of 1 bytes)
 tmp9 (tmp var of 8 bytes)
+tmp10 (tmp var of 1 bytes)
+tmp11 (tmp var of 8 bytes)
+tmp12 (tmp var of 1 bytes)
+tmp13 (tmp var of 8 bytes)
+tmp14 (tmp var of 1 bytes)
+tmp15 (tmp var of 8 bytes)
+tmp16 (tmp var of 1 bytes)
+tmp17 (tmp var of 8 bytes)
+tmp18 (tmp var of 1 bytes)
+tmp19 (tmp var of 8 bytes)
+tmp20 (tmp var of 1 bytes)
+tmp21 (tmp var of 8 bytes)
 loc0 (tmp loc of 1 bytes)
 loc1 (tmp loc of 1 bytes)
 [END see LOCALS]
@@ -119,5 +131,46 @@ lbl_15:     nop
             [tmp9] := [x] NEQ64 [y]
             IFZ [tmp9] GOTO lbl_16
 lbl_16:     nop
+            WRITE [msg]
+            [tmp10] := [a] GT8 [d]
+            IFZ [tmp10] GOTO lbl_17
+lbl_17:     nop
+            [tmp11] := [x] GT64 [y]
+            IFZ [tmp11] GOTO lbl_18
+lbl_18:     nop
+            WRITE [msg]
+            [tmp12] := [a] GTE8 [d]
+            IFZ [tmp12] GOTO lbl_19
+lbl_19:     nop
+            [tmp13] := [x] GTE64 [y]
+            IFZ [tmp13] GOTO lbl_20
+lbl_20:     nop
+            WRITE [msg]
+            [tmp14] := [a] LT8 [d]
+            IFZ [tmp14] GOTO lbl_21
+lbl_21:     nop
+            [tmp15] := [x] LT64 [y]
+            IFZ [tmp15] GOTO lbl_22
+lbl_22:     nop
+            WRITE [msg]
+            [tmp16] := [a] GTE8 [d]
+            IFZ [tmp16] GOTO lbl_23
+lbl_23:     nop
+            [tmp17] := [x] GTE64 [y]
+            IFZ [tmp17] GOTO lbl_24
+lbl_24:     nop
+            WRITE [msg]
+            [tmp18] := [a] LTE8 [d]
+            IFZ [tmp18] GOTO lbl_25
+lbl_25:     nop
+            [tmp19] := [x] LTE64 [y]
+            IFZ [tmp19] GOTO lbl_26
+lbl_26:     nop
+            WRITE [msg]
+            [tmp20] := NOT8 [b]
+            IFZ [tmp20] GOTO lbl_27
+            [tmp21] := NEG64 4500
+            [x] := [tmp21]
+lbl_27:     nop
             WRITE [msg]
 lbl_6:      leave see
