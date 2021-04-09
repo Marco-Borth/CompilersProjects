@@ -582,7 +582,7 @@ Opd * IndexNode::flatten(Procedure * proc){
 	//proc->gatherLocal(myBase->getSymbol());
 	SemSymbol * sym = myBase->getSymbol();
 	SymOpd * dst = proc->getSymOpd(myBase->getSymbol());
-	dst = proc->makeLoc(myBase->getSymbol(), dst->getWidth());
+	//dst = proc->makeLoc(myBase->getSymbol(), dst->getWidth());
 	Opd * opd1 = myBase->flatten(proc);
 	Opd * opd2 = myOffset->flatten(proc);
 	BinOp opr = ADD64;
