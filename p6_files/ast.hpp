@@ -318,6 +318,7 @@ public:
 	bool nameAnalysis(SymbolTable * symTab) override;
 	void typeAnalysis(TypeAnalysis *) override;
 	DataType * getRetType();
+	std::list<ExpNode *> * getArgs() { return myArgs; }
 
 	virtual Opd * flatten(Procedure * proc) override;
 private:
