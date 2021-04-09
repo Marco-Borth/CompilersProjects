@@ -93,7 +93,24 @@ Opd * LValNode::flatten(Procedure * proc){
 }
 
 Opd * CallExpNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	//TODO(Implement me)
+	//Opd* my_Opd = proc->getSymOpd(ID()->getSymbol());
+	//SetArgQuad* my_ArgQuad = new SetArgQuad(1, my_Opd);
+	//newProc->addQuad(my_ArgQuad);
+
+	size_t iter =1;
+	std::list<ExpNode *> * args_list = getArgs();
+	for (std::list<ExpNode *>::iterator it = args_list->begin(); it!=args_list->end(); ++it)
+	{
+		Opd* my_Opd = (*it)->flatten(proc);
+		SetArgQuad* my_ArgQuad = new SetArgQuad(iter, my_Opd);
+		proc->addQuad(my_ArgQuad);
+		iter++;
+	}
+	CallQuad * callee = new CallQuad(myID->getSymbol());
+	proc->addQuad(callee);
+	SymOpd* my_symOpd = proc->getSymOpd(myID->getSymbol());
+	return my_symOpd;
 }
 
 Opd * ByteToIntNode::flatten(Procedure * proc){

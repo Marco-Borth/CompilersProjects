@@ -3,6 +3,7 @@ ant
 bailey
 brenda
 q
+str_2 "asdf"
 str_1 "asdf"
 str_0 "qwop"
 [END GLOBALS]
@@ -55,9 +56,33 @@ lbl_5:      nop
             setret [b]
             goto lbl_2
 lbl_2:      leave master
-[BEGIN see LOCALS]
+[BEGIN multiples LOCALS]
+r (formal arg of 8)
+s (formal arg of 1)
+t (formal arg of 1)
+arr (local var of 64000 bytes)
 barr (local var of 10 bytes)
 biscut (local var of 50 bytes)
+tmp0 (tmp var of 8 bytes)
+tmp1 (tmp var of 8 bytes)
+loc2 (tmp loc of 8 bytes)
+loc3 (tmp loc of 1 bytes)
+loc4 (tmp loc of 1 bytes)
+[END multiples LOCALS]
+fun_multiples: enter multiples
+            getarg 1 [r]
+            getarg 2 [s]
+            getarg 3 [t]
+            [tmp0] := 2
+            [tmp1] := 500 MULT64 8
+            loc2 := arr ADD64 [tmp1]
+            [loc2] := [tmp0]
+            loc3 := barr ADD64 5
+            [loc3] := 1
+            loc4 := biscut ADD64 10
+            [loc4] := 50
+lbl_6:      leave multiples
+[BEGIN see LOCALS]
 msg (local var of 0 bytes)
 b (local var of 1 bytes)
 c (local var of 1 bytes)
@@ -65,7 +90,10 @@ a (local var of 1 bytes)
 d (local var of 1 bytes)
 x (local var of 8 bytes)
 y (local var of 8 bytes)
-arr (local var of 64000 bytes)
+f (local var of 8 bytes)
+g (local var of 8 bytes)
+tmp0 (tmp var of 8 bytes)
+tmp1 (tmp var of 8 bytes)
 tmp2 (tmp var of 1 bytes)
 tmp3 (tmp var of 1 bytes)
 tmp4 (tmp var of 1 bytes)
@@ -74,34 +102,13 @@ tmp6 (tmp var of 8 bytes)
 tmp7 (tmp var of 1 bytes)
 tmp8 (tmp var of 1 bytes)
 tmp9 (tmp var of 8 bytes)
-tmp10 (tmp var of 1 bytes)
-tmp11 (tmp var of 8 bytes)
-tmp12 (tmp var of 1 bytes)
-tmp13 (tmp var of 8 bytes)
-tmp14 (tmp var of 1 bytes)
-tmp15 (tmp var of 8 bytes)
-tmp16 (tmp var of 1 bytes)
-tmp17 (tmp var of 8 bytes)
-tmp18 (tmp var of 1 bytes)
-tmp19 (tmp var of 8 bytes)
-tmp20 (tmp var of 1 bytes)
-tmp21 (tmp var of 8 bytes)
-tmp22 (tmp var of 8 bytes)
-tmp23 (tmp var of 8 bytes)
-loc0 (tmp loc of 1 bytes)
-loc1 (tmp loc of 1 bytes)
-loc24 (tmp loc of 8 bytes)
 [END see LOCALS]
 fun_see:    enter see
-lbl_7:      nop
-            IFZ [brenda] GOTO lbl_8
-            [ant] := 500
-            goto lbl_7
 lbl_8:      nop
-            loc0 := barr ADD64 5
-            [loc0] := 1
-            loc1 := biscut ADD64 10
-            [loc1] := 50
+            IFZ [brenda] GOTO lbl_9
+            [ant] := 500
+            goto lbl_8
+lbl_9:      nop
             [msg] := [str_1]
             [b] := 1
             [c] := 1
@@ -109,80 +116,130 @@ lbl_8:      nop
             [d] := 20
             [x] := 1000
             [y] := 2000
+            [f] := 543653
+            [g] := 25532
+            [tmp0] := [f] DIV64 [g]
+            [f] := [tmp0]
+            [tmp1] := [f] ADD64 [g]
+            [f] := [tmp1]
             [tmp2] := [b] AND8 [c]
-            IFZ [tmp2] GOTO lbl_9
-lbl_9:      nop
-            [tmp3] := [b] OR8 [c]
-            IFZ [tmp3] GOTO lbl_10
+            IFZ [tmp2] GOTO lbl_10
 lbl_10:     nop
+            [tmp3] := [b] OR8 [c]
+            IFZ [tmp3] GOTO lbl_11
+lbl_11:     nop
             WRITE [msg]
             [tmp4] := [a] EQ8 [d]
-            IFZ [tmp4] GOTO lbl_11
-lbl_11:     nop
-            [tmp5] := [b] EQ8 [c]
-            IFZ [tmp5] GOTO lbl_12
+            IFZ [tmp4] GOTO lbl_12
 lbl_12:     nop
-            [tmp6] := [x] EQ64 [y]
-            IFZ [tmp6] GOTO lbl_13
+            [tmp5] := [b] EQ8 [c]
+            IFZ [tmp5] GOTO lbl_13
 lbl_13:     nop
+            [tmp6] := [x] EQ64 [y]
+            IFZ [tmp6] GOTO lbl_14
+lbl_14:     nop
             WRITE [msg]
             [tmp7] := [a] NEQ8 [d]
-            IFZ [tmp7] GOTO lbl_14
-lbl_14:     nop
-            [tmp8] := [b] NEQ8 [c]
-            IFZ [tmp8] GOTO lbl_15
+            IFZ [tmp7] GOTO lbl_15
 lbl_15:     nop
-            [tmp9] := [x] NEQ64 [y]
-            IFZ [tmp9] GOTO lbl_16
+            [tmp8] := [b] NEQ8 [c]
+            IFZ [tmp8] GOTO lbl_16
 lbl_16:     nop
-            WRITE [msg]
-            [tmp10] := [a] GT8 [d]
-            IFZ [tmp10] GOTO lbl_17
+            [tmp9] := [x] NEQ64 [y]
+            IFZ [tmp9] GOTO lbl_17
 lbl_17:     nop
-            [tmp11] := [x] GT64 [y]
-            IFZ [tmp11] GOTO lbl_18
-lbl_18:     nop
             WRITE [msg]
-            [tmp12] := [a] GTE8 [d]
-            IFZ [tmp12] GOTO lbl_19
+lbl_7:      leave see
+[BEGIN forsee LOCALS]
+msg (local var of 0 bytes)
+b (local var of 1 bytes)
+a (local var of 1 bytes)
+d (local var of 1 bytes)
+x (local var of 8 bytes)
+y (local var of 8 bytes)
+tmp0 (tmp var of 1 bytes)
+tmp1 (tmp var of 8 bytes)
+tmp2 (tmp var of 1 bytes)
+tmp3 (tmp var of 8 bytes)
+tmp4 (tmp var of 1 bytes)
+tmp5 (tmp var of 8 bytes)
+tmp6 (tmp var of 1 bytes)
+tmp7 (tmp var of 8 bytes)
+tmp8 (tmp var of 1 bytes)
+tmp9 (tmp var of 8 bytes)
+tmp10 (tmp var of 1 bytes)
+tmp11 (tmp var of 8 bytes)
+[END forsee LOCALS]
+fun_forsee: enter forsee
+            [msg] := [str_2]
+            [b] := 1
+            [a] := 10
+            [d] := 20
+            [x] := 1000
+            [y] := 2000
+            [tmp0] := [a] GT8 [d]
+            IFZ [tmp0] GOTO lbl_19
 lbl_19:     nop
-            [tmp13] := [x] GTE64 [y]
-            IFZ [tmp13] GOTO lbl_20
+            [tmp1] := [x] GT64 [y]
+            IFZ [tmp1] GOTO lbl_20
 lbl_20:     nop
             WRITE [msg]
-            [tmp14] := [a] LT8 [d]
-            IFZ [tmp14] GOTO lbl_21
+            [tmp2] := [a] GTE8 [d]
+            IFZ [tmp2] GOTO lbl_21
 lbl_21:     nop
-            [tmp15] := [x] LT64 [y]
-            IFZ [tmp15] GOTO lbl_22
+            [tmp3] := [x] GTE64 [y]
+            IFZ [tmp3] GOTO lbl_22
 lbl_22:     nop
             WRITE [msg]
-            [tmp16] := [a] GTE8 [d]
-            IFZ [tmp16] GOTO lbl_23
+            [tmp4] := [a] LT8 [d]
+            IFZ [tmp4] GOTO lbl_23
 lbl_23:     nop
-            [tmp17] := [x] GTE64 [y]
-            IFZ [tmp17] GOTO lbl_24
+            [tmp5] := [x] LT64 [y]
+            IFZ [tmp5] GOTO lbl_24
 lbl_24:     nop
             WRITE [msg]
-            [tmp18] := [a] LTE8 [d]
-            IFZ [tmp18] GOTO lbl_25
+            [tmp6] := [a] GTE8 [d]
+            IFZ [tmp6] GOTO lbl_25
 lbl_25:     nop
-            [tmp19] := [x] LTE64 [y]
-            IFZ [tmp19] GOTO lbl_26
+            [tmp7] := [x] GTE64 [y]
+            IFZ [tmp7] GOTO lbl_26
 lbl_26:     nop
             WRITE [msg]
-            [tmp20] := NOT8 [b]
-            IFZ [tmp20] GOTO lbl_27
-            [tmp21] := NEG64 4500
-            [x] := [tmp21]
+            [tmp8] := [a] LTE8 [d]
+            IFZ [tmp8] GOTO lbl_27
 lbl_27:     nop
+            [tmp9] := [x] LTE64 [y]
+            IFZ [tmp9] GOTO lbl_28
+lbl_28:     nop
             WRITE [msg]
-            [tmp22] := 2
-            [tmp23] := 500 MULT64 8
-            loc24 := arr ADD64 [tmp23]
-            [loc24] := [tmp22]
+            [tmp10] := NOT8 [b]
+            IFZ [tmp10] GOTO lbl_29
+            [tmp11] := NEG64 4500
+            [x] := [tmp11]
+lbl_29:     nop
+lbl_18:     leave forsee
+[BEGIN hollowedNight LOCALS]
+b (local var of 1 bytes)
+a (local var of 1 bytes)
+x (local var of 8 bytes)
+tmp0 (tmp var of 8 bytes)
+tmp1 (tmp var of 1 bytes)
+[END hollowedNight LOCALS]
+fun_hollowedNight: enter hollowedNight
+            [b] := 1
+            [a] := 10
+            [x] := 1000
             [a] := [a] ADD8 1
             [x] := [x] ADD64 1
             [a] := [a] SUB8 1
             [x] := [x] SUB64 1
-lbl_6:      leave see
+            setarg 1 500
+            call main
+            setarg 1 1000
+            call main
+            [tmp0] := 5
+            setarg 1 [tmp0]
+            setarg 2 5
+            setarg 3 [b]
+            call multiples
+lbl_30:     leave hollowedNight

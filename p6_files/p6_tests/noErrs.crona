@@ -40,15 +40,21 @@ master:bool(){
 	return b;
 }
 
-see:int(){
-	while(brenda){
-		ant = 500;
-	}
+multiples:bool(r:int, s:byte, t:bool){
+	arr:int array[1000];
+	arr[500] = 2;
 
 	barr:bool array[10];
 	barr[5] = true;
 	biscut:byte array[50];
 	biscut[10] = 50;
+}
+
+see:int(){
+	while(brenda){
+		ant = 500;
+	}
+
 	msg:string;
 	msg = "asdf";
 
@@ -85,6 +91,22 @@ see:int(){
 	if(b != c) { }
 	if(x != y) { }
 	write msg;
+}
+
+forsee:int(){
+	msg:string;
+	msg = "asdf";
+
+	b:bool;
+	b = true;
+	a:byte;
+	a = 10;
+	d:byte;
+	d = 20;
+	x:int;
+	x = 1000;
+	y:int;
+	y = 2000;
 
 	if(a > d) { }
 	if(x > y) { }
@@ -109,13 +131,22 @@ see:int(){
 	if(!b) {
 		x = -(4500);
 	}
-	write msg;
+}
 
-	arr:int array[1000];
-	arr[500] = 2;
+hollowedNight:int(){
+	b:bool;
+	b = true;
+	a:byte;
+	a = 10;
+	x:int;
+	x = 1000;
 
 	a++;
 	x++;
 	a--;
 	x--;
+
+	main(500);
+	main(1000);
+	multiples(5, 5, b);
 }
