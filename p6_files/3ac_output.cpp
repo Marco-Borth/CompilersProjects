@@ -73,13 +73,21 @@ Opd * HavocNode::flatten(Procedure * proc){
 Opd * TrueNode::flatten(Procedure * proc){
 	//TODO(Implement me)
 	//const DataType * type = proc->getProg()->nodeType(this);
-	return new LitOpd("1", 1);
+	//Opd * dst = proc->makeTmp(1);
+	LitOpd * lit = new LitOpd("1", 1);
+	//AssignQuad * assign = new AssignQuad(dst, lit);
+	//proc->addQuad(assign);
+	return lit;
 }
 
 Opd * FalseNode::flatten(Procedure * proc){
 	//TODO(Implement me)
 	//const DataType * type = proc->getProg()->nodeType(this);
-	return new LitOpd("0", 1);
+	//Opd * dst = proc->makeTmp(1);
+	LitOpd * lit = new LitOpd("0", 1);
+	//AssignQuad * assign = new AssignQuad(dst, lit);
+	//proc->addQuad(assign);
+	return lit;
 }
 
 Opd * AssignExpNode::flatten(Procedure * proc){
@@ -122,9 +130,13 @@ Opd * ByteToIntNode::flatten(Procedure * proc){
 	BinOp opr = FAIL64;
 	dst = proc->makeTmp(8);
 	opr = MULT64;
-
-	BinOpQuad* myBinOp = new BinOpQuad (dst, opr, opd1, opd2);
-	proc->addQuad(myBinOp);
+	if(opd1->getWidth() == 8) {
+		BinOpQuad* myBinOp = new BinOpQuad (dst, opr, opd1, opd2);
+		proc->addQuad(myBinOp);
+	} else {
+		AssignQuad* assign = new AssignQuad (dst, opd1);
+		proc->addQuad(assign);
+	}
 	return (dst);
 }
 
@@ -569,13 +581,18 @@ Opd * IndexNode::flatten(Procedure * proc){
 	//TODO(Implement me)
 	//proc->gatherLocal(myBase->getSymbol());
 	SemSymbol * sym = myBase->getSymbol();
-	SymOpd * dst = proc->getSymOpd(myBase->getSymbol());;
+	SymOpd * dst = proc->getSymOpd(myBase->getSymbol());
+	//dst = proc->makeLoc(myBase->getSymbol(), dst->getWidth());
 	Opd * opd1 = myBase->flatten(proc);
 	Opd * opd2 = myOffset->flatten(proc);
 	BinOp opr = ADD64;
 	BinOpQuad* myBinOp = new BinOpQuad (dst, opr, opd1, opd2);
 	proc->addQuad(myBinOp);
 	return dst;
+
+	//AddrOpd * addr = proc->makeAddrOpd(opd2->getWidth());
+	//IndexQuad * index = new IndexQuad(addr,opd1,opd2);
+	//proc->addQuad(index);
 }
 
 //We only get to this node if we are in a stmt
