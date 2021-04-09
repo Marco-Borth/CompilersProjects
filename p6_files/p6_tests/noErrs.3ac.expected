@@ -65,6 +65,7 @@ a (local var of 1 bytes)
 d (local var of 1 bytes)
 x (local var of 8 bytes)
 y (local var of 8 bytes)
+arr (local var of 64000 bytes)
 tmp2 (tmp var of 1 bytes)
 tmp3 (tmp var of 1 bytes)
 tmp4 (tmp var of 1 bytes)
@@ -85,8 +86,11 @@ tmp18 (tmp var of 1 bytes)
 tmp19 (tmp var of 8 bytes)
 tmp20 (tmp var of 1 bytes)
 tmp21 (tmp var of 8 bytes)
+tmp22 (tmp var of 8 bytes)
+tmp23 (tmp var of 8 bytes)
 loc0 (tmp loc of 1 bytes)
 loc1 (tmp loc of 1 bytes)
+loc24 (tmp loc of 8 bytes)
 [END see LOCALS]
 fun_see:    enter see
 lbl_7:      nop
@@ -173,4 +177,12 @@ lbl_26:     nop
             [x] := [tmp21]
 lbl_27:     nop
             WRITE [msg]
+            [tmp22] := 2
+            [tmp23] := 500 MULT64 8
+            loc24 := arr ADD64 [tmp23]
+            [loc24] := [tmp22]
+            [a] := [a] ADD8 1
+            [x] := [x] ADD64 1
+            [a] := [a] SUB8 1
+            [x] := [x] SUB64 1
 lbl_6:      leave see

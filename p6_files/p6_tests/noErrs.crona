@@ -65,6 +65,13 @@ see:int(){
 	y:int;
 	y = 2000;
 
+	f : int;
+	g : int;
+	f = 543653;
+	g = 25532;
+	f = f / g;
+	f = f + g;
+
 	if(b && c){}
 	if(b || c){}
 	write msg;
@@ -103,4 +110,12 @@ see:int(){
 		x = -(4500);
 	}
 	write msg;
+
+	arr:int array[1000];
+	arr[500] = 2;
+
+	a++;
+	x++;
+	a--;
+	x--;
 }

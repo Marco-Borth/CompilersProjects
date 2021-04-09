@@ -555,6 +555,7 @@ public:
 	bool nameAnalysis(SymbolTable * symTab) override;
 	virtual void typeAnalysis(TypeAnalysis *) override;
 	virtual Opd * flatten(Procedure * prog) override;
+	int getNum() { return myNum; }
 private:
 	const int myNum;
 };

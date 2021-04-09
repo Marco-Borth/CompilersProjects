@@ -97,7 +97,18 @@ Opd * CallExpNode::flatten(Procedure * proc){
 }
 
 Opd * ByteToIntNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	//TODO(Implement me)
+	Opd * dst = nullptr;
+	Opd * opd1 = myChild->flatten(proc);
+	IntLitNode * convert = new IntLitNode(0,0, 8);
+	Opd * opd2 = new LitOpd(std::to_string(convert->getNum()), 8);
+	BinOp opr = FAIL64;
+	dst = proc->makeTmp(8);
+	opr = MULT64;
+
+	BinOpQuad* myBinOp = new BinOpQuad (dst, opr, opd1, opd2);
+	proc->addQuad(myBinOp);
+	return (dst);
 }
 
 Opd * NegNode::flatten(Procedure * proc){
@@ -383,12 +394,12 @@ Opd * GreaterEqNode::flatten(Procedure * proc){
 		if (opd1->getWidth() == 1)
 		{
 			dst = proc->makeTmp(1);
-			opr = GT8;
+			opr = GTE8;
 		}
 		else
 		{
 			dst = proc->makeTmp(8);
-			opr = GT64;
+			opr = GTE64;
 		}
 	}
 	BinOpQuad* myBinOp = new BinOpQuad (dst, opr, opd1, opd2);
@@ -401,11 +412,35 @@ void AssignStmtNode::to3AC(Procedure * proc){
 }
 
 void PostIncStmtNode::to3AC(Procedure * proc){
-	TODO(Implement me)
+	//TODO(Implement me)
+	Opd * dst = nullptr;
+	Opd * opd1 = myLVal->flatten(proc);
+	IntLitNode * convert = new IntLitNode(0,0, 1);
+	Opd * opd2 = new LitOpd(std::to_string(convert->getNum()), 1);
+	BinOp opr = FAIL64;
+	if (opd1->getWidth() == 1) {
+		opr = ADD8;
+	} else {
+		opr = ADD64;
+	}
+	BinOpQuad* myBinOp = new BinOpQuad (opd1, opr, opd1, opd2);
+	proc->addQuad(myBinOp);
 }
 
 void PostDecStmtNode::to3AC(Procedure * proc){
-	TODO(Implement me)
+	//TODO(Implement me)
+	Opd * dst = nullptr;
+	Opd * opd1 = myLVal->flatten(proc);
+	IntLitNode * convert = new IntLitNode(0,0, 1);
+	Opd * opd2 = new LitOpd(std::to_string(convert->getNum()), 1);
+	BinOp opr = FAIL64;
+	if (opd1->getWidth() == 1) {
+		opr = SUB8;
+	} else {
+		opr = SUB64;
+	}
+	BinOpQuad* myBinOp = new BinOpQuad (opd1, opr, opd1, opd2);
+	proc->addQuad(myBinOp);
 }
 
 void ReadStmtNode::to3AC(Procedure * proc){
@@ -515,13 +550,12 @@ void VarDeclNode::to3AC(IRProgram * prog){
 
 Opd * IndexNode::flatten(Procedure * proc){
 	//TODO(Implement me)
-	proc->gatherLocal(myBase->getSymbol());
+	//proc->gatherLocal(myBase->getSymbol());
 	SemSymbol * sym = myBase->getSymbol();
-	SymOpd * dst = nullptr;
+	SymOpd * dst = proc->getSymOpd(myBase->getSymbol());;
 	Opd * opd1 = myBase->flatten(proc);
 	Opd * opd2 = myOffset->flatten(proc);
 	BinOp opr = ADD64;
-	dst = proc->getSymOpd(myBase->getSymbol());
 	BinOpQuad* myBinOp = new BinOpQuad (dst, opr, opd1, opd2);
 	proc->addQuad(myBinOp);
 	return dst;
