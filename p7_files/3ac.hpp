@@ -43,6 +43,7 @@ public:
 			case C: return "c";
 			case D: return "d";
 			case DI: return "di";
+			default: return "\0";
 		}
 	}
 
@@ -53,6 +54,7 @@ public:
 			case C: return "%rcx";
 			case D: return "%rdx";
 			case DI: return "%rdi";
+			default: return "\0";
 		}
 	}
 
@@ -63,6 +65,7 @@ public:
 			case C: return "%cl";
 			case D: return "%dl";
 			case DI: return "%dil";
+			default: return "\0";
 		}
 	}
 };
