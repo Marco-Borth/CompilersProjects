@@ -13,7 +13,7 @@ TESTS := $(TESTPROGS:.tnc=)
 
 all:
 	make cronac
-
+	gcc -c stdcrona.c
 clean:
 	rm -rf *.output *.o *.cc *.hh $(DEPS) cronac
 	make clean -C p*_tests
