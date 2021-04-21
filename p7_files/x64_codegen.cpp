@@ -4,7 +4,7 @@
 namespace crona{
 
 void IRProgram::allocGlobals(){
-	TODO(Implement me)
+	//TODO(Implement me)
 }
 
 void IRProgram::datagenX64(std::ostream& out){
@@ -21,7 +21,7 @@ void IRProgram::toX64(std::ostream& out){
 	//Allocate space for globals
 	// Iterate over each procedure and codegen it
 	// TODO(Implement me)
-	//allocGlobals();
+	allocGlobals();
 }
 
 void Procedure::allocLocals(){
@@ -86,7 +86,9 @@ void JmpQuad::codegenX64(std::ostream& out){
 }
 
 void JmpIfQuad::codegenX64(std::ostream& out){
-	TODO(Implement me)
+	//TODO(Implement me)
+	//cnd->genLoadVal(out, A);
+	out << "jmp if" << cnd->getMemoryLoc() << tgt->toString() << "\n";
 }
 
 void NopQuad::codegenX64(std::ostream& out){
@@ -94,7 +96,8 @@ void NopQuad::codegenX64(std::ostream& out){
 }
 
 void HavocQuad::codegenX64(std::ostream& out){
-	TODO(Randomly set rax to 1 or 0)
+	//TODO(Randomly set rax to 1 or 0)
+	myDst->genLoadVal(out, A);
 }
 
 void IntrinsicOutputQuad::codegenX64(std::ostream& out){
@@ -108,7 +111,9 @@ void IntrinsicOutputQuad::codegenX64(std::ostream& out){
 }
 
 void IntrinsicInputQuad::codegenX64(std::ostream& out){
-	TODO(Implement me)
+	//TODO(Implement me)
+	myArg->genLoadVal(out, DI);
+	out << "callq printBool\n";
 }
 
 void CallQuad::codegenX64(std::ostream& out){
