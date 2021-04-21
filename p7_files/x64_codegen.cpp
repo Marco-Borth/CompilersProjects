@@ -8,7 +8,8 @@ void IRProgram::allocGlobals(){
 }
 
 void IRProgram::datagenX64(std::ostream& out){
-	TODO(Write out data section)
+	//TODO(Write out data section)
+	//allocGlobals();
 	//Put this directive after you write out strings
 	// so that everything is aligned to a quadword value
 	// again
@@ -19,7 +20,8 @@ void IRProgram::datagenX64(std::ostream& out){
 void IRProgram::toX64(std::ostream& out){
 	//Allocate space for globals
 	// Iterate over each procedure and codegen it
-	//TODO(Implement me)
+	// TODO(Implement me)
+	//allocGlobals();
 }
 
 void Procedure::allocLocals(){
@@ -57,10 +59,21 @@ void Quad::codegenLabels(std::ostream& out){
 
 void BinOpQuad::codegenX64(std::ostream& out){
 	TODO(Implement me)
+	/*
+	dst->genLoadVal(out, A);
+	opr->genLoadVal(out, A);
+	src1->genLoadVal(out, A);
+	src2->genLoadVal(out, A);
+	*/
 }
 
 void UnaryOpQuad::codegenX64(std::ostream& out){
 	TODO(Implement me)
+	/*
+	dst->genLoadVal(out, A);
+	op->genLoadVal(out, A);
+	src->genLoadVal(out, A);
+	*/
 }
 
 void AssignQuad::codegenX64(std::ostream& out){
