@@ -1,7 +1,13 @@
 a : int;
 b : bool;
 c : string;
+f : string;
 main : int (){
+  d : string;
+  d = "hello";
+}
+
+fnTest : int (){
   d : string;
   d = "hello";
 }
