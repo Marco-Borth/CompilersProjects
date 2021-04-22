@@ -4,22 +4,64 @@
 namespace crona{
 
 void IRProgram::allocGlobals(){
-	TODO(Implement me)
+	// iter = 0;
+	// for (auto gbl : globals)
+	// {
+	// 	std::string lbl;
+	// 	lbl = "gbl_"+iter;
+	// }
 }
 
 void IRProgram::datagenX64(std::ostream& out){
-	TODO(Write out data section)
+	//Empty IRProgram globals map.
+	//Each iteration we will retrieve a map pair of <SemSymbol *, SymOpd *>.
+	for (auto gbl : globals)
+	{
+		out<<gbl.second->getName()<<": ";
+		size_t gbl_width = gbl.second->getWidth();
+		if (gbl_width == 0)
+		{
+			out<<".asciz \"\"\n";
+			out<<".align 8\n";
+		}
+		else if (gbl_width == 1)
+		{
+			out<<".byte 0\n";
+		}
+		else if (gbl_width == 8)
+		{
+			out<<".quad 0\n";
+		}
+		else
+		{
+			throw new InternalError("Bad variable size");
+		}
+	}
+	//Create the label using myName() funct of the SymOpd.
+	//Choose .quad if an int, .byte if a byte, and .asciz for strings.
+	//Global strings will just be var decls and should print like "   	my_string    : .asciz ""    ", with an empty string.
+	//Empty IRProgram strings hash map.
+	//Each iteration we will retrieve a hasp map pair of <AddrOpd *, std::string>.
+	//Create the label using getName() funct of AddrOpd.
+	//Print the body.
+
 	//Put this directive after you write out strings
 	// so that everything is aligned to a quadword value
 	// again
-	out << ".align 8\n";
+	//out << ".align 8\n";
 
 }
 
 void IRProgram::toX64(std::ostream& out){
 	//Allocate space for globals
+	out<<".globl main\n";
+	out<<".data\n";
+	allocGlobals();
+	datagenX64(out);
 	// Iterate over each procedure and codegen it
 	//TODO(Implement me)
+	out<<".text\n";
+	out<<"main:\n";
 }
 
 void Procedure::allocLocals(){
