@@ -1,3 +1,7 @@
-foo : bool(a : bool) {
-
+a : int;
+b : bool;
+c : string;
+main : int (){
+  d : string;
+  d = "hello";
 }
