@@ -157,15 +157,18 @@ void IntrinsicInputQuad::codegenX64(std::ostream& out){
 }
 
 void CallQuad::codegenX64(std::ostream& out){
-	TODO(Implement me)
+	//TODO(Implement me)
+	out << callee->toString();
 }
 
 void EnterQuad::codegenX64(std::ostream& out){
-	TODO(Implement me)
+	//TODO(Implement me)
+	out << myProc->toString(true);
 }
 
 void LeaveQuad::codegenX64(std::ostream& out){
-	TODO(Implement me)
+	//TODO(Implement me)
+	out << myProc->toString(false);
 }
 
 void SetArgQuad::codegenX64(std::ostream& out){
