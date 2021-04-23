@@ -4,12 +4,31 @@
 namespace crona{
 
 void IRProgram::allocGlobals(){
-	// iter = 0;
-	// for (auto gbl : globals)
-	// {
-	// 	std::string lbl;
-	// 	lbl = "gbl_"+iter;
-	// }
+	int gbl_iter = 0;
+	int str_iter = 0;
+	for (auto gbl : globals)
+	{
+		std::string lbl;
+		if (gbl.second->getWidth() != 0)
+		{
+			lbl = "gbl_"+std::to_string(gbl_iter);
+			gbl_iter++;
+		}
+		else
+		{
+			lbl = "str_"+std::to_string(str_iter);
+			str_iter++;
+		}
+		gbl.second->setMemoryLoc(lbl);
+	}
+	for (auto str : strings)
+	{
+		std::string lbl ="\0";
+		lbl = "str_"+std::to_string(str_iter);
+		str_iter++;
+		str.first->setMemoryLoc(lbl);
+	}
+
 }
 
 void IRProgram::datagenX64(std::ostream& out){
@@ -17,7 +36,7 @@ void IRProgram::datagenX64(std::ostream& out){
 	//Each iteration we will retrieve a map pair of <SemSymbol *, SymOpd *>.
 	for (auto gbl : globals)
 	{
-		out<<gbl.second->getName()<<": ";
+		out<<gbl.second->getMemoryLoc()<<": ";
 		size_t gbl_width = gbl.second->getWidth();
 		if (gbl_width == 0)
 		{
@@ -37,11 +56,17 @@ void IRProgram::datagenX64(std::ostream& out){
 			throw new InternalError("Bad variable size");
 		}
 	}
+	for (auto str : strings)
+	{
+		out<<str.first->getMemoryLoc()<<": ";
+		out<<".asciz "<<str.second<<"\n";
+		out << ".align 8\n";
+	}
 	//Create the label using myName() funct of the SymOpd.
 	//Choose .quad if an int, .byte if a byte, and .asciz for strings.
 	//Global strings will just be var decls and should print like "   	my_string    : .asciz ""    ", with an empty string.
 	//Empty IRProgram strings hash map.
-	//Each iteration we will retrieve a hasp map pair of <AddrOpd *, std::string>.
+	//Each iteration we will retrieve a hash map pair of <AddrOpd *, std::string>.
 	//Create the label using getName() funct of AddrOpd.
 	//Print the body.
 
