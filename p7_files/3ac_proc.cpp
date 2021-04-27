@@ -32,7 +32,7 @@ std::string Procedure::toString(bool verbose){
 
 	res += "[BEGIN " + this->getName() + " LOCALS]\n";
 	for (const auto formal : this->formals){
-		res += formal->getName() + " (formal arg of " 
+		res += formal->getName() + " (formal arg of "
 			+ std::to_string(formal->getWidth()) + ")\n";
 			+ " bytes)\n";
 	}
@@ -98,7 +98,7 @@ SymOpd * Procedure::getSymOpd(SemSymbol * sym){
 	if (localFound != locals.end()){
 		return localFound->second;
 	}
-	
+
 	return this->getProg()->getGlobal(sym);
 }
 
@@ -138,7 +138,10 @@ size_t Procedure::arSize() const{
 	for (auto loc : addrOpds){
 		size += 8;
 	}
-	size += (size % 16);
+	//size += (size % 16);
+	//TODO FIX is on piazza
+	size_t slack = (16 - (size % 16)) % 16;
+	size = size + slack;
 
 	return size;
 }

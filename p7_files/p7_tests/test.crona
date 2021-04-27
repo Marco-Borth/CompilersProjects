@@ -1,7 +1,5 @@
 a : int;
-b : bool;
-c : string;
 main : int (){
-  d : string;
-  d = "hello";
+  b : int;
+  b = 660;
 }
