@@ -159,13 +159,13 @@ void AssignQuad::codegenX64(std::ostream& out){
 }
 
 void JmpQuad::codegenX64(std::ostream& out){
-	out << "jmp " << tgt->toString() << "\n";
+	out << "jmp " /*<< tgt->toString()*/ << "\n";
 }
 
 void JmpIfQuad::codegenX64(std::ostream& out){
 	//TODO(Implement me)
 	//cnd->genLoadVal(out, A);
-	out << "jmp if" << cnd->getMemoryLoc() << tgt->toString() << "\n";
+	//out << "jmp if" << cnd->getMemoryLoc() << tgt->toString() << "\n";
 }
 
 void NopQuad::codegenX64(std::ostream& out){
@@ -174,7 +174,7 @@ void NopQuad::codegenX64(std::ostream& out){
 
 void HavocQuad::codegenX64(std::ostream& out){
 	//TODO(Randomly set rax to 1 or 0)
-	myDst->genLoadVal(out, A);
+	//myDst->genLoadVal(out, A);
 }
 
 void IntrinsicOutputQuad::codegenX64(std::ostream& out){
@@ -189,13 +189,13 @@ void IntrinsicOutputQuad::codegenX64(std::ostream& out){
 
 void IntrinsicInputQuad::codegenX64(std::ostream& out){
 	//TODO(Implement me)
-	myArg->genLoadVal(out, DI);
-	out << "callq printBool\n";
+	//myArg->genLoadVal(out, DI);
+	//out << "callq printBool\n";
 }
 
 void CallQuad::codegenX64(std::ostream& out){
 	//TODO(Implement me)
-	out << callee->toString();
+	//out << callee->toString();
 }
 
 void EnterQuad::codegenX64(std::ostream& out){
@@ -210,7 +210,7 @@ void EnterQuad::codegenX64(std::ostream& out){
 
 void LeaveQuad::codegenX64(std::ostream& out){
 	//TODO(Implement me)
-	out << myProc->toString(false);
+	//out << myProc->toString(false);
 }
 
 void SetArgQuad::codegenX64(std::ostream& out){
@@ -238,7 +238,7 @@ void SymOpd::genLoadVal(std::ostream& out, Register reg){
 }
 
 void SymOpd::genStoreVal(std::ostream& out, Register reg){
-	TODO(Implement me)
+	//TODO(Implement me)
 }
 
 void SymOpd::genLoadAddr(std::ostream& out, Register reg) {
@@ -262,7 +262,7 @@ void AddrOpd::genStoreVal(std::ostream& out, Register reg){
 }
 
 void AddrOpd::genLoadVal(std::ostream& out, Register reg){
-	TODO(Implement me)
+	//TODO(Implement me)
 }
 
 void AddrOpd::genStoreAddr(std::ostream& out, Register reg){
