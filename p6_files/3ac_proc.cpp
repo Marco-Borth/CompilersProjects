@@ -112,16 +112,15 @@ AuxOpd * Procedure::makeTmp(size_t width){
 	return res;
 }
 
-/*
-SymOpd * Procedure::makeLoc(size_t width){
+SymOpd * Procedure::makeLoc(SemSymbol * sym, size_t width){
 	std::string name = "loc";
 	name += std::to_string(maxLoc++);
-	SymOpd * res = new SymOpd(name, width);
-	locals.push_back(res);
+	SymOpd * res = new SymOpd(sym, width);
+	//locals.push_back(res);
+	locals.insert ( std::pair<SemSymbol *, SymOpd *>(sym,res) );
 
 	return res;
 }
-*/
 
 AddrOpd * Procedure::makeAddrOpd(size_t width){
 	std::string name = "addrTmp";

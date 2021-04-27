@@ -306,6 +306,7 @@ public:
 	void gatherFormal(SemSymbol * sym);
 	SymOpd * getSymOpd(SemSymbol * sym);
 	AuxOpd * makeTmp(size_t width);
+	SymOpd * makeLoc(SemSymbol * sym, size_t width);
 	AddrOpd * makeAddrOpd(size_t width);
 
 	std::string toString(bool verbose=false);
@@ -324,6 +325,7 @@ private:
 	std::list<AddrOpd *> addrOpds;
 	std::list<Quad *> * bodyQuads;
 	std::string myName;
+	size_t maxLoc;
 	size_t maxTmp;
 };
 
