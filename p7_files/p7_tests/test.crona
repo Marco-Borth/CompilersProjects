@@ -1,11 +1,5 @@
 a : int;
-a_a : string;
-b : bool;
-c : string;
 main : int (){
-  d : string;
-  d = "hello";
-  e : string;
-  e = "my name is james";
-  //a_a = "life";
+  b : int;
+  b = 660;
 }
