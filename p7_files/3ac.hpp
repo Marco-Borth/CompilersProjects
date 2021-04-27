@@ -95,7 +95,7 @@ public:
 			case 1: return "movb";
 			case 8: return "movq";
 		}
-		
+
 		std::cout << "array width " << std::to_string(myWidth) << "\n";
 		TODO("handle array move");
 		throw new InternalError("Bad mov width");
@@ -124,10 +124,10 @@ public:
 		return mySym->getName();
 	}
 	const SemSymbol * getSym(){ return mySym; }
-	virtual void genLoadVal(std::ostream& out, Register reg) override; 
-	virtual void genStoreVal(std::ostream& out, Register reg) override; 
-	virtual void genLoadAddr(std::ostream& out, Register reg) override; 
-	virtual void genStoreAddr(std::ostream& out, Register reg) override{ 
+	virtual void genLoadVal(std::ostream& out, Register reg) override;
+	virtual void genStoreVal(std::ostream& out, Register reg) override;
+	virtual void genLoadAddr(std::ostream& out, Register reg) override;
+	virtual void genStoreAddr(std::ostream& out, Register reg) override{
 		throw new InternalError("Cannot change the addr of a symOpd");
 	}
 	virtual void setMemoryLoc(std::string loc){
@@ -139,7 +139,7 @@ public:
 private:
 	//Private Constructor
 	SymOpd(SemSymbol * sym, size_t width)
-	: Opd(width), mySym(sym) {} 
+	: Opd(width), mySym(sym) {}
 	SemSymbol * mySym;
 	friend class Procedure;
 	friend class IRProgram;
@@ -168,14 +168,14 @@ public:
 	virtual std::string locString() override{
 		throw InternalError("Tried to get location of a constant");
 	}
-	virtual void genLoadVal(std::ostream& out, Register reg) override; 
-	virtual void genStoreVal(std::ostream& out, Register reg) override{ 
+	virtual void genLoadVal(std::ostream& out, Register reg) override;
+	virtual void genStoreVal(std::ostream& out, Register reg) override{
 		throw new InternalError("Cannot change value of a literal");
 	}
-	virtual void genLoadAddr(std::ostream& out, Register reg) override{ 
+	virtual void genLoadAddr(std::ostream& out, Register reg) override{
 		throw new InternalError("Cannot get addr of a literal");
 	}
-	virtual void genStoreAddr(std::ostream& out, Register reg) override{ 
+	virtual void genStoreAddr(std::ostream& out, Register reg) override{
 		throw new InternalError("Cannot set the addr of a literal");
 	}
 
@@ -188,7 +188,7 @@ private:
 
 class AuxOpd : public Opd{
 public:
-	AuxOpd(std::string nameIn, size_t width) 
+	AuxOpd(std::string nameIn, size_t width)
 	: Opd(width), name(nameIn) { }
 	virtual std::string valString() override{
 		return "[" + getName() + "]";
@@ -199,10 +199,10 @@ public:
 	std::string getName(){
 		return name;
 	}
-	virtual void genLoadVal(std::ostream& out, Register reg) override; 
+	virtual void genLoadVal(std::ostream& out, Register reg) override;
 	virtual void genStoreVal(std::ostream& out, Register reg) override;
 	virtual void genLoadAddr(std::ostream& out, Register reg) override;
-	virtual void genStoreAddr(std::ostream& out, Register reg) override{ 
+	virtual void genStoreAddr(std::ostream& out, Register reg) override{
 		throw new InternalError("Cannot change the addr of a auxOpd");
 	}
 
@@ -229,9 +229,9 @@ public:
 		return getName();
 	}
 	virtual void genLoadAddr(std::ostream& out, Register reg) override;
-	virtual void genStoreAddr(std::ostream& out, Register reg) override; 
-	virtual void genLoadVal(std::ostream& out, Register reg) override; 
-	virtual void genStoreVal(std::ostream& out, Register reg) override; 
+	virtual void genStoreAddr(std::ostream& out, Register reg) override;
+	virtual void genLoadVal(std::ostream& out, Register reg) override;
+	virtual void genStoreVal(std::ostream& out, Register reg) override;
 
 	virtual void setMemoryLoc(std::string loc){
 		myLoc = loc;
@@ -306,7 +306,7 @@ private:
 };
 
 class AssignQuad : public Quad{
-	
+
 public:
 	AssignQuad(Opd * dstIn, Opd * srcIn);
 	std::string repr() override;
@@ -471,13 +471,13 @@ public:
 	AuxOpd * makeTmp(size_t width);
 	AddrOpd * makeAddrOpd(size_t width);
 
-	std::string toString(bool verbose=false); 
+	std::string toString(bool verbose=false);
 	std::string getName();
 
 	crona::Label * getLeaveLabel();
 
 	void toX64(std::ostream& out);
-	size_t arSize() const;
+	size_t arSize() const; //Activation Record Size
 	size_t numTemps() const;
 
 	std::list<Quad *> * getQuads(){ return bodyQuads; }
@@ -492,8 +492,8 @@ private:
 
 	IRProgram * myProg;
 	std::map<SemSymbol *, SymOpd *> locals;
-	std::list<AuxOpd *> temps; 
-	std::list<SymOpd *> formals; 
+	std::list<AuxOpd *> temps;
+	std::list<SymOpd *> formals;
 	std::list<AddrOpd *> addrOpds;
 	std::list<Quad *> * bodyQuads;
 	std::string myName;
@@ -521,7 +521,7 @@ private:
 	TypeAnalysis * ta;
 	size_t max_label = 0;
 	size_t str_idx = 0;
-	std::list<Procedure *> * procs; 
+	std::list<Procedure *> * procs;
 	HashMap<AddrOpd *, std::string> strings;
 	std::map<SemSymbol *, SymOpd *> globals;
 
@@ -531,4 +531,4 @@ private:
 
 }
 
-#endif 
+#endif
