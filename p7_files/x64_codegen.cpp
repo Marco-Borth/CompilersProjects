@@ -201,16 +201,21 @@ void CallQuad::codegenX64(std::ostream& out){
 void EnterQuad::codegenX64(std::ostream& out){
 	//IP is already saved in the first 8 bytes after the caller's AR (callq also moved the rsp to infront of the saved IP)
 	//Need to store caller's RBP before we update RBP to the front of our new RBP
-	out<<"pushq %rbp\n"; //Caller's RBP stored. rsp is now at the front of the saved rbp (not where we want it)
-	out<<"movq %rsp , %rbp\n";
+	out<<"pushq %rbp\n"; //Caller's RBP is pushed infront of the stored IP (rsp is also moved to the front of the saved rbp (not where we want it)
+	out<<"movq %rsp , %rbp\n"; //Move rbp to point at the same location as rsp
 	out<<"addq $16, %rbp\n"; //RBP fixed to new location before the bookkeepers.
 	size_t ar_size = myProc->arSize();
 	out<<"subq $"<<ar_size<<", %rsp\n";
 }
 
 void LeaveQuad::codegenX64(std::ostream& out){
-	//TODO(Implement me)
-	//out << myProc->toString(false);
+	//epilogue
+	size_t ar_size = myProc->arSize();
+	out<<"addq $"<<ar_size<<", %rsp\n";//Move rsp back to just before the books.
+	out<<"movq %rsp , %rbp\n";//Set rbp back to the caller's rbp (the second bookkeeping value).
+	out<<"retq\n";//Pop the old rip and return to it.
+
+
 }
 
 void SetArgQuad::codegenX64(std::ostream& out){
