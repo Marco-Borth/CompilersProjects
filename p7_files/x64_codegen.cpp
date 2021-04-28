@@ -145,12 +145,10 @@ void BinOpQuad::codegenX64(std::ostream& out){
 }
 
 void UnaryOpQuad::codegenX64(std::ostream& out){
-	TODO(Implement me)
-	/*
+	//TODO(Implement me)
 	dst->genLoadVal(out, A);
-	op->genLoadVal(out, A);
+	//op->genLoadVal(out, A);
 	src->genLoadVal(out, A);
-	*/
 }
 
 void AssignQuad::codegenX64(std::ostream& out){
@@ -163,9 +161,9 @@ void JmpQuad::codegenX64(std::ostream& out){
 }
 
 void JmpIfQuad::codegenX64(std::ostream& out){
-	//TODO(Implement me)
-	//cnd->genLoadVal(out, A);
-	//out << "jmp if" << cnd->getMemoryLoc() << tgt->toString() << "\n";
+	TODO(Implement me)
+	cnd->genLoadVal(out, A);
+	out << "jmp if" << cnd->getMemoryLoc() << tgt->toString() << "\n";
 }
 
 void NopQuad::codegenX64(std::ostream& out){
@@ -173,7 +171,7 @@ void NopQuad::codegenX64(std::ostream& out){
 }
 
 void HavocQuad::codegenX64(std::ostream& out){
-	//TODO(Randomly set rax to 1 or 0)
+	TODO(Randomly set rax to 1 or 0)
 	//myDst->genLoadVal(out, A);
 }
 
@@ -188,14 +186,22 @@ void IntrinsicOutputQuad::codegenX64(std::ostream& out){
 }
 
 void IntrinsicInputQuad::codegenX64(std::ostream& out){
-	//TODO(Implement me)
+	TODO(Implement me)
 	//myArg->genLoadVal(out, DI);
 	//out << "callq printBool\n";
 }
 
 void CallQuad::codegenX64(std::ostream& out){
 	//TODO(Implement me)
-	//out << callee->toString();
+	/*
+	const FnType * calleeType = callee->getDataType()->asFn();
+	const std::list<const DataType *> * argsList = calleeType->getFormalTypes();
+	int argIndex = 1;
+	for (auto arg : *argsList) {
+		out<< "movq $" << ", %rbp\n";
+	}
+	*/
+	out << "callq " << callee->getName() << endl;
 }
 
 void EnterQuad::codegenX64(std::ostream& out){
@@ -219,7 +225,7 @@ void LeaveQuad::codegenX64(std::ostream& out){
 }
 
 void SetArgQuad::codegenX64(std::ostream& out){
-	TODO(Implement me)
+	//TODO(Implement me)
 }
 
 void GetArgQuad::codegenX64(std::ostream& out){
@@ -239,7 +245,8 @@ void IndexQuad::codegenX64(std::ostream& out){
 }
 
 void SymOpd::genLoadVal(std::ostream& out, Register reg){
-	TODO(Implement me)
+	//TODO(Implement me)
+	out << getMovOp() << mySym->getName() << ", " << getReg(reg) << "\n";
 }
 
 void SymOpd::genStoreVal(std::ostream& out, Register reg){
@@ -255,8 +262,9 @@ void AuxOpd::genLoadVal(std::ostream& out, Register reg){
 }
 
 void AuxOpd::genStoreVal(std::ostream& out, Register reg){
-	TODO(Implement me)
+	//TODO(Implement me)
 }
+
 void AuxOpd::genLoadAddr(std::ostream& out, Register reg){
 	TODO(Implement me)
 }
@@ -268,6 +276,7 @@ void AddrOpd::genStoreVal(std::ostream& out, Register reg){
 
 void AddrOpd::genLoadVal(std::ostream& out, Register reg){
 	//TODO(Implement me)
+	//out << getMovOp() << " $" << val << ", " << getReg(reg) << "\n";
 }
 
 void AddrOpd::genStoreAddr(std::ostream& out, Register reg){
