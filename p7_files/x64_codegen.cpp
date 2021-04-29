@@ -201,7 +201,7 @@ void CallQuad::codegenX64(std::ostream& out){
 		out<< "movq $" << ", %rbp\n";
 	}
 	*/
-	out << "callq " << callee->getName() << endl;
+	out << "callq fun_" << callee->getName() << endl;
 }
 
 void EnterQuad::codegenX64(std::ostream& out){
@@ -218,10 +218,8 @@ void LeaveQuad::codegenX64(std::ostream& out){
 	//epilogue
 	size_t ar_size = myProc->arSize();
 	out<<"addq $"<<ar_size<<", %rsp\n";//Move rsp back to just before the books.
-	out<<"movq %rsp , %rbp\n";//Set rbp back to the caller's rbp (the second bookkeeping value).
-	out<<"retq\n";//Pop the old rip and return to it.
-
-
+	out<<"popq %rbp\n";//Set rbp back to the caller's rbp (the second bookkeeping value), increment %rsp by 8.
+	out<<"retq\n";//Pop the old rip, increment %rsp by 8 and return to the addr stored in old rip.
 }
 
 void SetArgQuad::codegenX64(std::ostream& out){
@@ -246,11 +244,12 @@ void IndexQuad::codegenX64(std::ostream& out){
 
 void SymOpd::genLoadVal(std::ostream& out, Register reg){
 	//TODO(Implement me)
-	out << getMovOp() << mySym->getName() << ", " << getReg(reg) << "\n";
+	out << getMovOp()<<' '<<getMemoryLoc() << ", " << getReg(reg) << "\n";
 }
 
 void SymOpd::genStoreVal(std::ostream& out, Register reg){
 	//TODO(Implement me)
+	out<< getMovOp()<<' '<<getReg(reg)<<" , "<<getMemoryLoc()<<'\n';
 }
 
 void SymOpd::genLoadAddr(std::ostream& out, Register reg) {
