@@ -179,16 +179,34 @@ void IntrinsicOutputQuad::codegenX64(std::ostream& out){
 	if (myType->isBool()){
 		myArg->genLoadVal(out, DI);
 		out << "callq printBool\n";
-	} else {
-		TODO(Implement me)
-
+	}
+	else if (myType->isByte())
+	{
+		myArg->genLoadVal(out,DI);
+		out<<"callq printChar\n";
+	}
+	else //Int
+	{
+		myArg->genLoadVal(out,DI);
+		out<<"callq printInt\n";
 	}
 }
 
 void IntrinsicInputQuad::codegenX64(std::ostream& out){
-	TODO(Implement me)
-	//myArg->genLoadVal(out, DI);
-	//out << "callq printBool\n";
+	if (myType->isBool()){
+		out << "callq getBool\n";
+		myArg->genStoreVal(out, A);
+	}
+	else if (myType->isByte())
+	{
+		out<<"callq getChar\n";
+		myArg->genStoreVal(out, A);
+	}
+	else //Int
+	{
+		out<<"callq getInt\n";
+		myArg->genStoreVal(out, A);
+	}
 }
 
 void CallQuad::codegenX64(std::ostream& out){
