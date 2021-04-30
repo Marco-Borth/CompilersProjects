@@ -222,7 +222,6 @@ void CallQuad::codegenX64(std::ostream& out){
 		}
 
 	}
-	*/
 	out << "callq fun_" << callee->getName() << endl;
 }
 
