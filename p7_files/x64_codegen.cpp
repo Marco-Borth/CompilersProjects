@@ -135,20 +135,18 @@ void Quad::codegenLabels(std::ostream& out){
 }
 
 void BinOpQuad::codegenX64(std::ostream& out){
-	TODO(Implement me)
-	/*
-	dst->genLoadVal(out, A);
-	opr->genLoadVal(out, A);
-	src1->genLoadVal(out, A);
-	src2->genLoadVal(out, A);
-	*/
+	//TODO(Implement me)
+	//opr->genLoadVal(out, A);
+	//src1->genLoadVal(out, A);
+	//src2->genLoadVal(out, DI);
 }
 
 void UnaryOpQuad::codegenX64(std::ostream& out){
 	//TODO(Implement me)
-	dst->genLoadVal(out, A);
+	//dst->genLoadVal(out, A);
 	//op->genLoadVal(out, A);
-	src->genLoadVal(out, A);
+	//src->genLoadVal(out, A);
+	//dst->genLoadVal(out, A);
 }
 
 void AssignQuad::codegenX64(std::ostream& out){
@@ -171,11 +169,13 @@ void NopQuad::codegenX64(std::ostream& out){
 }
 
 void HavocQuad::codegenX64(std::ostream& out){
-	TODO(Randomly set rax to 1 or 0)
+	//TODO(Randomly set rax to 1 or 0)
 	int a = rand() % 2;
-	//myDst->genLoadVal(out, A);
+	out << a <<  " \n";
+	myDst->genStoreVal(out, A);
 }
 
+// write Function
 void IntrinsicOutputQuad::codegenX64(std::ostream& out){
 	if (myType->isBool()){
 		myArg->genLoadVal(out, DI);
@@ -193,6 +193,7 @@ void IntrinsicOutputQuad::codegenX64(std::ostream& out){
 	}
 }
 
+// read Function
 void IntrinsicInputQuad::codegenX64(std::ostream& out){
 	if (myType->isBool()){
 		out << "callq getBool\n";
@@ -222,7 +223,7 @@ void CallQuad::codegenX64(std::ostream& out){
 		}
 
 	}
-	out << "callq fun_" << callee->getName() << endl;
+	out << "callq fun_" << callee->getName() << "\n";
 }
 
 void EnterQuad::codegenX64(std::ostream& out){
