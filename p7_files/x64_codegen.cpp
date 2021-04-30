@@ -194,6 +194,16 @@ void IntrinsicInputQuad::codegenX64(std::ostream& out){
 
 void CallQuad::codegenX64(std::ostream& out){
 	//TODO(Implement me)
+	const FnType * calleeType = callee->getDataType()->asFn();
+	const std::list<const DataType *> * argsList = calleeType->getFormalTypes();
+	int argIndex = 1;
+	for (auto arg : *argsList) {
+		if (argIndex == 1) {
+
+			///out<< "movq $" << arg->getName() << ", " << RegUtils::reg64(DI) << endl;
+		}
+
+	}
 	out << "callq " << callee->getName() << endl;
 }
 
