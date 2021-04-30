@@ -97,7 +97,10 @@ public:
 		}
 
 		std::cout << "array width " << std::to_string(myWidth) << "\n";
-		TODO("handle array move");
+		if(stoi(std::to_string(myWidth)) > 0) {
+			return std::to_string(myWidth);
+		}
+		//TODO("handle array move");
 		throw new InternalError("Bad mov width");
 	}
 	std::string getReg(Register reg){

@@ -172,6 +172,7 @@ void NopQuad::codegenX64(std::ostream& out){
 
 void HavocQuad::codegenX64(std::ostream& out){
 	TODO(Randomly set rax to 1 or 0)
+	int a = rand() % 2;
 	//myDst->genLoadVal(out, A);
 }
 
@@ -211,14 +212,16 @@ void IntrinsicInputQuad::codegenX64(std::ostream& out){
 
 void CallQuad::codegenX64(std::ostream& out){
 	//TODO(Implement me)
-	/*
 	const FnType * calleeType = callee->getDataType()->asFn();
 	const std::list<const DataType *> * argsList = calleeType->getFormalTypes();
 	int argIndex = 1;
 	for (auto arg : *argsList) {
-		out<< "movq $" << ", %rbp\n";
+		if (argIndex == 1) {
+
+			///out<< "movq $" << arg->getName() << ", " << RegUtils::reg64(DI) << endl;
+		}
+
 	}
-	*/
 	out << "callq fun_" << callee->getName() << endl;
 }
 
@@ -249,11 +252,12 @@ void GetArgQuad::codegenX64(std::ostream& out){
 }
 
 void SetRetQuad::codegenX64(std::ostream& out){
-	TODO(Implement me)
+	//TODO(Implement me)
 }
 
 void GetRetQuad::codegenX64(std::ostream& out){
-	TODO(Implement me)
+	//TODO(Implement me)
+	out<<"retq\n";
 }
 
 void IndexQuad::codegenX64(std::ostream& out){
