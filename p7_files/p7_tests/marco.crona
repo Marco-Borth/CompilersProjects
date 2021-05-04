@@ -2,12 +2,13 @@ a : int;
 b : bool;
 c : string;
 f : string;
+fnTest : int (x:int){
+  d : string;
+  d = "hello";
+  return x;
+}
 main : int (){
   d : string;
   d = "hello";
-}
-
-fnTest : int (){
-  d : string;
-  d = "hello";
+  fnTest(8);
 }
