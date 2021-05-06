@@ -1,0 +1,24 @@
+a : int;
+
+newOrder : int (x : int, y : int, z : int, f : int, g : int, h : int){
+  alpha : int;
+  beta : int;
+  alpha = (x + y) / z;
+  beta = (f - g) * h;
+  alpha = alpha / beta;
+  return alpha;
+}
+
+main : int (){
+  b : int;
+  b = 660;
+  c : int array [10];
+
+  write b;
+  b++;
+  b--;
+
+  while (b > 100) {
+    newOrder(b, b*2, b*3, b*3, b*2, b);
+  }
+}
