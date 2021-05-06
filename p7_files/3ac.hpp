@@ -31,7 +31,7 @@ private:
 };
 
 enum Register{
-	A, B, C, D, DI
+	A, B, C, D, DI, SI, R8, R9
 };
 
 class RegUtils{
@@ -43,6 +43,7 @@ public:
 			case C: return "c";
 			case D: return "d";
 			case DI: return "di";
+			case SI: return "%si";
 			default: return "\0";
 		}
 	}
@@ -54,6 +55,9 @@ public:
 			case C: return "%rcx";
 			case D: return "%rdx";
 			case DI: return "%rdi";
+			case SI: return "%rsi";
+			case R8: return "%r8";
+			case R9: return "%r9";
 			default: return "\0";
 		}
 	}
@@ -65,6 +69,7 @@ public:
 			case C: return "%cl";
 			case D: return "%dl";
 			case DI: return "%dil";
+			case SI: return "%dil";
 			default: return "\0";
 		}
 	}
